@@ -27,8 +27,8 @@ filename {Multi/RGB}_{position index}_W{light index}_{data index}
 	- 5(with glasses)
 	- 6(with sunglasses1)
 	- 7(with sunglasses2)
-	- 8(»¯×±£¬¿Úºì)
-	- 9(»¯×±£¬Å¨×±)
+	- 8(with lipstick)
+	- 9(with makeup)
 - ob1: LED; ob2: fluorescent lamp
 
 # attention
