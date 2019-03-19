@@ -3,12 +3,12 @@
 
 ## Directory structure
 - root
-   - DATAn
+    - DATAn
 	- detect.txt
-        - subject index
+	- subject index
             - Multi
                 - non-obtructive
-                    - Multi_{1~7}_W1_1        # 无眼镜
+                    - Multi_{1~7}_W1_1        # 无眼镜 
                     - Multi_{1~7}_W1_5        # 戴眼镜
                     - Multi_4_W1_6            # 墨镜1
                 - obtructive
