@@ -3,7 +3,7 @@
 
 ## Directory structure
 - root
-    - DATAn
+   - DATAn
 	- detect.txt
         - subject index
             - Multi
