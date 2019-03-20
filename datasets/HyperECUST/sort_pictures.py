@@ -85,7 +85,7 @@ def sort_rgb(srcdir, dstdir, index):
         dstdir2 = '{}/{}/RGB/{}'.format(dstdir, index[1], ob)
         if not os.path.exists(dstdir2): os.makedirs(dstdir2)
 
-        dstjpg1, dstjpg2 = '{}/RGB_{}_W1_1.JPG'.format(dstdir1, po), '{}/RGB_{}_W1_1'.format(dstdir2, po)
+        dstjpg1, dstjpg2 = '{}/RGB_{}_W1_1.jpg'.format(dstdir1, po), '{}/RGB_{}_W1_1.jpg'.format(dstdir2, po)
 
         shutil.copy(srcjpg1, dstjpg1)
         shutil.copy(srcjpg2, dstjpg2)
@@ -93,10 +93,12 @@ def sort_rgb(srcdir, dstdir, index):
 
 
 if __name__ == "__main__":
-    # sort_multi("./multi/34 35", "./sorted", [34, 35])
-    # sort_multi("./multi/36 37", "./sorted", [36, 37])
-    # sort_multi("./multi/38 39", "./sorted", [38, 39])
+    sort_multi("./multi/34 35", "E:/sorted", [34, 35])
+    sort_multi("./multi/36 37", "E:/sorted", [36, 37])
+    sort_multi("./multi/38 39", "E:/sorted", [38, 39])
+    sort_multi("./multi/40 41", "E:/sorted", [40, 41])
 
-    sort_rgb("./rgb/34 35", "./sorted", [34, 35])
-    sort_rgb("./rgb/36 37", "./sorted", [36, 37])
-    sort_rgb("./rgb/38 39", "./sorted", [38, 39])
+    sort_rgb("./rgb/34 35", "E:/sorted", [34, 35])
+    sort_rgb("./rgb/36 37", "E:/sorted", [36, 37])
+    sort_rgb("./rgb/38 39", "E:/sorted", [38, 39])
+    sort_rgb("./rgb/40 41", "E:/sorted", [40, 41])
