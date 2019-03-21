@@ -9,8 +9,12 @@ configer.mdlspath = "/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles"
 
 configer.facesize       = (64, 64)
 configer.n_channels     = 46
+
+
 # configer.usedChannels   = [i for i in range(46)]
-configer.usedChannels   = [0, 1, 2]
+# configer.usedChannels   = [0, 1, 2]
+configer.usedChannels   = [3, 4, 5]
+
 configer.n_usedChannels = len(configer.usedChannels)
 configer.n_classes      = 33
 
