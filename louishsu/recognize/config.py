@@ -13,7 +13,10 @@ configer.n_channels     = 46
 
 # configer.usedChannels   = [i for i in range(46)]
 # configer.usedChannels   = [0, 1, 2]
-configer.usedChannels   = [3, 4, 5]
+# configer.usedChannels   = [3, 4, 5]
+# configer.usedChannels   = [6, 7, 8]
+# configer.usedChannels   = [ 9, 10, 11]
+configer.usedChannels   = [12, 13, 14]
 
 configer.n_usedChannels = len(configer.usedChannels)
 configer.n_classes      = 33
