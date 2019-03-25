@@ -457,11 +457,14 @@ def splitDatasets_Multi_23channels():
                         wavelen = [550 + 20*i for i in range(23)]
                         
                         bmpfiles = os.listdir(filepath)
-                        for i_train_per_sample in range(n_train_per_sample):
-                            wl = random.sample(wavelen, 1)[0]
-                            wla = wl - 20
-                            wls = wl + 20
 
+                        ## 选出6个训练集样本
+                        for i_train_per_sample in range(n_train_per_sample):
+                            wl = random.sample(wavelen, 1)[0]   # 随机选取一个
+                            wla = wl - 20                       # 相邻1
+                            wls = wl + 20                       # 相邻2
+
+                            ## 保存样本
                             for bmp in bmpfiles:
                                 if get_wavelen(bmp) == wl:
                                     a = os.path.join(file, bmp)
@@ -471,10 +474,12 @@ def splitDatasets_Multi_23channels():
                                     fvalid.write(os.path.join(file, bmp) + '\n')
                                     n_valid += 1
 
+                            ## 删除这些样本
                             if wl in wavelen: wavelen.remove(wl)
                             if wla in wavelen: wavelen.remove(wla)
                             if wls in wavelen: wavelen.remove(wls)
 
+                        ## 其余作为测试集
                         for wl in wavelen:
                             for bmp in bmpfiles:
                                 if get_wavelen(bmp) == wl:
