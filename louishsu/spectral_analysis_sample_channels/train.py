@@ -97,11 +97,12 @@ def train():
         model.train()
         for i_batch, (X, y) in enumerate(trainloader):
             X = Variable(X.float())
-            y_pred_prob = model(X)
 
             if torch.cuda.is_available():
                 X = X.cuda()
-                y_pred_prob = y_pred_prob.cuda()
+                y = y.cuda()
+
+            y_pred_prob = model(X)
 
             loss_train_batch = loss(y_pred_prob, y)
             optimizor.zero_grad()
@@ -113,8 +114,8 @@ def train():
                         format(i_epoch+1, n_epoch, i_batch+1, len(trainsets)//batch_size, acc_train_batch, loss_train_batch)
             print(print_log); logger.debug(print_log)
 
-            acc_train_epoch.append(acc_train_batch.numpy())
-            loss_train_epoch.append(loss_train_batch.detach().numpy())
+            acc_train_epoch.append(acc_train_batch.cpu().numpy())
+            loss_train_epoch.append(loss_train_batch.detach().cpu().numpy())
         
         acc_train_epoch = np.mean(np.array(acc_train_epoch))
         loss_train_epoch = np.mean(np.array(loss_train_epoch))
@@ -123,11 +124,12 @@ def train():
         model.eval()
         for i_batch, (X, y) in enumerate(validloader):
             X = Variable(X.float())
-            y_pred_prob = model(X)
 
             if torch.cuda.is_available():
                 X = X.cuda()
-                y_pred_prob = y_pred_prob.cuda()
+                y = y.cuda()
+
+            y_pred_prob = model(X)
 
             loss_valid_batch = loss(y_pred_prob, y)
             acc_valid_batch  = accuracy(y_pred_prob, y, multi=False)
@@ -135,8 +137,8 @@ def train():
                         format(i_epoch+1, n_epoch, i_batch+1, len(validsets)//batch_size, acc_valid_batch, loss_valid_batch)
             print(print_log); logger.debug(print_log)
 
-            acc_valid_epoch.append(acc_valid_batch.numpy())
-            loss_valid_epoch.append(loss_valid_batch.detach().numpy())
+            acc_valid_epoch.append(acc_valid_batch.cpu().numpy())
+            loss_valid_epoch.append(loss_valid_batch.detach().cpu().numpy())
         
 
         acc_valid_epoch = np.mean(np.array(acc_valid_epoch))
