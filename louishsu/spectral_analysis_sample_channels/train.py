@@ -76,7 +76,7 @@ def train():
 
     loss = init_loss()
     optimizor = optim.Adam(model.parameters(), learning_rate,  betas=(0.9, 0.95), weight_decay=0.0005)
-    scheduler = lr_scheduler.StepLR(optimizer, configer.stepsize, configer.gamma)
+    scheduler = lr_scheduler.StepLR(optimizor, configer.stepsize, configer.gamma)
 
     acc_train_epoch = 0.; acc_valid_epoch = 0.
     loss_train_epoch = float('inf'); loss_valid_epoch = float('inf')
