@@ -50,6 +50,11 @@ def test():
 
     for i_batch, (X, y) in enumerate(testloader):
         X = Variable(X.float())
+
+        if torch.cuda.is_available():
+            X = X.cuda()
+            y = y.cuda()
+    
         y_pred_prob = model(X)
 
         loss_test_batch = loss(y_pred_prob, y)
@@ -58,11 +63,11 @@ def test():
                         format(i_batch+1, len(testsets)//batch_size, acc_test_batch, loss_test_batch)
         print(print_log); f.write(print_log + '\n')
 
-        loss_test.append(loss_test_batch.detach().numpy())
-        acc_test.append(acc_test_batch.numpy())
+        loss_test.append(loss_test_batch.detach().cpu().numpy())
+        acc_test.append(acc_test_batch.cpu().numpy())
 
         # save outputs
-        output = y_pred_prob.detach().numpy()
+        output = y_pred_prob.detach().cpu().numpy()
         if i_batch == 0:
             output_tosave = output
         else:
