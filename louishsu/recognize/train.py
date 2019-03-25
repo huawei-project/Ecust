@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import torch.optim.lr_scheduler as lr_scheduler
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
@@ -73,7 +74,8 @@ def train():
     print(print_log); logger.debug(print_log)
 
     loss = init_loss()
-    optimizor = optim.Adam(model.parameters(), learning_rate,  betas=(0.9, 0.95), weight_decay=0.0005)
+    optimizor = optim.Adam(model.parameters(), learning_rate)
+    scheduler = lr_scheduler.StepLR(optimizor, configer.stepsize, configer.gamma)
 
     elapsed_time = 0; total_time = 0
 
@@ -82,6 +84,7 @@ def train():
     loss_valid_epoch_last = loss_valid_epoch
 
     for i_epoch in range(n_epoch):
+        scheduler.step(i_epoch)
 
         acc_train_epoch = []; acc_valid_epoch = []
         loss_train_epoch = []; loss_valid_epoch = []
@@ -151,6 +154,7 @@ def train():
 
         writer.add_scalars('accuracy', {'train': acc_train_epoch,  'valid': acc_valid_epoch},  i_epoch)
         writer.add_scalars('logloss',  {'train': loss_train_epoch, 'valid': loss_valid_epoch}, i_epoch)
+        writer.add_scalar('lr', scheduler.get_lr()[-1], i_epoch)
 
         print_log = '-------------------------------------------------------------------------------------------------------------------------------------------------'
         print(print_log); logger.debug(print_log)

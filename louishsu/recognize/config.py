@@ -15,7 +15,7 @@ configer.n_channels     = 46
 configer.usedChannels   = [550]
 
 configer.n_usedChannels = len(configer.usedChannels)
-configer.n_classes      = 33
+configer.n_classes      = 40
 
 configer.splitmode = 'split_1'
 configer.modelbase = "recognize_vgg11"
@@ -23,9 +23,12 @@ configer.modelname = "{}_{}_{}chs_{}sta_20nm".\
             format(configer.modelbase, configer.splitmode, configer.n_usedChannels, configer.usedChannels[0])
 
 configer.lossname  = 'crossent'
-configer.learningrate  = 1e-4
+configer.learningrate  = 0.005
 configer.batchsize     = 64
-configer.n_epoch       = 300
+configer.n_epoch       = 200
+
+configer.stepsize   = 80
+configer.gamma      = 0.1
 
 configer.cuda = is_available()
 
