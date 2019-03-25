@@ -60,63 +60,70 @@ def getDicts():
 
 def splitData(train=0.6, valid=0.2, test=0.2):
     get_vol = lambda i: (i-1)//10+1
-    dicts = getDicts()
 
-    FILENAME = "/{}/Multi/{}/Multi_{}_W1_{}"
+    FILENAME = "DATA{}/{}/Multi/{}/Multi_{}_W1_{}"
     obtypes = ["non-obtructive", "obtructive/ob1", "obtructive/ob2"]
-    posidx  = [i for i in range(1, 8)]
-    sessidx = [i for i in range(1, 7)]
+    subidx  = [i for i in range(1, 41)]
+    posidx  = [i for i in range(1,  8)]
+    sessidx = [i for i in range(1,  10)]
 
-    all_files = []
-    for i in range(1, 34):
-        i_files = []
-        for obtype in obtypes:
-            for pos in posidx:
-                for sess in sessidx:
-                    vol = get_vol(i)
-                    filename = FILENAME.format(i, obtype, pos, sess)
-                    filepath = "{}/DATA{}".format(configer.datapath, vol) + filename
-                    if not os.path.exists(filepath): continue
-                    if dicts["DATA%d"%vol][filename][0] is None: continue
-                    i_files += [filepath]
-        all_files += [i_files]
-    
-    trainfiles = []; validfiles = []; testfiles = []
-    for i in range(33):
-        i_files = len(all_files[i])
-        i_train = int(i_files*train)
-        i_valid = int(i_files*valid)
-        i_test  = i_files - i_train - i_valid
-        
-        i_test_valid_files = random.sample(all_files[i], i_test + i_valid)
-        i_train_files = [f for f in all_files[i] if f not in i_test_valid_files]
-        i_test_files  = random.sample(i_test_valid_files, i_test)
-        i_valid_files = [f for f in i_test_valid_files if f not in i_test_files]
-
-        trainfiles += i_train_files
-        validfiles += i_valid_files
-        testfiles  += i_test_files
-    
-    n_train = len(trainfiles)
-    n_valid = len(validfiles)
-    n_test  = len(testfiles )
-    n_files = n_train + n_valid + n_test
-    print("train: valid: test = {}: {}: {} = {}: {}: {}".format(n_train, n_valid, n_test, n_train/n_files, n_valid/n_files, n_test/n_files))
-
+    dicts = getDicts()
+    datapath = "/home/louishsu/Work/Workspace/ECUST2019"
     splitdir = "./split/{}".format(configer.splitmode)
     if not os.path.exists(splitdir): os.mkdir(splitdir)
-    with open("{}/train.txt".format(splitdir), 'w') as f:
-        trainfiles = [i + '\n' for i in trainfiles]
-        f.writelines(trainfiles)
-    with open("{}/valid.txt".format(splitdir), 'w') as f:
-        validfiles = [i + '\n' for i in validfiles]
-        f.writelines(validfiles)
-    with open("{}/test.txt".format(splitdir), 'w') as f:
-        testfiles  = [i + '\n' for i in testfiles ]
-        f.writelines(testfiles)
+    train_txt = "{}/train.txt".format(splitdir)
+    valid_txt = "{}/valid.txt".format(splitdir)
+    test_txt  = "{}/test.txt".format(splitdir)
+    ftrain = open(train_txt, 'w'); fvalid = open(valid_txt, 'w'); ftest  = open(test_txt, 'w')
+
+    n_train, n_valid, n_test = 0, 0, 0
+
+    for i in subidx:
+        subfiles = []
+        for pos in posidx:
+            for obtype in obtypes:
+                for sess in sessidx:
+                    vol = get_vol(i)
+                    filename = FILENAME.format(vol, i, obtype, pos, sess)
+                    dict = dicts['DATA%d' % vol]
+
+                    if obtype == "non-obtructive":
+                        key = '/' + '/'.join(filename.split('/')[-4:])
+                    else:
+                        key = '/' + '/'.join(filename.split('/')[-5:])
+                    
+                    filepath = os.path.join(datapath, filename)
+                    if os.path.exists(filepath)\
+                            and (key in dict.keys()) \
+                                and (dict[key][0] is not None):
+                        subfiles += [filename + '\n']
+        
+        i_items = len(subfiles)
+        i_train = int(i_items*train); n_train += i_train
+        i_valid = int(i_items*valid); n_valid += i_valid
+        i_test  = i_items - i_train - i_valid; n_test += i_test
+        trainfiles = random.sample(subfiles, i_train)
+        subfiles_valid_test = [f for f in subfiles if f not in trainfiles]
+        validfiles = random.sample(subfiles_valid_test, i_valid)
+        testfiles  = [f for f in subfiles_valid_test if f not in validfiles]
+
+        ftrain.writelines(trainfiles)
+        fvalid.writelines(validfiles)
+        ftest.writelines(testfiles)
+
+    n_items = n_train + n_valid + n_test
+    print("number of samples: {}".format(n_items))
+    print("number of train: {:5d}, ".format(n_train))
+    print("number of valid: {:5d}, ".format(n_valid))
+    print("number of test:  {:5d}, ".format(n_test ))
+    print("train: valid: test:  {:.3f}: {:.3f}: {:.3f}".\
+                    format(n_train / n_items, n_valid / n_items, n_test  / n_items))
+    
+    ftrain.close(); fvalid.close(); ftest.close()
+
 
 class HyperECUST(Dataset):
-    labels = [i for i in range(1, 34)]
+    labels = [i for i in range(1, 41)]
     
     def __init__(self, facesize=None, mode='train'):
         """
@@ -126,13 +133,14 @@ class HyperECUST(Dataset):
         """
         with open('./split/{}/{}.txt'.format(configer.splitmode, mode), 'r') as f:
             self.filenames = f.readlines()
-        self.filenames = ['/datasets/'+filename[filename.find('ECUST'):] for filename in self.filenames]
+        self.filenames = [os.path.join(configer.datapath, filename) for filename in self.filenames]
         self.facesize = tuple(facesize)
         self.dicts = getDicts()
 
     def __getitem__(self, index):
         filename = self.filenames[index].strip()
         label = get_label_from_path(filename)
+        dict_wave_bmp = {get_wavelen(bmp): filename + '/' + bmp for bmp in os.listdir(filename)}
 
         # get bbox
         vol = "DATA%d" % get_vol(label)
@@ -140,20 +148,26 @@ class HyperECUST(Dataset):
         bbox = self.dicts[vol][imgname][1]
         [x1, y1, x2, y2] = bbox
 
-        # load image array
-        image = load_multi(filename)[y1: y2, x1: x2]
-        if self.facesize is not None:
-            image = resizeMulti(image, self.facesize)
-
-        # select channels
-        image = image[:, :, configer.usedChannels]
-
+        # load image
+        h, w, c = self.facesize[0], self.facesize[1], len(configer.usedChannels)
+        image = np.zeros(shape=(h, w, c))
+        for i in range(len(configer.usedChannels)):
+            ch = configer.usedChannels[i]
+            im = cv2.imread(dict_wave_bmp[ch], cv2.IMREAD_GRAYSCALE)
+            im = im[y1: y2, x1: x2]
+            image[:, :, i] = cv2.resize(im, self.facesize[::-1])
         image = ToTensor()(image)
+
+        # get label
         label = self.labels.index(label)
+        
         return image, label
     
     def __len__(self):
         return len(self.filenames)
 
 if __name__ == "__main__":
-    splitData(0.5, 0.3, 0.2)
+    # splitData(0.6, 0.1, 0.3)
+    D = HyperECUST((64, 64), 'train')
+    for i in range(len(D)):
+        X, y = D[i]
