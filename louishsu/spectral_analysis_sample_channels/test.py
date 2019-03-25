@@ -17,6 +17,10 @@ def init_model():
     modelpath = os.path.join(configer.mdlspath, '{}.pkl'.format(configer.modelname))
     assert os.path.exists(modelpath), 'model {} does not exists! '.format(configer.modelname)
     model = torch.load(modelpath)
+
+    if torch.cuda.is_available():
+        model.cuda()
+
     return model, modelpath
 
 def init_loss():
@@ -105,6 +109,10 @@ def test_pos4():
     for i_batch, (X, y) in enumerate(testloader):
         X = Variable(X.float())
         y_pred_prob = model(X)
+
+        if torch.cuda.is_available():
+            X = X.cuda()
+            y_pred_prob = y_pred_prob.cuda()
 
         loss_test_batch = loss(y_pred_prob, y)
         acc_test_batch  = accuracy(y_pred_prob, y, multi=False)

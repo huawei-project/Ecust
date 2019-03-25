@@ -19,5 +19,5 @@ _models = {
     'analysis_vgg11_channels_split2': VGG(n_channels, n_classes, 'VGG11', batch_norm=True),
     
     
-    'analysis_vgg11_channels_split14': VGG(n_channels, n_classes, 'VGG11', batch_norm=True),
+    'analysis_vgg11_channels_split1': VGG(n_channels, n_classes, 'VGG11', batch_norm=True),
 }

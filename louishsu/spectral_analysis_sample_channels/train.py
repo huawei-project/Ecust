@@ -41,6 +41,9 @@ def init_model():
         model = models._models[configer.modelname]
         torch.save(model, modelpath)
     
+    if torch.cuda.is_available():
+        model.cuda()
+
     return model, modelpath
 
 def init_loss():
@@ -89,6 +92,10 @@ def train():
             X = Variable(X.float())
             y_pred_prob = model(X)
 
+            if torch.cuda.is_available():
+                X = X.cuda()
+                y_pred_prob = y_pred_prob.cuda()
+
             loss_train_batch = loss(y_pred_prob, y)
             optimizor.zero_grad()
             loss_train_batch.backward() 
@@ -110,6 +117,10 @@ def train():
         for i_batch, (X, y) in enumerate(validloader):
             X = Variable(X.float())
             y_pred_prob = model(X)
+
+            if torch.cuda.is_available():
+                X = X.cuda()
+                y_pred_prob = y_pred_prob.cuda()
 
             loss_valid_batch = loss(y_pred_prob, y)
             acc_valid_batch  = accuracy(y_pred_prob, y, multi=False)

@@ -521,7 +521,7 @@ def gen_test_txt_pos4():
     f.close()
 
 class HyperECUST(Dataset):
-    labels = [i for i in range(1, 34) if (i not in notUsedSubjects)]
+    labels = [i for i in range(1, 41) if (i not in notUsedSubjects)]
 
     def __init__(self, splitmode, facesize=None, mode='train'):
         """
@@ -529,13 +529,14 @@ class HyperECUST(Dataset):
             facesize:   {tuple/list[H, W]}
             mode:       {str} 'train', 'valid'
         """
-        with open('./dataset/{}/{}.txt'.format(splitmode, mode), 'r') as f:
+        with open('./split_23chs/{}/{}.txt'.format(splitmode, mode), 'r') as f:
             self.filenames = f.readlines()
         self.facesize = tuple(facesize)
         self.dicts = getDicts()
 
     def __getitem__(self, index):
         filename = self.filenames[index].strip()
+        filename = os.path.join(configer.datapath, filename)
         label = get_label_from_path(filename)
 
         # get bbox
@@ -563,12 +564,12 @@ if __name__ == "__main__":
     # splitDatasets_Multi_46channels(46, 0.6, 0.2, 0.2)
     # gen_test_txt_pos4()
 
-    # from torch.utils.data import DataLoader
-    # trainloader = DataLoader(HyperECUST(configer.splitmode, (64, 64), mode='test'))
-    # for i_batch, (X, y) in enumerate(trainloader):
-    #     X = (X[0, 0, :, :].numpy()*255).astype('uint8')
-    #     cv2.imshow("", X)
-    #     cv2.waitKey(10)
+    from torch.utils.data import DataLoader
+    trainloader = DataLoader(HyperECUST(configer.splitmode, (64, 64), mode='test'))
+    for i_batch, (X, y) in enumerate(trainloader):
+        X = (X[0, 0, :, :].numpy()*255).astype('uint8')
+        cv2.imshow("", X)
+        cv2.waitKey(0)
 
 
-    splitDatasets_Multi_23channels()
+    # splitDatasets_Multi_23channels()
