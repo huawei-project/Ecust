@@ -21,3 +21,6 @@ configer.learningrate = 0.001
 configer.batchsize = 256
 configer.n_epoch   = 300
 configer.earlystopping = True
+
+configer.stepsize = 120
+configer.gamma = 0.2
