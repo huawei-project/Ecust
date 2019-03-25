@@ -427,7 +427,7 @@ def splitDatasets_Multi_23channels():
     sessidx = [i for i in range(1, 7)]
 
     dicts = getDicts()
-    datapath = "/media/louishsu/Datasets/ECUST2019"
+    datapath = "/home/louishsu/Work/Workspace/ECUST2019"
     splitdir = "./split_23chs/{}".format(configer.splitmode)
     if not os.path.exists(splitdir): os.mkdir(splitdir)
     train_txt = "./split_23chs/{}/train.txt".format(configer.splitmode)
