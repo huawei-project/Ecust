@@ -249,7 +249,7 @@ def show_result(image, score, bbox, landmarks, winname="", waitkey=0):
 #     ftrain.close(); fvalid.close(); ftest.close()
 
 
-def splitDatasets_Multi_channels(n_channels=46, train=0.7, valid=0.25, test=0.05):
+def splitDatasets_Multi_46channels(n_channels=46, train=0.7, valid=0.25, test=0.05):
     n_train = int(n_channels * train)
     n_valid = int(n_channels * valid)
     n_test  = n_channels - n_train - n_valid
@@ -407,6 +407,94 @@ def splitDatasets_Multi_channels(n_channels=46, train=0.7, valid=0.25, test=0.05
 
     ftrain.close(); fvalid.close(); ftest.close()
 
+
+
+
+
+
+
+def splitDatasets_Multi_23channels():
+    """
+    从每份多光谱数据(23通道, 550nm~990nm, 间隔20nm)中依次抽取训练集样本，将相邻的波段放入验证集，其余放入测试集
+    如果选中的训练样本相邻波段已被放入验证集，则不再放入
+    训练集样本个数设置为6，则验证集12左右，剩余5张放入测试集
+    """
+    n_train_per_sample = 6
+    filename = "DATA{}/{}/Multi/{}/Multi_{}_W1_{}"
+    obtypes = ["non-obtructive", "obtructive/ob1", "obtructive/ob2"]
+    subidx  = [i for i in range(1, 41)]
+    posidx  = [i for i in range(1, 8)]
+    sessidx = [i for i in range(1, 7)]
+
+    dicts = getDicts()
+    datapath = "/media/louishsu/Datasets/ECUST2019"
+    splitdir = "./split_23chs/{}".format(configer.splitmode)
+    if not os.path.exists(splitdir): os.mkdir(splitdir)
+    train_txt = "./split_23chs/{}/train.txt".format(configer.splitmode)
+    valid_txt = "./split_23chs/{}/valid.txt".format(configer.splitmode)
+    test_txt  = "./split_23chs/{}/test.txt".format(configer.splitmode)
+    ftrain = open(train_txt, 'w'); fvalid = open(valid_txt, 'w'); ftest  = open(test_txt, 'w')
+
+    n_train, n_valid, n_test = 0, 0, 0
+
+    for i in subidx:
+        for obtype in obtypes:
+            for pos in posidx:
+                for sess in sessidx:
+                    vol = get_vol(i)
+                    file = filename.format(vol, i, obtype, pos, sess)
+                    dict = dicts['DATA%d' % vol]
+
+                    if obtype == "non-obtructive":
+                        key = '/' + '/'.join(file.split('/')[-4:])
+                    else:
+                        key = '/' + '/'.join(file.split('/')[-5:])
+
+                    filepath = os.path.join(datapath, file)
+                    if os.path.exists(filepath)\
+                            and (key in dict.keys()) \
+                                and (dict[key][0] is not None):
+                        wavelen = [550 + 20*i for i in range(23)]
+                        
+                        bmpfiles = os.listdir(filepath)
+                        for i_train_per_sample in range(n_train_per_sample):
+                            wl = random.sample(wavelen, 1)[0]
+                            wla = wl - 20
+                            wls = wl + 20
+
+                            for bmp in bmpfiles:
+                                if get_wavelen(bmp) == wl:
+                                    a = os.path.join(file, bmp)
+                                    ftrain.write(os.path.join(file, bmp) + '\n')
+                                    n_train += 1
+                                elif get_wavelen(bmp) == wla or get_wavelen(bmp) == wls:
+                                    fvalid.write(os.path.join(file, bmp) + '\n')
+                                    n_valid += 1
+
+                            if wl in wavelen: wavelen.remove(wl)
+                            if wla in wavelen: wavelen.remove(wla)
+                            if wls in wavelen: wavelen.remove(wls)
+
+                        for wl in wavelen:
+                            for bmp in bmpfiles:
+                                if get_wavelen(bmp) == wl:
+                                    ftest.write(os.path.join(file, bmp) + '\n')
+                                    n_test += 1
+
+    n_items = n_train + n_valid + n_test
+    print("number of samples: {}".format(n_items))
+    print("number of train: {:5d}, ".format(n_train))
+    print("number of valid: {:5d}, ".format(n_valid))
+    print("number of test:  {:5d}, ".format(n_test ))
+    print("train: valid: test:  {:.3f}: {:.3f}: {:.3f}".\
+                    format(n_train / n_items, n_valid / n_items, n_test  / n_items))
+
+    ftrain.close(); fvalid.close(); ftest.close()
+
+
+
+
+
 def gen_test_txt_pos4():
     dicts = getDicts()
     f = open("./dataset/{}/test_pos4.txt".format(configer.splitmode), 'w')
@@ -472,8 +560,8 @@ class HyperECUST(Dataset):
 
 
 if __name__ == "__main__":
-    # splitDatasets_Multi_channels(46, 0.6, 0.2, 0.2)
-    gen_test_txt_pos4()
+    # splitDatasets_Multi_46channels(46, 0.6, 0.2, 0.2)
+    # gen_test_txt_pos4()
 
     # from torch.utils.data import DataLoader
     # trainloader = DataLoader(HyperECUST(configer.splitmode, (64, 64), mode='test'))
@@ -481,3 +569,6 @@ if __name__ == "__main__":
     #     X = (X[0, 0, :, :].numpy()*255).astype('uint8')
     #     cv2.imshow("", X)
     #     cv2.waitKey(10)
+
+
+    splitDatasets_Multi_23channels()
