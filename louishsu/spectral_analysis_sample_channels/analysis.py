@@ -43,12 +43,14 @@ def get_sub_filenames(filenames, substr=None):
 
 def analysis(subset=None):
     # get test files and labels
-    txtfile = './dataset/{}/test.txt'.format(configer.splitmode)
+    txtfile = './split_23chs/{}/test.txt'.format(configer.splitmode)
     with open(txtfile, 'r') as f:
         testfiles = f.readlines()
+    testfiles = ['ECUST2019/' + f for f in testfiles]
+
     testfiles_sub, indexes_sub = get_sub_filenames(testfiles, subset)
     labels = get_labels_from_pathlist(testfiles_sub)
-    used = [i for i in range(1, 34) if (i not in notUsedSubjects)]
+    used = [i for i in range(1, 41) if (i not in notUsedSubjects)]
     labels = [used.index(i) for i in labels]
 
     # get test outputs
@@ -59,8 +61,8 @@ def analysis(subset=None):
         testout[i] = softmax(testout[i])
     testout_sub = testout[indexes_sub]                      # ndarray(N, cls)
 
-    N, cls = testout_sub.shape; C = 46
-    WAVELEN = [550+i*10 for i in range(C)]
+    N, cls = testout_sub.shape; C = 23
+    WAVELEN = [550+i*20 for i in range(C)]
 
 
 
@@ -313,10 +315,10 @@ def analysis_similarity(subset=None, mode='euc'):
     plt.show()
 
 if __name__ == "__main__":
-    # analysis()
-    # analysis('non-obtructive')
-    # analysis('ob1')
-    # analysis('ob2')
+    analysis()
+    analysis('non-obtructive')
+    analysis('ob1')
+    analysis('ob2')
 
     # analysis_pos4()
     # analysis_pos4('non-obtructive')
@@ -327,6 +329,3 @@ if __name__ == "__main__":
     # analysis_position('non-obtructive')
     # analysis_position('ob1')
     # analysis_position('ob2')
-
-    analysis_similarity('ob1', mode='euc')
-    analysis_similarity('ob1', mode='cos')
