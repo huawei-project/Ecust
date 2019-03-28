@@ -14,7 +14,7 @@ from tensorboardX import SummaryWriter
 
 from model import models
 from metric import metrics
-from dataset import HyperECUST
+from dataset import HyperECUST, RGBECUST
 from utiles import accuracy
 from config import configer
 
@@ -62,10 +62,15 @@ def train():
     if not os.path.exists(log_dir): os.mkdir(log_dir)
     writer = SummaryWriter(log_dir)
 
-    trainsets = HyperECUST(configer.facesize, 'train')
+    if configer.trainmode == 'Multi':
+        trainsets = HyperECUST(configer.facesize, 'train')
+        validsets  = HyperECUST(configer.facesize, 'valid')
+    elif configer.trainmode == 'RGB':
+        trainsets = RGBECUST(configer.facesize, 'train')
+        validsets  = RGBECUST(configer.facesize, 'valid')
     trainloader = DataLoader(trainsets, batch_size, shuffle=True)
-    validsets  = HyperECUST(configer.facesize, 'valid')
     validloader  = DataLoader(validsets, batch_size)
+
 
     model, modelpath = init_model()
     # writer.add_graph(model, input_to_model=torch.Tensor(batch_size, configer.getint('global', 'N_CHANNLES'),

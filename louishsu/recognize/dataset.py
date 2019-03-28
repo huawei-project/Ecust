@@ -58,7 +58,7 @@ def getDicts():
             dicts[vol] = eval(f.read())
     return dicts
 
-def splitData(train=0.6, valid=0.2, test=0.2):
+def gen_Multi_split(train=0.6, valid=0.2, test=0.2):
     get_vol = lambda i: (i-1)//10+1
 
     FILENAME = "DATA{}/{}/Multi/{}/Multi_{}_W1_{}"
@@ -122,8 +122,33 @@ def splitData(train=0.6, valid=0.2, test=0.2):
     ftrain.close(); fvalid.close(); ftest.close()
 
 
+def gen_RGB_split(splitmode):
+    """ 根据已划分的多光谱数据集产生RGB数据集
+    """
+    def multi2rgb(path):
+        path = path.split('/')
+        path[2] = 'RGB'
+        file = path[-1].split('_')
+        file[0] = 'RGB'
+        path[-1] = '_'.join(file)
+        path = '/'.join(path)
+        return path
+
+    dicts = getDicts()
+
+    for mode in ['train', 'valid', 'test']:
+        txtfile = "./split/{}/{}.txt".format(splitmode, mode)
+        with open(txtfile, 'r') as f:
+            filenames = f.readlines()
+        filenames = [multi2rgb(filename) for filename in filenames]
+        filenames = [filename for filename in filenames if filename.strip()[5:] in dicts[filename.split('/')[0]].keys()]
+        txtfile = "./split/{}/{}_rgb.txt".format(splitmode, mode)
+        with open(txtfile, 'w') as f:
+            f.writelines(filenames)
+
+
 class HyperECUST(Dataset):
-    labels = [i for i in range(1, 41)]
+    labels = [i+1 for i in range(configer.n_classes)]
     
     def __init__(self, facesize=None, mode='train'):
         """
@@ -145,8 +170,7 @@ class HyperECUST(Dataset):
         # get bbox
         vol = "DATA%d" % get_vol(label)
         imgname = filename[filename.find("DATA")+5:]
-        bbox = self.dicts[vol][imgname][1]
-        [x1, y1, x2, y2] = bbox
+        x1, y1, x2, y2 = self.dicts[vol][imgname][1]
 
         # load image
         h, w, c = self.facesize[0], self.facesize[1], len(configer.usedChannels)
@@ -166,8 +190,67 @@ class HyperECUST(Dataset):
     def __len__(self):
         return len(self.filenames)
 
+
+class RGBECUST(Dataset):
+    labels = [i+1 for i in range(configer.n_classes)]
+    
+    def __init__(self, facesize=None, mode='train'):
+        """
+        Params:
+            facesize:   {tuple/list[H, W]}
+            mode:       {str} 'train', 'valid', 'test'
+        """
+        with open('./split/{}/{}_rgb.txt'.format(configer.splitmode, mode), 'r') as f:
+            self.filenames = f.readlines()
+        self.filenames = [os.path.join(configer.datapath, filename).strip() + '.JPG'\
+                                                    for filename in self.filenames]
+        self.facesize = tuple(facesize)
+        self.dicts = getDicts()
+
+    def __getitem__(self, index):
+        filename = self.filenames[index]
+        label = get_label_from_path(filename)
+
+        # get bbox
+        vol = "DATA%d" % get_vol(label)
+        imgname = filename[filename.find("DATA")+5:].split('.')[0]
+        x1, y1, x2, y2 = self.dicts[vol][imgname][1]
+
+        # load image
+        image = cv2.imread(filename, cv2.IMREAD_ANYCOLOR)   # BGR
+        image = image[y1: y2, x1: x2]
+        image = cv2.resize(image, self.facesize[::-1])
+        b, g, r = cv2.split(image)
+        b = b[:, :, np.newaxis]; g = g[:, :, np.newaxis]; r = r[:, :, np.newaxis]
+        if configer.usedRGBChannels == 'R':
+            image = r
+        elif configer.usedRGBChannels == 'G':
+            image = g
+        elif configer.usedRGBChannels == 'B':
+            image = b
+        elif configer.usedRGBChannels == 'RGB':
+            image = np.concatenate([r, g, b], axis=2)
+
+        image = ToTensor()(image)
+
+        # get label
+        label = self.labels.index(label)
+        
+        return image, label
+    
+    def __len__(self):
+        return len(self.filenames)
+
 if __name__ == "__main__":
-    # splitData(0.6, 0.1, 0.3)
-    D = HyperECUST((64, 64), 'train')
-    for i in range(len(D)):
-        X, y = D[i]
+    # gen_Multi_split(0.6, 0.1, 0.3)
+    gen_RGB_split('split_1')
+
+
+    # D = HyperECUST((64, 64), 'train')
+    # for i in range(len(D)):
+    #     X, y = D[i]
+    # D = RGBECUST((64, 64), 'train')
+    # for i in range(len(D)):
+    #     X, y = D[i]
+
+    pass
