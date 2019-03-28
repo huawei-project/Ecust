@@ -2,8 +2,8 @@ from torch.cuda import is_available
 from easydict import EasyDict
 
 configer = EasyDict()
-# configer.datapath = "/datasets/ECUST2019"
-configer.datapath = "/home/louishsu/Work/Workspace/ECUST2019"
+configer.datapath = "/datasets/ECUST2019"
+# configer.datapath = "/home/louishsu/Work/Workspace/ECUST2019"
 configer.logspath = "/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs"
 configer.mdlspath = "/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles"
 

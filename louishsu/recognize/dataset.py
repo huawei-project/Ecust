@@ -225,16 +225,18 @@ class RGBECUST(Dataset):
 
         image = image[y1: y2, x1: x2]
         image = cv2.resize(image, self.facesize[::-1])
-        b, g, r = cv2.split(image)
-        b = b[:, :, np.newaxis]; g = g[:, :, np.newaxis]; r = r[:, :, np.newaxis]
-        if configer.usedRGBChannels == 'R':
-            image = r
-        elif configer.usedRGBChannels == 'G':
-            image = g
-        elif configer.usedRGBChannels == 'B':
-            image = b
-        elif configer.usedRGBChannels == 'RGB':
-            image = np.concatenate([r, g, b], axis=2)
+        
+        if configer.usedRGBChannels == 'RGB':
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        else:
+            b, g, r = cv2.split(image)
+            b = b[:, :, np.newaxis]; g = g[:, :, np.newaxis]; r = r[:, :, np.newaxis]
+            if configer.usedRGBChannels == 'R':
+                image = r
+            elif configer.usedRGBChannels == 'G':
+                image = g
+            elif configer.usedRGBChannels == 'B':
+                image = b
 
         image = ToTensor()(image)
 
