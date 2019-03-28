@@ -218,6 +218,11 @@ class RGBECUST(Dataset):
 
         # load image
         image = cv2.imread(filename, cv2.IMREAD_ANYCOLOR)   # BGR
+        
+        h, w = image.shape[:-1]
+        x1 = 0 if x1 < 0 else x1; y1 = 0 if y1 < 0 else y1
+        x2 = w-1 if x2>w-1 else x1; y2 = h-1 if y2>h-1 else y2
+
         image = image[y1: y2, x1: x2]
         image = cv2.resize(image, self.facesize[::-1])
         b, g, r = cv2.split(image)
