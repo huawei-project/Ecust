@@ -32,7 +32,10 @@ def test():
     modelname  = configer.modelname
     splitmode  = configer.splitmode
     
-    testsets = HyperECUST(configer.facesize, 'test')
+    if configer.trainmode == 'Multi':
+        testsets = HyperECUST(configer.facesize, 'test')
+    elif configer.trainmode == 'RGB':
+        trainsets = RGBECUST(configer.facesize, 'test')
     testloader = DataLoader(testsets, batch_size)
 
     model, modelpath = init_model()
