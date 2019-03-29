@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 
 from metric import metrics
 from model import models
-from dataset import HyperECUST
+from dataset import HyperECUST, RGBECUST
 from utiles import accuracy
 from config import configer
 
@@ -35,7 +35,7 @@ def test():
     if configer.trainmode == 'Multi':
         testsets = HyperECUST(configer.facesize, 'test')
     elif configer.trainmode == 'RGB':
-        trainsets = RGBECUST(configer.facesize, 'test')
+        testsets = RGBECUST(configer.facesize, 'test')
     testloader = DataLoader(testsets, batch_size)
 
     model, modelpath = init_model()
