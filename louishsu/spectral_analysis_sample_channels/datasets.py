@@ -142,7 +142,7 @@ def getBbox(imgpath):
 
 def getDicts():
     dicts = dict()
-    for vol in ["DATA%d" % _ for _ in range(1, 5)]:
+    for vol in ["DATA%d" % _ for _ in range(1, 8)]:
         txtfile = os.path.join(configer.datapath, vol, "detect.txt")
         with open(txtfile, 'r') as f:
             dicts[vol] = eval(f.read())
@@ -422,7 +422,7 @@ def splitDatasets_Multi_23channels():
     n_train_per_sample = 6
     filename = "DATA{}/{}/Multi/{}/Multi_{}_W1_{}"
     obtypes = ["non-obtructive", "obtructive/ob1", "obtructive/ob2"]
-    subidx  = [i for i in range(1, 41)]
+    subidx  = [i for i in range(1, 64)]
     posidx  = [i for i in range(1, 8)]
     sessidx = [i for i in range(1, 7)]
 
@@ -569,12 +569,12 @@ if __name__ == "__main__":
     # splitDatasets_Multi_46channels(46, 0.6, 0.2, 0.2)
     # gen_test_txt_pos4()
 
-    from torch.utils.data import DataLoader
-    trainloader = DataLoader(HyperECUST(configer.splitmode, (64, 64), mode='test'))
-    for i_batch, (X, y) in enumerate(trainloader):
-        X = (X[0, 0, :, :].numpy()*255).astype('uint8')
-        cv2.imshow("", X)
-        cv2.waitKey(0)
+    # from torch.utils.data import DataLoader
+    # trainloader = DataLoader(HyperECUST(configer.splitmode, (64, 64), mode='test'))
+    # for i_batch, (X, y) in enumerate(trainloader):
+    #     X = (X[0, 0, :, :].numpy()*255).astype('uint8')
+    #     cv2.imshow("", X)
+    #     cv2.waitKey(0)
 
 
-    # splitDatasets_Multi_23channels()
+    splitDatasets_Multi_23channels()

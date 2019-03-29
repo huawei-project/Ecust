@@ -52,7 +52,7 @@ def resizeMulti(image, dsize):
 
 def getDicts():
     dicts = dict()
-    for vol in ["DATA%d" % _ for _ in range(1, 5)]:
+    for vol in ["DATA%d" % _ for _ in range(1, 8)]:
         txtfile = os.path.join(configer.datapath, vol, "detect.txt")
         with open(txtfile, 'r') as f:
             dicts[vol] = eval(f.read())
@@ -63,7 +63,7 @@ def gen_Multi_split(train=0.6, valid=0.2, test=0.2):
 
     FILENAME = "DATA{}/{}/Multi/{}/Multi_{}_W1_{}"
     obtypes = ["non-obtructive", "obtructive/ob1", "obtructive/ob2"]
-    subidx  = [i for i in range(1, 41)]
+    subidx  = [i for i in range(1, 64)]
     posidx  = [i for i in range(1,  8)]
     sessidx = [i for i in range(1,  10)]
 
@@ -122,7 +122,7 @@ def gen_Multi_split(train=0.6, valid=0.2, test=0.2):
     ftrain.close(); fvalid.close(); ftest.close()
 
 
-def gen_RGB_split(splitmode):
+def gen_RGB_split():
     """ 根据已划分的多光谱数据集产生RGB数据集
     """
     def multi2rgb(path):
@@ -135,6 +135,7 @@ def gen_RGB_split(splitmode):
         return path
 
     dicts = getDicts()
+    splitmode = configer.splitmode
 
     for mode in ['train', 'valid', 'test']:
         txtfile = "./split/{}/{}.txt".format(splitmode, mode)
@@ -249,8 +250,8 @@ class RGBECUST(Dataset):
         return len(self.filenames)
 
 if __name__ == "__main__":
-    # gen_Multi_split(0.6, 0.1, 0.3)
-    gen_RGB_split('split_1')
+    gen_Multi_split(0.6, 0.1, 0.3)
+    gen_RGB_split()
 
 
     # D = HyperECUST((64, 64), 'train')

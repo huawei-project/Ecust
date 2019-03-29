@@ -3,10 +3,11 @@ from easydict import EasyDict
 configer = EasyDict()
 
 configer.datapath = "/datasets/ECUST2019"
+configer.datapath = "/home/louishsu/Work/Workspace/ECUST2019"
 configer.logspath = "/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs"
 configer.mdlspath = "/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles"
 
-configer.splitmode  = 'split_5'
+configer.splitmode  = 'split_10'
 
 configer.facesize   = (64, 64)
 configer.n_channels = 1

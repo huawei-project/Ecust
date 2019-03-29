@@ -3,7 +3,7 @@ from easydict import EasyDict
 
 configer = EasyDict()
 configer.datapath = "/datasets/ECUST2019"
-# configer.datapath = "/home/louishsu/Work/Workspace/ECUST2019"
+configer.datapath = "/home/louishsu/Work/Workspace/ECUST2019"
 configer.logspath = "/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs"
 configer.mdlspath = "/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles"
 
@@ -12,7 +12,7 @@ configer.n_channels     = 46
 configer.n_classes      = 40
 
 configer.trainmode = 'RGB'
-configer.splitmode = 'split_1'
+configer.splitmode = 'split_2'
 configer.modelbase = "recognize_vgg11"
 
 
