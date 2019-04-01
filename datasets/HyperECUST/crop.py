@@ -64,8 +64,8 @@ for subject in subjects:
                             image = image[y1: y2, x1:x2]
                             image = cv2.resize(image, (dsize, dsize))
 
-                            dstdir = '/'.join(dstfile.split('/')[:-1])
-                            os.makedirs(dstdir)
+                            _dstdir = '/'.join(dstfile.split('/')[:-1])
+                            os.makedirs(_dstdir)
                             cv2.imwrite(dstfile, image)
 
                     else:
