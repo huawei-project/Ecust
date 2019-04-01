@@ -7,7 +7,7 @@ import numpy
 
 # 修改以下即可
 dsize = 64
-srcdir = '/home/louishsu/Work/Workspace/ECUST2019'
+srcdir = '/home/louishsu/Work/Workspace/ECUST2019_rename'
 dstdir = '/home/louishsu/Work/Workspace/ECUST2019_{}x{}'.format(dsize, dsize)
 if not os.path.exists(dstdir): os.makedirs(dstdir)
 
