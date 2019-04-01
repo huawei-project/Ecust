@@ -34,7 +34,6 @@ for subject in subjects:
         dict = eval(f.read())
 
     for imgtype in imgtypes:
-        if imgtype == 'Multi': continue
 
         for light in lights:
             
