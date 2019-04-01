@@ -11,14 +11,14 @@ configer.facesize       = (64, 64)
 configer.n_channels     = 46
 configer.n_classes      = 40
 
-configer.trainmode = 'RGB'
-configer.splitmode = 'split_2'
+configer.trainmode = 'Multi'
+configer.splitmode = 'split_1'
 configer.modelbase = "recognize_vgg11"
 
 
 
 if configer.trainmode == 'Multi':
-    configer.usedChannels    = [550]
+    configer.usedChannels    = [550+i*20 for i in range(23)]
     configer.n_usedChannels = len(configer.usedChannels)
     configer.modelname = "{}_{}_{}chs_{}sta_20nm".\
                 format(configer.modelbase, configer.splitmode, configer.n_usedChannels, configer.usedChannels[0])
