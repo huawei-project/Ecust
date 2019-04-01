@@ -23,20 +23,20 @@ if configer.trainmode == 'Multi':
     configer.modelname = "{}_{}_{}chs_{}sta_20nm".\
                 format(configer.modelbase, configer.splitmode, configer.n_usedChannels, configer.usedChannels[0])
 elif configer.trainmode == 'RGB':
-    configer.usedRGBChannels = 'R'
-    configer.n_usedChannels = 1
+    configer.usedRGBChannels = 'RGB'
+    configer.n_usedChannels = 3
     configer.modelname = '{}_{}_{}'.\
                 format(configer.modelbase, configer.splitmode, configer.usedRGBChannels)
 
 
 
 configer.lossname  = 'crossent'
-configer.learningrate  = 0.005
+configer.learningrate  = 0.001
 configer.batchsize     = 64
 configer.n_epoch       = 350
 
 configer.stepsize   = 250
-configer.gamma      = 0.1
+configer.gamma      = 0.2
 
 configer.cuda = is_available()
 
