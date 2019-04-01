@@ -34,6 +34,8 @@ for subject in subjects:
         dict = eval(f.read())
 
     for imgtype in imgtypes:
+        if imgtype == 'Multi': continue
+
         for light in lights:
             
             for position in positions:
@@ -62,6 +64,9 @@ for subject in subjects:
 
                             image = image[y1: y2, x1:x2]
                             image = cv2.resize(image, (dsize, dsize))
+
+                            dstdir = '/'.join(dstfile.split('/')[:-1])
+                            os.makedirs(dstdir)
                             cv2.imwrite(dstfile, image)
 
                     else:
