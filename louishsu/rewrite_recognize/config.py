@@ -27,8 +27,8 @@ elif configer.datatype == 'RGB':
 
 configer.datapath = '/home/louishsu/Work/Workspace/ECUST2019_{}x{}'.\
                                 format(configer.dsize[0], configer.dsize[1])
-configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs'
-configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles'
+configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/recognize'
+configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/recognize'
 
 
 ## training step
