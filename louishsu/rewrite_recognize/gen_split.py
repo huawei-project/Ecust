@@ -79,6 +79,7 @@ def gen_RGB_split(datapath, splitmode):
         with open(txtfile, 'r') as f:
             filenames = f.readlines()
         filenames = [multi2rgb(filename) for filename in filenames]
+        filenames = [filename for filename in filenames if os.path.exists(os.path.join('/'.join(datapath.split('/')[:-1]), filename.strip())+'.JPG')]
         txtfile = "./split/{}/{}_rgb.txt".format(splitmode, mode)
         with open(txtfile, 'w') as f:
             f.writelines(filenames)
