@@ -19,4 +19,4 @@ class RecognizeDataset(Dataset):
             pass
         
         if type == 'RGB'
-        
+            pass
