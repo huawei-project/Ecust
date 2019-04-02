@@ -15,5 +15,8 @@ class RecognizeDataset(Dataset):
             type:   {str} 'Multi', 'RGB'
             mode:   {str} 'train', 'valid', 'test'
         """
-
+        if type == 'Multi':
+            pass
+        
+        if type == 'RGB'
         
