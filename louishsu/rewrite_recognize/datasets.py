@@ -49,12 +49,10 @@ class RecognizeDataset(Dataset):
 
 
         elif type == 'RGB':
-            path += '.JPG'
-            image = cv2.imread(path, cv2.IMREAD_ANYCOLOR)   # BGR
+            image = cv2.imread(path + '.JPG', cv2.IMREAD_ANYCOLOR)   # BGR
             
             if usedChannels == 'RGB':
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            
             else:
                 b, g, r = cv2.split(image)
                 b = b[:, :, np.newaxis]; g = g[:, :, np.newaxis]; r = r[:, :, np.newaxis]
@@ -78,8 +76,9 @@ class RecognizeDataset(Dataset):
         return len(self.samplelist)
 
 if __name__ == "__main__":
-    # D = RecognizeDataset('/home/louishsu/Work/Workspace/ECUST2019_64x64', 'Multi', 'split_64x64_1', 'train', [550, 570])
-    D = RecognizeDataset('/home/louishsu/Work/Workspace/ECUST2019_64x64', 'RGB', 'split_64x64_1', 'train', 'RGB')
+    D = RecognizeDataset('/home/louishsu/Work/Workspace/ECUST2019_64x64', 'Multi', 'split_64x64_1', 'train', [550, 570])
+    # D = RecognizeDataset('/home/louishsu/Work/Workspace/ECUST2019_64x64', 'RGB', 'split_64x64_1', 'train', 'RGB')
     for i in range(len(D)):
         X, y = D[i]
+        print(i)
 
