@@ -9,16 +9,32 @@ from utiles import getWavelen, getLabel
 
 class RecognizeDataset(Dataset):
     """ 识别数据集
+
+    Attributes:
+        labels:     {list[int]} label of subjects
+        samplelist: {list[list[tensor(C, H, W), int]]}
+        
+    Example:
+        ```
+        from torch.utils.data import DataLoader
+
+        trainset = RecognizeDataset('/datasets/ECUST2019_64x64', 'Multi', 'split_64x64_1', 'train', [550+i*20 for i in range(23)])
+        trainloader = DataLoader(trainsets, batch_size, shuffle=True)
+
+        for i, (X, y) in enumerate(trainloader):
+            X = X.cuda(); y = y.cuda()
+            
+        ```
     """
     labels = [i+1 for i in range(63)]
     
     def __init__(self, datapath, type, splitmode, mode, usedChannels):
         """
         Params:
-            datapath{str} 'xxxx/ECUST2019_xxx'
-            type:   {str} 'Multi', 'RGB'
-            splitmode{str}
-            mode:   {str} 'train', 'valid', 'test'
+            datapath    {str} 'xxxx/ECUST2019_xxx'
+            type:       {str} 'Multi', 'RGB'
+            splitmode:  {str} 
+            mode:       {str} 'train', 'valid', 'test'
         """
         if type == 'Multi':
             txtfile = './split/{}/{}.txt'.format(splitmode, mode)
@@ -34,7 +50,11 @@ class RecognizeDataset(Dataset):
     def __load_image(self, path, type, usedChannels):
         """
         Params:
+            path:   {str} 
             type:   {str} 'Multi', 'RGB'
+            usedChannels:   {list[int] / str}
+        Returns:
+            image:  {tensor(C, H, W)}
         """
 
         if type == 'Multi':
@@ -67,18 +87,23 @@ class RecognizeDataset(Dataset):
         return image
     
     def __getitem__(self, index):
+        """
+        Params:
+            index:  {int} index of sample
+        Returns:
+            image:  {tensor(C, H, W)}
+            label:  {int}
+        """
 
         image, label = self.samplelist[index]
         return image, label
 
     def __len__(self):
+        """
+        Returns:
+            length: {int} number of samples
+        """
         
         return len(self.samplelist)
 
-if __name__ == "__main__":
-    D = RecognizeDataset('/home/louishsu/Work/Workspace/ECUST2019_64x64', 'Multi', 'split_64x64_1', 'train', [550, 570])
-    # D = RecognizeDataset('/home/louishsu/Work/Workspace/ECUST2019_64x64', 'RGB', 'split_64x64_1', 'train', 'RGB')
-    for i in range(len(D)):
-        X, y = D[i]
-        print(i)
 
