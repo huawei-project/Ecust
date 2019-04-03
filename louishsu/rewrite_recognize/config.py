@@ -25,19 +25,19 @@ elif configer.datatype == 'RGB':
                     format(configer.modelbase, configer.splitmode, configer.usedChannels)
 
 
-configer.datapath = '/home/louishsu/Work/Workspace/ECUST2019_{}x{}'.\
+configer.datapath = '/datasets/ECUST2019_{}x{}'.\
                                 format(configer.dsize[0], configer.dsize[1])
-configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/recognize'
-configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/recognize'
+configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/recognize_vgg11_split_1_63subjects'
+configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/recognize_vgg11_split_1_63subjects'
 
 
 ## training step
 configer.batchsize = 64
-configer.n_epoch   = 250
+configer.n_epoch   = 350    # 300 for multi, 350 for rgb
 
 ## learing rate
-configer.lrbase = 0.005
-configer.stepsize = 200
-configer.gamma = 0.1
+configer.lrbase = 0.0005    # 0.001 for multi, 0.0005 for rgb
+configer.stepsize = 250
+configer.gamma = 0.2
 
 configer.cuda = True
