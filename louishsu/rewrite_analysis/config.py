@@ -24,9 +24,11 @@ configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/ana
 
 ## training step
 configer.batchsize = 64
-configer.n_epoch   = 350
+configer.n_epoch   = 300
 
 ## learing rate
-configer.lrbase = 0.005
+configer.lrbase = 0.001
 configer.stepsize = 250
-configer.gamma = 0.1
+configer.gamma = 0.2
+
+configer.cuda = True
