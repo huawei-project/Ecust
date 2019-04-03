@@ -1,0 +1,16 @@
+/31/RGB/obtructive/ob1/RGB_1_W1_1
+/31/RGB/obtructive/ob1/RGB_2_W1_1
+/31/RGB/obtructive/ob1/RGB_3_W1_1
+/31/RGB/obtructive/ob1/RGB_4_W1_1
+/31/RGB/obtructive/ob2/RGB_1_W1_1
+/32/RGB/obtructive/ob1/RGB_1_W1_1
+/32/RGB/obtructive/ob1/RGB_2_W1_1
+/32/RGB/obtructive/ob1/RGB_3_W1_1
+/32/RGB/obtructive/ob2/RGB_2_W1_1
+/33/RGB/obtructive/ob1/RGB_1_W1_1
+/33/RGB/obtructive/ob1/RGB_2_W1_1
+/33/RGB/obtructive/ob1/RGB_3_W1_1
+/34/RGB/obtructive/ob2/RGB_4_W1_1
+/38/RGB/obtructive/ob2/RGB_4_W1_3
+/39/RGB/obtructive/ob2/RGB_1_W1_1
+/39/RGB/obtructive/ob2/RGB_3_W1_1
