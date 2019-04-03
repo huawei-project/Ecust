@@ -7,7 +7,7 @@ def main():
     #     train()
     # elif mode == 'test':
     #     test()
-    train()
+    # train()
     test()
     
 if __name__ == "__main__":
