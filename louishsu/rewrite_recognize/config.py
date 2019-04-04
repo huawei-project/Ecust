@@ -27,18 +27,18 @@ elif configer.datatype == 'RGB':
 
 configer.datapath = '/datasets/ECUST2019_{}x{}'.\
                                 format(configer.dsize[0], configer.dsize[1])
-configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/{}_{}_{}subjects'.\
+configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/{}_{}_{}subjects_logs'.\
                                 format(configer.modelbase, configer.splitmode, configer.n_class)
-configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_{}_{}subjects'.\
+configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_{}_{}subjects_models'.\
                                 format(configer.modelbase, configer.splitmode, configer.n_class)
 
 
 ## training step
 configer.batchsize = 64
-configer.n_epoch   = 350    # 300 for multi, 350 for rgb
+configer.n_epoch   = 300    # 300 for multi, 350 for rgb
 
 ## learing rate
-configer.lrbase = 0.0005    # 0.001 for multi, 0.0005 for rgb
+configer.lrbase = 0.001     # 0.001 for multi, 0.0005 for rgb
 configer.stepsize = 250
 configer.gamma = 0.2
 
