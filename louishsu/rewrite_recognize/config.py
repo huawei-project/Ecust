@@ -8,7 +8,7 @@ configer.n_channel = 23
 configer.n_class = 63
 
 
-configer.splitmode = 'split_{}x{}_1'.format(configer.dsize[0], configer.dsize[1])
+configer.splitmode = 'split_{}x{}_2'.format(configer.dsize[0], configer.dsize[1])
 configer.modelbase = 'recognize_vgg11_bn'
 
 
@@ -27,8 +27,10 @@ elif configer.datatype == 'RGB':
 
 configer.datapath = '/datasets/ECUST2019_{}x{}'.\
                                 format(configer.dsize[0], configer.dsize[1])
-configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/recognize_vgg11_split_1_63subjects'
-configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/recognize_vgg11_split_1_63subjects'
+configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/{}_{}_{}subjects'.\
+                                format(configer.modelbase, configer.splitmode, configer.n_class)
+configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_{}_{}subjects'.\
+                                format(configer.modelbase, configer.splitmode, configer.n_class)
 
 
 ## training step
