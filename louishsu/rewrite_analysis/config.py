@@ -15,19 +15,19 @@ configer.modelname = '{}_{}'.\
                     format(configer.modelbase, configer.splitmode)
 
 
-configer.datapath = '/home/louishsu/Work/Workspace/ECUST2019_{}x{}'.\
+configer.datapath = '/datasets/ECUST2019_{}x{}'.\
                                 format(configer.dsize[0], configer.dsize[1])
 configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/{}_logs'.format(configer.modelname)
 configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_models'.format(configer.modelname)
 
 
 ## training step
-configer.batchsize = 64
-configer.n_epoch   = 300
+configer.batchsize = 128
+configer.n_epoch   = 35
 
 ## learing rate
 configer.lrbase = 0.001
-configer.stepsize = 250
-configer.gamma = 0.2
+configer.stepsize = 20
+configer.gamma = 0.1
 
 configer.cuda = True
