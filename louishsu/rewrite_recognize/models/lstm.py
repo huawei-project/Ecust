@@ -2,6 +2,40 @@ import math
 import torch
 import torch.nn as nn
 
+class BaseConv(nn.Module):
+    def __init__(self, in_channels, n_classes, input_size):
+        super(BaseConv, self).__init__()
+
+        self.features = nn.Sequential(
+            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(32), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(64), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(128), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
+        )
+        self.classifier = nn.Sequential(
+            nn.Linear(128, 64),
+            nn.ReLU(True),
+            nn.Dropout(),
+            nn.Linear(64, n_classes),
+        )
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.shape[0], -1)
+        x = self.classifier(x)
+        return x
+
 class ConvLSTM(nn.Module):
     """ LSTM 
     Notes:
@@ -16,7 +50,7 @@ class ConvLSTM(nn.Module):
             H_t = o_t·tanh(C_t)
     """
 
-    def __init__(self, in_channels, n_classes, input_size, n_times, base_model, isforward=True):
+    def __init__(self, in_channels, n_classes, input_size, n_times, isforward=True):
         super(ConvLSTM, self).__init__()
         
         self.in_channels = in_channels
@@ -25,16 +59,16 @@ class ConvLSTM(nn.Module):
         self.isforward     = isforward
 
         # 遗忘门
-        self.Mxf = base_model(in_channels, n_classes)
+        self.Mxf = BaseConv(in_channels, n_classes, input_size)
         self.Lhf = nn.Linear (  n_classes, n_classes)
         # 输入门
-        self.Mxi = base_model(in_channels, n_classes)
+        self.Mxi = BaseConv(in_channels, n_classes, input_size)
         self.Lhi = nn.Linear (  n_classes, n_classes)
         # 状态
-        self.Mxc = base_model(in_channels, n_classes)
+        self.Mxc = BaseConv(in_channels, n_classes, input_size)
         self.Lhc = nn.Linear (  n_classes, n_classes)
         # 输出门
-        self.Mxo = base_model(in_channels, n_classes)
+        self.Mxo = BaseConv(in_channels, n_classes, input_size)
         self.Lho = nn.Linear (  n_classes, n_classes)
 
         self.sigmoid = nn.Sigmoid()
@@ -59,7 +93,7 @@ class ConvLSTM(nn.Module):
 
         for t in range(self.n_times):
             idx = t if self.isforward else (self.n_times-t-1)
-            x_t = x[:, idx]
+            x_t = x[:, idx].unsqueeze(1)
             f_t = self.sigmoid(self.Mxf(x_t) + self.Lhf(h_0))
             i_t = self.sigmoid(self.Mxi(x_t) + self.Lhi(h_0))
             c_t = self.tanh   (self.Mxc(x_t) + self.Lhc(h_0))
@@ -71,14 +105,14 @@ class ConvLSTM(nn.Module):
         return h_t
 
 class BiConvLSTM(nn.Module):
-    def __init__(self, in_channels, n_classes, input_size, n_times, base_model):
+    def __init__(self, in_channels, n_classes, input_size, n_times):
         super(BiConvLSTM, self).__init__()
 
         self.n_classes = n_classes
         self.n_times   = n_times
 
-        self.f_cell = ConvLSTM(in_channels, n_classes, input_size, n_times, base_model, True )
-        self.b_cell = ConvLSTM(in_channels, n_classes, input_size, n_times, base_model, False)
+        self.f_cell = ConvLSTM(in_channels, n_classes, input_size, n_times, True )
+        self.b_cell = ConvLSTM(in_channels, n_classes, input_size, n_times, False)
         self.linear = nn.Linear(n_classes*2, n_classes)
 
     def forward(self, x, h_0=None, C_0=None):
