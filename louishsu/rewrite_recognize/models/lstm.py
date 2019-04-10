@@ -2,11 +2,17 @@ import math
 import torch
 import torch.nn as nn
 
+class Flatten(nn.Module):
+    def __init__(self):
+        super(Flatten, self).__init__()
+    def forward(self, x):
+        return x.view(x.shape[0], -1)
+
 class BaseConv(nn.Module):
     def __init__(self, in_channels, n_classes, input_size):
         super(BaseConv, self).__init__()
 
-        self.features = nn.Sequential(
+        self.net = nn.Sequential(
             nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
             nn.BatchNorm2d(32), 
             nn.ReLU(inplace=True),
@@ -23,17 +29,16 @@ class BaseConv(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
-        )
-        self.classifier = nn.Sequential(
+            Flatten(),
+
             nn.Linear(128, 64),
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(64, n_classes),
         )
+
     def forward(self, x):
-        x = self.features(x)
-        x = x.view(x.shape[0], -1)
-        x = self.classifier(x)
+        x = self.net(x)
         return x
 
 class ConvLSTM(nn.Module):
@@ -103,6 +108,12 @@ class ConvLSTM(nn.Module):
             h_0 = h_t; C_0 = C_t
 
         return h_t
+    
+    def cuda(self):
+        for m in self.children():
+            if isinstance(m, BaseConv):
+                BaseConv.cuda()
+        return self._apply(lambda t: t.cuda(device))
 
 class BiConvLSTM(nn.Module):
     def __init__(self, in_channels, n_classes, input_size, n_times):
