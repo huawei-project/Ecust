@@ -8,39 +8,6 @@ class Flatten(nn.Module):
     def forward(self, x):
         return x.view(x.shape[0], -1)
 
-class BaseConv(nn.Module):
-    def __init__(self, in_channels, n_classes, input_size):
-        super(BaseConv, self).__init__()
-
-        self.net = nn.Sequential(
-            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(32), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(64), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(128), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
-            Flatten(),
-
-            nn.Linear(128, 64),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(64, n_classes),
-        )
-
-    def forward(self, x):
-        x = self.net(x)
-        return x
-
 class ConvLSTM(nn.Module):
     """ LSTM 
     Notes:
@@ -64,16 +31,108 @@ class ConvLSTM(nn.Module):
         self.isforward     = isforward
 
         # 遗忘门
-        self.Mxf = BaseConv(in_channels, n_classes, input_size)
+        self.Mxf = nn.Sequential(
+            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(32), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(64), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(128), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
+            Flatten(),
+
+            nn.Linear(128, 64),
+            nn.ReLU(True),
+            nn.Dropout(),
+            nn.Linear(64, n_classes),
+        )
         self.Lhf = nn.Linear (  n_classes, n_classes)
         # 输入门
-        self.Mxi = BaseConv(in_channels, n_classes, input_size)
+        self.Mxi = nn.Sequential(
+            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(32), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(64), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(128), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
+            Flatten(),
+
+            nn.Linear(128, 64),
+            nn.ReLU(True),
+            nn.Dropout(),
+            nn.Linear(64, n_classes),
+        )
         self.Lhi = nn.Linear (  n_classes, n_classes)
         # 状态
-        self.Mxc = BaseConv(in_channels, n_classes, input_size)
+        self.Mxc = nn.Sequential(
+            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(32), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(64), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(128), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
+            Flatten(),
+
+            nn.Linear(128, 64),
+            nn.ReLU(True),
+            nn.Dropout(),
+            nn.Linear(64, n_classes),
+        )
         self.Lhc = nn.Linear (  n_classes, n_classes)
         # 输出门
-        self.Mxo = BaseConv(in_channels, n_classes, input_size)
+        self.Mxo = nn.Sequential(
+            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(32), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(64), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(128), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
+            Flatten(),
+
+            nn.Linear(128, 64),
+            nn.ReLU(True),
+            nn.Dropout(),
+            nn.Linear(64, n_classes),
+        )
         self.Lho = nn.Linear (  n_classes, n_classes)
 
         self.sigmoid = nn.Sigmoid()
@@ -108,12 +167,6 @@ class ConvLSTM(nn.Module):
             h_0 = h_t; C_0 = C_t
 
         return h_t
-    
-    def cuda(self, device=None):
-        for m in self.children():
-            if isinstance(m, BaseConv):
-                m.cuda(device)
-        return self._apply(lambda t: t.cuda(device))
 
 class BiConvLSTM(nn.Module):
     def __init__(self, in_channels, n_classes, input_size, n_times):
