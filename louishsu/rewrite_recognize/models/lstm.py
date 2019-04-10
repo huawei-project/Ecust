@@ -93,8 +93,10 @@ class ConvLSTM(nn.Module):
 
         if h_0 is None:
             h_0 = torch.zeros([N, self.n_classes])
+            if torch.cuda.is_available(): h_0 = h_0.cuda()
         if C_0 is None:
             C_0 = torch.zeros([N, self.n_classes])
+            if torch.cuda.is_available(): C_0 = C_0.cuda()
 
         for t in range(self.n_times):
             idx = t if self.isforward else (self.n_times-t-1)
@@ -108,12 +110,6 @@ class ConvLSTM(nn.Module):
             h_0 = h_t; C_0 = C_t
 
         return h_t
-    
-    def cuda(self, device=None):
-        for m in self.children():
-            if isinstance(m, BaseConv):
-                m.cuda(device)
-        return self._apply(lambda t: t.cuda(device))
 
 class BiConvLSTM(nn.Module):
     def __init__(self, in_channels, n_classes, input_size, n_times):
