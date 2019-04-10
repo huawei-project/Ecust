@@ -21,12 +21,11 @@ def train(configer):
     trainset = AnalysisDataset(configer.datapath, configer.splitmode, 'train')
     validset = AnalysisDataset(configer.datapath, configer.splitmode, 'valid')
     trainloader = DataLoader(trainset, configer.batchsize, shuffle=True)
-    validloader = DataLoader(validset, configer.batchsize, shuffle=False)
+    validloader = DataLoader(validset, configer.batchsize, shuffle=True)
 
     ## model
     modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
-    modeldir  = '/'.join(modelpath.split('/')[:-1])
-    if not os.path.exists(modeldir): os.makedirs(modeldir)
+    if not os.path.exists(configer.mdlspath): os.makedirs(configer.mdlspath)
     model = modeldict[configer.modelbase](1, configer.n_class, configer.dsize[0])
     if configer.cuda and is_available(): model.cuda()
 
@@ -35,7 +34,7 @@ def train(configer):
 
     ## optimizer
     params = model.parameters()
-    optimizer = optim.Adam(params, configer.lrbase, weight_decay=1e-3)
+    optimizer = optim.Adam(params, configer.lrbase, weight_decay=5e-4)
 
     ## learning rate scheduler
     scheduler = lr_scheduler.StepLR(optimizer, configer.stepsize, configer.gamma)
