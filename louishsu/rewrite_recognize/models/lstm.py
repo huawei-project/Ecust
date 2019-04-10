@@ -31,112 +31,46 @@ class ConvLSTM(nn.Module):
         self.isforward     = isforward
 
         # 遗忘门
-        self.Mxf = nn.Sequential(
-            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(32), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(64), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(128), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
-            Flatten(),
-
-            nn.Linear(128, 64),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(64, n_classes),
-        )
+        self.Mxf = self.base()
         self.Lhf = nn.Linear (  n_classes, n_classes)
         # 输入门
-        self.Mxi = nn.Sequential(
-            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(32), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(64), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(128), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
-            Flatten(),
-
-            nn.Linear(128, 64),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(64, n_classes),
-        )
+        self.Mxi = self.base()
         self.Lhi = nn.Linear (  n_classes, n_classes)
         # 状态
-        self.Mxc = nn.Sequential(
-            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(32), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(64), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(128), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
-            Flatten(),
-
-            nn.Linear(128, 64),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(64, n_classes),
-        )
+        self.Mxc = self.base()
         self.Lhc = nn.Linear (  n_classes, n_classes)
         # 输出门
-        self.Mxo = nn.Sequential(
-            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(32), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(64), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
-            nn.BatchNorm2d(128), 
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
-            Flatten(),
-
-            nn.Linear(128, 64),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(64, n_classes),
-        )
+        self.Mxo = self.base()
         self.Lho = nn.Linear (  n_classes, n_classes)
 
         self.sigmoid = nn.Sigmoid()
         self.tanh    = nn.Tanh()
+    
+    def base(self):
+        return nn.Sequential(
+            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(32), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(64), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(128), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
+            Flatten(),
+
+            nn.Linear(128, 64),
+            nn.ReLU(True),
+            nn.Dropout(),
+            nn.Linear(64, n_classes),
+        )
 
     def forward(self, x, h_0=None, C_0=None):
         """
@@ -152,8 +86,10 @@ class ConvLSTM(nn.Module):
 
         if h_0 is None:
             h_0 = torch.zeros([N, self.n_classes])
+            if torch.cuda.is_available(): h_0 = h_0.cuda()
         if C_0 is None:
             C_0 = torch.zeros([N, self.n_classes])
+            if torch.cuda.is_available(): h_0 = h_0.cuda()
 
         for t in range(self.n_times):
             idx = t if self.isforward else (self.n_times-t-1)
