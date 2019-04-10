@@ -26,8 +26,7 @@ elif configer.datatype == 'RGB':
                     format(configer.modelbase, configer.splitmode, configer.usedChannels)
 
 
-# configer.datapath = '/datasets/ECUST2019_{}x{}'.\
-configer.datapath = '/home/louishsu/Work/Workspace/ECUST2019_{}x{}'.\
+configer.datapath = '/datasets/ECUST2019_{}x{}'.\
                                 format(configer.dsize[0], configer.dsize[1])
 configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/{}_{}_{}subjects_logs'.\
                                 format(configer.modelbase, configer.splitmode, configer.n_class)
