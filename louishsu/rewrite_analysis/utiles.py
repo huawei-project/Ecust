@@ -8,6 +8,13 @@ getVol      = lambda subidx: (subidx - 1) // 10 + 1
 getWavelen  = lambda path: int(path.split('.')[0].split('_')[-1])
 getLabel    = lambda path: int(path[path.find('DATA') + len('DATAx/'):].split('/')[0])
 
+def get_labels_from_pathlist(pathlist):
+    labels = []
+    for path in pathlist:
+        label = getLabel(path)
+        labels += [label]
+    return labels
+
 def getDicts(datapath):
     dicts = dict()
     for vol in ["DATA%d" % _ for _ in range(1, 8)]:

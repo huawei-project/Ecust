@@ -1,11 +1,9 @@
-"""
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 
 from config import configer
-from utiles import get_labels_from_pathlist, get_label_from_path
-from datasets import notUsedSubjects, get_wavelen, get_vol, load_multi, getDicts
+from utiles import get_labels_from_pathlist, getLabel, getWavelen, getVol, getDicts
 
 softmax = lambda x: np.exp(x) / np.sum(np.exp(x))
 
@@ -44,19 +42,16 @@ def get_sub_filenames(filenames, substr=None):
 
 def analysis(subset=None):
     # get test files and labels
-    txtfile = './split_23chs/{}/test.txt'.format(configer.splitmode)
+    txtfile = './split/{}/test.txt'.format(configer.splitmode)
     with open(txtfile, 'r') as f:
         testfiles = f.readlines()
-    testfiles = ['ECUST2019/' + f for f in testfiles]
 
     testfiles_sub, indexes_sub = get_sub_filenames(testfiles, subset)
     labels = get_labels_from_pathlist(testfiles_sub)
-    used = [i for i in range(1, 41) if (i not in notUsedSubjects)]
-    labels = [used.index(i) for i in labels]
+    labels = [i-1 for i in labels]
 
     # get test outputs
-    npyfile = os.path.join(configer.logspath, configer.modelname, 
-                    'test_output_{}.npy'.format(configer.splitmode))
+    npyfile = os.path.join(configer.logspath, configer.modelname, 'test_out.npy')
     testout = np.load(npyfile)
     for i in range(testout.shape[0]):              
         testout[i] = softmax(testout[i])
@@ -75,7 +70,7 @@ def analysis(subset=None):
     # WaveLen = [550 + 10*i for i in range(C)]
     # for c in range(C):
     #     for n in range(N):
-    #         if (WaveLen[c] == get_wavelen(testfiles_sub[n])):
+    #         if (WaveLen[c] == getWavelen(testfiles_sub[n])):
     #             testout_sub_ch[n, c] = testout_sub[n]
 
 
@@ -92,9 +87,9 @@ def analysis(subset=None):
         for n in range(N):
             testfile = testfiles_sub[n]
             testout  = list(testout_sub[n])
-            idxch    = WAVELEN.index(get_wavelen(testfile))
+            idxch    = WAVELEN.index(getWavelen(testfile))
             if idxch == c:                                          # 对应波长
-                y_true += [used.index(get_label_from_path(testfile))]
+                y_true += [getLabel(testfile)-1]
                 y_pred_prob += [testout]
 
 
@@ -121,9 +116,9 @@ def analysis(subset=None):
 
 
     subset = 'all' if subset is None else subset
-    npyfile = os.path.join(configer.logspath, configer.modelname, 'test_output_{}_{}_auc.npy'.format(configer.splitmode, subset))
+    npyfile = os.path.join(configer.logspath, configer.modelname, 'analy_{}_auc.npy'.format(subset))
     np.save(npyfile, auc_scores)
-    npyfile = os.path.join(configer.logspath, configer.modelname, 'test_output_{}_{}_acc.npy'.format(configer.splitmode, subset))
+    npyfile = os.path.join(configer.logspath, configer.modelname, 'analy_{}_acc.npy'.format(subset))
     np.save(npyfile, acc_scores)
 
     plt.figure("testout_sub_{}_auc".format(subset))
@@ -131,7 +126,7 @@ def analysis(subset=None):
     plt.figure("testout_sub_{}_acc".format(subset))
     plt.bar(np.arange(C),  acc_scores, alpha=0.9, width=0.35, facecolor='lightblue', edgecolor='white')
     
-    plt.show()
+    # plt.show()
 
 
 
@@ -167,7 +162,7 @@ def analysis_pos4(subset=None):
         for n in range(N):
             testfile = testfiles_sub[n]
             testout  = list(testout_sub[n])
-            idxch    = WAVELEN.index(get_wavelen(testfile))
+            idxch    = WAVELEN.index(getWavelen(testfile))
             if idxch == c:                                          # 对应波长
                 y_true += [used.index(get_label_from_path(testfile))]
                 y_pred_prob += [testout]
@@ -317,9 +312,9 @@ def analysis_similarity(subset=None, mode='euc'):
 
 if __name__ == "__main__":
     analysis()
-    analysis('non-obtructive')
-    analysis('ob1')
-    analysis('ob2')
+    analysis('normal')
+    analysis('illum1')
+    analysis('illum2')
 
     # analysis_pos4()
     # analysis_pos4('non-obtructive')
@@ -330,4 +325,3 @@ if __name__ == "__main__":
     # analysis_position('non-obtructive')
     # analysis_position('ob1')
     # analysis_position('ob2')
-"""
