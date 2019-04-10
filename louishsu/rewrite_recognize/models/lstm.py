@@ -109,10 +109,10 @@ class ConvLSTM(nn.Module):
 
         return h_t
     
-    def cuda(self):
+    def cuda(self, device=None):
         for m in self.children():
             if isinstance(m, BaseConv):
-                m.cuda()
+                m.cuda(device)
         return self._apply(lambda t: t.cuda(device))
 
 class BiConvLSTM(nn.Module):
