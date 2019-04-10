@@ -17,8 +17,8 @@ configer.modelname = '{}_{}'.\
 
 configer.datapath = '/datasets/ECUST2019_{}x{}'.\
                                 format(configer.dsize[0], configer.dsize[1])
-configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/{}_logs'.format(configer.modelname)
-configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_models'.format(configer.modelname)
+configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/{}_{}subjects_logs'.format(configer.modelname, configer.n_class)
+configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_{}subjects_models'.format(configer.modelname, configer.n_class)
 
 
 ## training step
