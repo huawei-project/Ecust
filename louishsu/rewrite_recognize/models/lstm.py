@@ -31,22 +31,22 @@ class ConvLSTM(nn.Module):
         self.isforward     = isforward
 
         # 遗忘门
-        self.Mxf = self.base()
+        self.Mxf = self.base(in_channels, n_classes, input_size)
         self.Lhf = nn.Linear (  n_classes, n_classes)
         # 输入门
-        self.Mxi = self.base()
+        self.Mxi = self.base(in_channels, n_classes, input_size)
         self.Lhi = nn.Linear (  n_classes, n_classes)
         # 状态
-        self.Mxc = self.base()
+        self.Mxc = self.base(in_channels, n_classes, input_size)
         self.Lhc = nn.Linear (  n_classes, n_classes)
         # 输出门
-        self.Mxo = self.base()
+        self.Mxo = self.base(in_channels, n_classes, input_size)
         self.Lho = nn.Linear (  n_classes, n_classes)
 
         self.sigmoid = nn.Sigmoid()
         self.tanh    = nn.Tanh()
     
-    def base(self):
+    def base(self, in_channels, n_classes, input_size):
         return nn.Sequential(
             nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
             nn.BatchNorm2d(32), 
