@@ -68,7 +68,7 @@ class ConvLSTM(nn.Module):
             h_t = o_t*self.tanh(C_t)
             h_0 = h_t; C_0 = C_t
 
-        return h_t, C_t
+        return h_t
 
 class BiConvLSTM(nn.Module):
     def __init__(self, in_channels, n_classes, input_size, n_times, base_model):
