@@ -2,6 +2,44 @@ import math
 import torch
 import torch.nn as nn
 
+def _conv_global(in_channels, n_classes, input_size):
+    m = nn.Sequential(
+        nn.Conv2d(in_channels, n_classes, kernel_size=input_size),
+        Flatten(),
+    )
+    return m
+
+def _conv_base(in_channels, n_classes, input_size):
+    m = nn.Sequential(
+            nn.Conv2d(in_channels, 32, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(32), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(64), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(128), 
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(128, 128, kernel_size=3, padding=1), 
+            nn.BatchNorm2d(128), 
+            nn.ReLU(inplace=True),
+
+            nn.AvgPool2d(kernel_size=(input_size//8, input_size//8)),
+            Flatten(),
+
+            nn.Linear(128, 64),
+            nn.ReLU(True),
+            nn.Dropout(),
+            nn.Linear(64, n_classes),
+        )
+    return m
+
 class Flatten(nn.Module):
     def __init__(self):
         super(Flatten, self).__init__()
@@ -31,17 +69,17 @@ class ConvLSTM(nn.Module):
         self.isforward     = isforward
 
         # 遗忘门
-        self.Mxf = self.base(in_channels, n_classes, input_size)
-        self.Lhf = nn.Linear (  n_classes, n_classes)
+        self.Mxf = _conv_global(in_channels, n_classes, input_size)
+        self.Lhf = nn.Linear   (n_classes, n_classes)
         # 输入门
-        self.Mxi = self.base(in_channels, n_classes, input_size)
-        self.Lhi = nn.Linear (  n_classes, n_classes)
+        self.Mxi = _conv_global(in_channels, n_classes, input_size)
+        self.Lhi = nn.Linear   (n_classes, n_classes)
         # 状态
-        self.Mxc = self.base(in_channels, n_classes, input_size)
-        self.Lhc = nn.Linear (  n_classes, n_classes)
+        self.Mxc = _conv_base  (in_channels, n_classes, input_size)
+        self.Lhc = nn.Linear   (n_classes, n_classes)
         # 输出门
-        self.Mxo = self.base(in_channels, n_classes, input_size)
-        self.Lho = nn.Linear (  n_classes, n_classes)
+        self.Mxo = _conv_global(in_channels, n_classes, input_size)
+        self.Lho = nn.Linear   (n_classes, n_classes)
 
         self.sigmoid = nn.Sigmoid()
         self.tanh    = nn.Tanh()
