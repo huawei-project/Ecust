@@ -10,7 +10,7 @@ configer.n_class = 63
 
 configer.splitmode = 'split_{}x{}_2'.format(configer.dsize[0], configer.dsize[1])
 # configer.modelbase = 'recognize_vgg11_bn'
-configer.modelbase = 'recognize_convlstm'
+configer.modelbase = 'recognize_convlstm2'
 
 
 configer.datatype = 'Multi'
