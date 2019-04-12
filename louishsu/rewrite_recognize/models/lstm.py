@@ -292,24 +292,24 @@ class ConvLSTMCell(nn.Module):
 
 class ConvLSTMNet(nn.Module):
     
-    def __init__(self, in_channels, out_channels, n_times, input_size):
+    def __init__(self, in_channels, n_classes, input_size, n_times):
         super(ConvLSTMNet, self).__init__()
 
-        self.out_channels = out_channels
+        self.n_classes = n_classes
 
         self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
         self.relu = nn.ReLU(True)
 
-        self.lstm1 = ConvLSTMCell(1,  8, in_channels,   input_size)
-        self.lstm2 = ConvLSTMCell(1, 16, 8,             input_size//2)
-        self.lstm3 = ConvLSTMCell(1, 32, 16,            input_size//4)
-        self.lstm4 = ConvLSTMCell(1, 32, 32,            input_size//8)
-        self.lstm5 = ConvLSTMCell(1, 64, 32,            input_size//16)
+        self.lstm1 = ConvLSTMCell(1,  8, input_size,    in_channels)
+        self.lstm2 = ConvLSTMCell(1, 16, input_size//2,     8)
+        self.lstm3 = ConvLSTMCell(1, 32, input_size//4,     16)
+        self.lstm4 = ConvLSTMCell(1, 32, input_size//8,     32)
+        self.lstm5 = ConvLSTMCell(1, 64, input_size//16,    32)
     
         self.classifier = nn.Sequential(
             nn.Linear(256, 128),
             nn.ReLU(True),
-            nn.Linear(128, out_channels),
+            nn.Linear(128, n_classes),
             nn.ReLU(True),
         )
 
@@ -318,7 +318,7 @@ class ConvLSTMNet(nn.Module):
         Params:
             x:  {tensor(N, C, H, W)}
         Returns:
-            out:  {tensor(N, C, out_channels)}
+            out:  {tensor(N, C, n_classes)}
         """
         (N, C, H, W) = x.shape
         
