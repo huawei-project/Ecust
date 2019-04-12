@@ -225,7 +225,7 @@ class ConvLSTMCell(nn.Module):
             Convolutional LSTM Network: A Machine Learing Approach for Precipitation Nowcasting.
     """
 
-    def __init__(self, in_channels, out_channels, n_times, input_size):
+    def __init__(self, in_channels, out_channels, input_size, n_times):
         super(ConvLSTMCell, self).__init__()
         self.init = False
 
