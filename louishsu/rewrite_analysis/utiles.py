@@ -7,6 +7,7 @@ getTime     = lambda: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 getVol      = lambda subidx: (subidx - 1) // 10 + 1
 getWavelen  = lambda path: int(path.split('.')[0].split('_')[-1])
 getLabel    = lambda path: int(path[path.find('DATA') + len('DATAx/'):].split('/')[0])
+getPos      = lambda path: int(path.split('/')[-2].split('_')[1])
 
 def get_labels_from_pathlist(pathlist):
     labels = []

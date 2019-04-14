@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from config import configer
-from utiles import get_labels_from_pathlist, getLabel, getWavelen, getVol, getDicts
+from utiles import get_labels_from_pathlist, getLabel, getWavelen, getVol, getDicts, getPos
 
 softmax = lambda x: np.exp(x) / np.sum(np.exp(x))
 
@@ -204,17 +204,15 @@ def analysis_pos4(subset=None):
 
 def analysis_position(subset=None):
     # get test files and labels
-    txtfile = './dataset/{}/test.txt'.format(configer.splitmode)
+    txtfile = './split/{}/test.txt'.format(configer.splitmode)
     with open(txtfile, 'r') as f:
         testfiles = f.readlines()
     testfiles_sub, indexes_sub = get_sub_filenames(testfiles, subset)
     labels = get_labels_from_pathlist(testfiles_sub)
-    used = [i for i in range(1, 34) if (i not in notUsedSubjects)]
-    labels = [used.index(i) for i in labels]
+    labels = list(map(lambda x: x-1, labels))
 
     # get test outputs
-    npyfile = os.path.join(configer.logspath, configer.modelname, 
-                    'test_output_{}.npy'.format(configer.splitmode))
+    npyfile = os.path.join(configer.logspath, configer.modelname, 'test_out.npy')
     testout = np.load(npyfile)
     for i in range(testout.shape[0]):              
         testout[i] = softmax(testout[i])
@@ -229,7 +227,7 @@ def analysis_position(subset=None):
         y_true   = labels[i]
         y_pred   = testout_sub[i]
 
-        posidx = int(testfile.split('/')[-2].split('_')[1]) - 1
+        posidx = getPos(testfile) - 1
         n_position[posidx] += 1
         if y_pred == y_true: n_accuracy[posidx] += 1
     
@@ -238,16 +236,13 @@ def analysis_position(subset=None):
     
 def analysis_similarity(subset=None, mode='euc'):
     # get test files and labels
-    txtfile = './dataset/{}/test.txt'.format(configer.splitmode)
+    txtfile = './split/{}/test.txt'.format(configer.splitmode)
     with open(txtfile, 'r') as f:
         testfiles = f.readlines()
     testfiles_sub, indexes_sub = get_sub_filenames(testfiles, subset)
     labels = get_labels_from_pathlist(testfiles_sub)
     used = [i for i in range(1, 34) if (i not in notUsedSubjects)]
     labels = [used.index(i) for i in labels]
-    labelsfile = os.path.join(configer.logspath, configer.modelname, 
-                    'test_output_{}_labels_{}.npy'.format(configer.splitmode, subset))
-    np.save(labelsfile, np.array(labels))
 
     # get test outputs
     npyfile = os.path.join(configer.logspath, configer.modelname, 
@@ -311,17 +306,17 @@ def analysis_similarity(subset=None, mode='euc'):
     plt.show()
 
 if __name__ == "__main__":
-    analysis()
-    analysis('normal')
-    analysis('illum1')
-    analysis('illum2')
+    # analysis()
+    # analysis('normal')
+    # analysis('illum1')
+    # analysis('illum2')
 
     # analysis_pos4()
-    # analysis_pos4('non-obtructive')
-    # analysis_pos4('ob1')
-    # analysis_pos4('ob2')
+    # analysis_pos4('normal')
+    # analysis_pos4('illum1')
+    # analysis_pos4('illum2')
 
-    # analysis_position()
-    # analysis_position('non-obtructive')
-    # analysis_position('ob1')
-    # analysis_position('ob2')
+    analysis_position()
+    analysis_position('normal')
+    analysis_position('illum1')
+    analysis_position('illum2')

@@ -8,7 +8,7 @@ configer.n_channel = 1
 configer.n_class = 63
 
 
-configer.splitmode = 'split_{}x{}_5'.format(configer.dsize[0], configer.dsize[1])
+configer.splitmode = 'split_{}x{}_1'.format(configer.dsize[0], configer.dsize[1])
 configer.modelbase = 'analysis_vgg11_bn'
 
 configer.modelname = '{}_{}'.\
