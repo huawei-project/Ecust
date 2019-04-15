@@ -241,12 +241,10 @@ def analysis_similarity(subset=None, mode='euc'):
         testfiles = f.readlines()
     testfiles_sub, indexes_sub = get_sub_filenames(testfiles, subset)
     labels = get_labels_from_pathlist(testfiles_sub)
-    used = [i for i in range(1, 34) if (i not in notUsedSubjects)]
-    labels = [used.index(i) for i in labels]
+    labels = list(map(lambda x: x-1, labels))
 
     # get test outputs
-    npyfile = os.path.join(configer.logspath, configer.modelname, 
-                    'test_output_{}.npy'.format(configer.splitmode))
+    npyfile = os.path.join(configer.logspath, configer.modelname, 'test_out.npy')
     testout = np.load(npyfile)
     for i in range(testout.shape[0]):              
         testout[i] = softmax(testout[i])
@@ -257,10 +255,10 @@ def analysis_similarity(subset=None, mode='euc'):
     elif mode == 'cos':     # 余弦相似度
         f = lambda x, y: x.dot(y) / (np.linalg.norm(x)*np.linalg.norm(y))
 
-    # get similarity_matirx
+    # get similarity_matirx, 每两个样本间的相似度
     subset = 'all' if subset is None else subset
     matrixfile = os.path.join(configer.logspath, configer.modelname, 
-                    'test_output_{}_similarity_{}_{}.npy'.format(configer.splitmode, subset, mode))
+                    'similarity_sample_{}_{}.npy'.format(configer.splitmode, subset, mode))
     if os.path.exists(matrixfile):
         similarity_matrix = np.load(matrixfile)
     else:
@@ -274,13 +272,13 @@ def analysis_similarity(subset=None, mode='euc'):
                 similarity_matrix[i, j] = f(out_i, out_j)
         np.save(matrixfile, similarity_matrix)
 
-    # 计算类间相似度
+    # 计算类间相似度, 每两个类间的相似度
     matrixfile = os.path.join(configer.logspath, configer.modelname, 
-                    'test_output_{}_similarity_class_{}_{}.npy'.format(configer.splitmode, subset, mode))
+                    'similarity_class_{}_{}.npy'.format(configer.splitmode, subset, mode))
     if os.path.exists(matrixfile):
         similarity = np.load(matrixfile)
     else:
-        similarity = np.zeros(shape=(33, 33))
+        similarity = np.zeros(shape=(63, 63))
         for i in range(similarity.shape[0]):    # 类 i
             idxi = [l for l in range(len(labels)) if labels[l]==i]
             for j in range(similarity.shape[1]):# 类 j
@@ -316,7 +314,12 @@ if __name__ == "__main__":
     # analysis_pos4('illum1')
     # analysis_pos4('illum2')
 
-    analysis_position()
-    analysis_position('normal')
-    analysis_position('illum1')
-    analysis_position('illum2')
+    # analysis_position()
+    # analysis_position('normal')
+    # analysis_position('illum1')
+    # analysis_position('illum2')
+
+    analysis_similarity()
+    analysis_similarity('normal')
+    analysis_similarity('illum1')
+    analysis_similarity('illum2')
