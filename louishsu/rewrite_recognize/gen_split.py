@@ -39,12 +39,29 @@ def gen_Multi_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2):
                     if os.path.exists(filepath):
                         
                         if configer.splitmode in ['split_64x64_1', 'split_64x64_2', 'split_64x64_3', 'split_64x64_4', 'split_64x64_5']:
+                            """ 无特殊条件 """
                             subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
+
                         elif configer.splitmode in ['split_64x64_6',]:
+                            """ 只有近视眼镜和无眼镜 """
                             if filepath.split('_')[-1] in ['1', '5']:
                                 subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
                         elif configer.splitmode in ['split_64x64_7',]:
+                            """ 只有无眼镜 """
                             if filepath.split('_')[-1] in ['1']:
+                                subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
+                        
+                        elif configer.splitmode in ['split_64x64_8',]:
+                            """ 仅包含无干扰 """
+                            if filepath.split('/')[-2] in ['normal']:
+                                subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
+                        elif configer.splitmode in ['split_64x64_9',]:
+                            """ 仅含干扰1 """
+                            if filepath.split('/')[-2] in ['illum1']:
+                                subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
+                        elif configer.splitmode in ['split_64x64_10',]:
+                            """ 仅含干扰2 """
+                            if filepath.split('/')[-2] in ['illum2']:
                                 subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
 
         i_items = len(subfiles)
