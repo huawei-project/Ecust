@@ -35,18 +35,27 @@ def gen_Multi_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2):
 
                     filename = FILENAME.format(getVol(i), i, obtype, pos, sess)
                     filepath = os.path.join(datapath, filename)
+                    
                     if os.path.exists(filepath):
-                        subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
-        
+                        
+                        if configer.splitmode in ['split_64x64_1', 'split_64x64_2', 'split_64x64_3', 'split_64x64_4', 'split_64x64_5']:
+                            subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
+                        elif configer.splitmode in ['split_64x64_6',]:
+                            if filepath.split('_')[-1] in ['1', '5']:
+                                subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
+                        elif configer.splitmode in ['split_64x64_7',]:
+                            if filepath.split('_')[-1] in ['1']:
+                                subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
+
         i_items = len(subfiles)
         i_train = int(i_items*train); n_train += i_train
         i_valid = int(i_items*valid); n_valid += i_valid
         i_test  = i_items - i_train - i_valid; n_test += i_test
 
         trainfiles = random.sample(subfiles, i_train)
-        subfiles_valid_test = [f for f in subfiles if f not in trainfiles]
+        subfiles_valid_test = list(filter(lambda x: x not in trainfiles, subfiles))
         validfiles = random.sample(subfiles_valid_test, i_valid)
-        testfiles  = [f for f in subfiles_valid_test if f not in validfiles]
+        testfiles = list(filter(lambda x: x not in validfiles, subfiles_valid_test))
 
         ftrain.writelines(trainfiles)
         fvalid.writelines(validfiles)
