@@ -72,3 +72,28 @@ def test(configer):
 
     print('==================================================================================================================')
     ftest.close()
+
+
+def test_samples():
+
+    ## model
+    modelpath = "/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/recognize_vgg11_bn_split_64x64_1_63subjects_models/recognize_vgg11_bn_split_64x64_1_23chs_550sta_20nm.pkl"
+					
+    assert os.path.exists(modelpath), 'please train first! '
+    model = torch.load(modelpath, map_location='cuda' if torch.cuda.is_available() else 'cpu')
+    samplefiles = ['{}normal/Multi_4_W1_1', '{}illum1/Multi_4_W1_1', '{}illum2/Multi_4_W1_1', '{}normal/Multi_1_W1_1', '{}normal/Multi_4_W1_5']
+    samplefiles = list(map(lambda x: x.format('/home/louishsu/Work/Workspace/ECUST2019_64x64/DATA1/1/Multi/'), samplefiles))
+
+    images = []
+    for samplefile in samplefiles:
+        images += [RecognizeDataset._load_image(samplefile, 'Multi', [550+i*20 for i in range(23)]).unsqueeze(0)]
+    images = torch.cat(images, 0)
+
+    y_pred = model(images).detach().numpy()
+    
+    import scipy.io as io
+    io.savemat("/home/louishsu/Desktop/features.mat", y_pred)
+    # np.save('/home/louishsu/Desktop/features.npy', y_pred)
+
+if __name__ == "__main__":
+	test_samples()

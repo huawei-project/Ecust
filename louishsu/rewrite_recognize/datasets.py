@@ -45,9 +45,10 @@ class RecognizeDataset(Dataset):
             filelist = f.readlines()
         
         filelist = [os.path.join('/'.join(datapath.split('/')[:-1]), filename.strip()) for filename in filelist]
-        self.samplelist = [[self.__load_image(filename, type, usedChannels), self.labels.index(getLabel(filename))] for filename in filelist]
+        self.samplelist = [[self._load_image(filename, type, usedChannels), self.labels.index(getLabel(filename))] for filename in filelist]
     
-    def __load_image(self, path, type, usedChannels):
+    @classmethod
+    def _load_image(self, path, type, usedChannels):
         """
         Params:
             path:   {str} 

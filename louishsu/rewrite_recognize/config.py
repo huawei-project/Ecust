@@ -8,7 +8,7 @@ configer.n_channel = 23
 configer.n_class = 63
 
 
-configer.splitmode = 'split_{}x{}_7'.format(configer.dsize[0], configer.dsize[1])
+configer.splitmode = 'split_{}x{}_1'.format(configer.dsize[0], configer.dsize[1])
 configer.modelbase = 'recognize_vgg11_bn'
 
 
@@ -19,7 +19,7 @@ if configer.datatype == 'Multi':
     configer.modelname = '{}_{}_{}chs_{}sta_20nm'.\
                     format(configer.modelbase, configer.splitmode, configer.n_usedChannels, configer.usedChannels[0])
 elif configer.datatype == 'RGB':
-    configer.usedChannels = 'R'
+    configer.usedChannels = 'RGB'
     configer.n_usedChannels = len(configer.usedChannels)
     configer.modelname = '{}_{}_{}'.\
                     format(configer.modelbase, configer.splitmode, configer.usedChannels)
