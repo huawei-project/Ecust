@@ -78,10 +78,4 @@ def gen_out_excel(configer):
         
     xls.save(os.path.join(log_modelname_dir, 'test.xls'))
 
-    pass
-
-if __name__ == "__main__":
     
-    from config import configer
-    
-    gen_out_excel(configer)
