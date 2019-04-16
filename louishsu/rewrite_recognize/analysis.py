@@ -1,5 +1,7 @@
 import os
 import numpy as np
+from matplotlib import pyplot as plt
+from sklearn.metrics import roc_curve
 
 def filter_condition(filelist, illum: str, position: int, glasses: int):
     """ filter condition
@@ -71,8 +73,17 @@ def analysis(configer):
         y_true_label_filt = y_true_label[index]
 
         acc = accuracy(y_pred_label_filt, y_true_label_filt)
-
         print('accuracy score is: {}'.format(acc))
+
+        for i in range(63):
+            idx = y_true_label_filt==i
+            y_true_bin = idx.astype('int')
+            y_pred_bin = y_pred_proba_filt[:, i]
+            fpr, tpr, thresholds = roc_curve(y_true_bin, y_pred_bin)
+            plt.figure(i)
+            plt.plot(fpr, tpr, marker='o')
+            plt.show()
+
         print('=====================================================')
 
 if __name__ == "__main__":
