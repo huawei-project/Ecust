@@ -1,1 +1,0 @@
-n_items: 441, n_train: 252, n_valid: 63, n_test: 126, ratio: 0.571: 0.143: 0.286
