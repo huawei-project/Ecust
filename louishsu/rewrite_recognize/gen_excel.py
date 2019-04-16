@@ -50,7 +50,11 @@ def gen_out_excel(configer):
         return pred_prob, pred_label
 
     ## get test files and labels
-    with open('./split/{}/test.txt'.format(configer.splitmode), 'r') as f:
+    if configer.datatype == 'Multi':
+        txtfile = 'test'
+    elif configer.datatype == 'RGB':
+        txtfile = 'test_rgb'
+    with open('./split/{}/{}.txt'.format(configer.splitmode, txtfile), 'r') as f:
         testfiles = f.readlines()
     
     ## get output
