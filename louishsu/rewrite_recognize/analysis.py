@@ -1,11 +1,23 @@
 import os
 import numpy as np
 
-def filter_condition(filelist, imgtype: str, illum: str, positon: int, glasses: int):
+def filter_condition(filelist, illum: str, position: int, glasses: int):
     """ filter condition
     """
-    cond = "{}/{}_{}_W1_{}".format(illum, imgtype, positon, glasses)
-    index = np.array(list(map(lambda x: int(-1 != x.find(cond)), filelist)), dtype='bool')
+    if illum != 'none':
+        idx_illum = np.array(list(map(lambda x: int(-1 != x.find(illum)), filelist)), dtype='bool')
+    else:
+        idx_illum = np.ones(shape=len(filelist), dtype='bool')
+    if position != 'none':
+        idx_position = np.array(list(map(lambda x: int(-1 != x.find('{}_W1'.format(position))), filelist)), dtype='bool')
+    else:
+        idx_position = np.ones(shape=len(filelist), dtype='bool')
+    if glasses != 'none':
+        idx_glasses = np.array(list(map(lambda x: int(-1 != x.find('W1_{}'.format(glasses))), filelist)), dtype='bool')
+    else:
+        idx_glasses = np.ones(shape=len(filelist), dtype='bool')
+    index = idx_illum & idx_position & idx_glasses
+    cond = "{} {} {}".format(illum, position, glasses)
 
     return cond, index
 
@@ -31,11 +43,19 @@ def analysis(configer):
     y_pred_label = np.argmax(y_pred_proba, axis=1)
 
     while True:
+        
+        illum = None
+        position = None
+        glasses = None
 
-        illum = input("please input illumination: <normal/illum1/illum2>")
-        positon = input("please input position: <1~7>")
-        glasses = input("please input glass condition: <1/5>")
-        cond, index = filter_condition(testfiles, configer.datatype, illum, positon, glasses)
+        while illum not in ['normal', 'illum1', 'illum2', 'none']:
+            illum = input("please input illumination: <normal/illum1/illum2 or none>")
+        while position not in [str(i+1) for i in range(7)] + ['none']:
+            position = input("please input position: <1~7 or none>")
+        while glasses not in ['1', '5'] + ['none']:
+            glasses = input("please input glass condition: <1/5 or none>")
+
+        cond, index = filter_condition(testfiles, illum, position, glasses)
         print('-----------------------------------------------------')
         
         if np.sum(index) == 0:
