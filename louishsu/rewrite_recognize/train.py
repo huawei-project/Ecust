@@ -129,8 +129,8 @@ def train(configer):
         acc_train  = np.mean(np.array(acc_train))
         loss_valid = np.mean(np.array(loss_valid))
         acc_valid  = np.mean(np.array(acc_valid))
-        print_log = "{} || Epoch: [{:3d}]/[{:3d}] || lr: {:.6f} || train | acc: {:2.2%}, loss: {:4.4f} || valid | acc: {:2.2%}, loss: {:4.4f}".\
-                format(getTime(), i_epoch, configer.n_epoch, scheduler.get_lr()[-1], acc_train, loss_train, acc_valid, loss_valid)
+        # print_log = "{} || Epoch: [{:3d}]/[{:3d}] || lr: {:.6f} || train | acc: {:2.2%}, loss: {:4.4f} || valid | acc: {:2.2%}, loss: {:4.4f}".\
+        #         format(getTime(), i_epoch, configer.n_epoch, scheduler.get_lr()[-1], acc_train, loss_train, acc_valid, loss_valid)
         # print(print_log)
         
         logger.add_scalars('accuracy', {'train': acc_train,  'valid': acc_valid},  i_epoch)
