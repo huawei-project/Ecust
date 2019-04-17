@@ -72,6 +72,8 @@ def analysis(configer):
         y_pred_label_filt = y_pred_label[index]
         y_true_label_filt = y_true_label[index]
 
+
+        # ================= Add your code HERE! ================= #
         acc = accuracy(y_pred_label_filt, y_true_label_filt)
         print('accuracy score is: {}'.format(acc))
 
@@ -83,6 +85,7 @@ def analysis(configer):
             plt.figure(i)
             plt.plot(fpr, tpr, marker='o')
             plt.show()
+        # ======================================================= #
 
         print('=====================================================')
 
