@@ -65,9 +65,9 @@ def test(configer):
 
     loss_test = np.mean(np.array(loss_test))
     acc_test  = np.mean(np.array(acc_test))
-    # print_log = "{} || test | acc: {:2.2%}, loss: {:4.4f}".\
-    #         format(getTime(), acc_test, loss_test)
-    # print(print_log); ftest.write(print_log + '\n')
+    print_log = "{} || test | acc: {:2.2%}, loss: {:4.4f}".\
+            format(getTime(), acc_test, loss_test)
+    print(print_log); ftest.write(print_log + '\n')
     np.save(os.path.join(logpath, 'test_out.npy'), output)
 
     # print('==================================================================================================================')
