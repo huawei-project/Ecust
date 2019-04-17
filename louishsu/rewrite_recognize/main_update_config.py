@@ -12,7 +12,7 @@ def main():
     for splitidx in range(6, 36):
         for datatype in ['Multi', 'RGB']:
              
-            print(getTime, splitidx, datatype, '...')
+            print(getTime(), splitidx, datatype, '...')
 
             configer = EasyDict()
 
