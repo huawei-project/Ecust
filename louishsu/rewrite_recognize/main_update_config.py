@@ -2,6 +2,8 @@ from train import train
 from test  import test
 from gen_excel import gen_out_excel
 from easydict import EasyDict
+from utiles import getTime
+import time
 
 def main():
 
@@ -9,6 +11,8 @@ def main():
 
     for splitidx in range(6, 36):
         for datatype in ['Multi', 'RGB']:
+             
+            print(getTime, splitidx, datatype, '...')
 
             configer = EasyDict()
 

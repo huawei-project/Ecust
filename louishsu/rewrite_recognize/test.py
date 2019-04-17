@@ -48,9 +48,9 @@ def test(configer):
         acc_i  = accuracy(y_pred_prob, y)
 
         # log
-        print_log = "{} || Batch: [{:3d}]/[{:3d}] || accuracy: {:2.2%}, loss: {:4.4f}".\
-                format(getTime(), i_batch, len(testset) // configer.batchsize, acc_i, loss_i)
-        print(print_log); ftest.write(print_log + '\n')
+        # print_log = "{} || Batch: [{:3d}]/[{:3d}] || accuracy: {:2.2%}, loss: {:4.4f}".\
+        #         format(getTime(), i_batch, len(testset) // configer.batchsize, acc_i, loss_i)
+        # print(print_log); ftest.write(print_log + '\n')
 
         loss_test += [loss_i.detach().cpu().numpy()]
         acc_test  += [acc_i.cpu().numpy()]
@@ -61,16 +61,16 @@ def test(configer):
         else:
             output = np.concatenate([output, y_pred_prob.detach().cpu().numpy()], axis=0)
 
-    print('------------------------------------------------------------------------------------------------------------------')
+    # print('------------------------------------------------------------------------------------------------------------------')
 
     loss_test = np.mean(np.array(loss_test))
     acc_test  = np.mean(np.array(acc_test))
     print_log = "{} || test | acc: {:2.2%}, loss: {:4.4f}".\
             format(getTime(), acc_test, loss_test)
-    print(print_log); ftest.write(print_log + '\n')
+    # print(print_log); ftest.write(print_log + '\n')
     np.save(os.path.join(logpath, 'test_out.npy'), output)
 
-    print('==================================================================================================================')
+    # print('==================================================================================================================')
     ftest.close()
 
 
