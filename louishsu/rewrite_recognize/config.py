@@ -4,8 +4,8 @@ configer = EasyDict()
 
 configer.dsize = (64, 64)
 configer.datatype = 'Multi'
-configer.n_epoch   = 300 if datatype == 'Multi' else 350
-configer.lrbase = 0.001  if datatype == 'Multi' else 0.0005
+configer.n_epoch   = 300 if configer.datatype == 'Multi' else 350
+configer.lrbase = 0.001  if configer.datatype == 'Multi' else 0.0005
 
 configer.n_channel = 23
 configer.n_class = 63
