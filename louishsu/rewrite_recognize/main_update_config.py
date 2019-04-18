@@ -260,7 +260,7 @@ def main_finetune_channels():
                 params = model.parameters()
                 torch.save(model, modelpath)
             else:
-                modelpath_pretrain = configer.modelname = os.path.join(
+                modelpath_pretrain = os.path.join(
                     modeldir, '{}_{}_{}_finetune.pkl'.format(configer.modelbase, configer.splitmode, 
                                                 '_'.join(list(map(str, usedChannelsList[i_usedChannels-1])))))
                 model = torch.load(modelpath_pretrain)
