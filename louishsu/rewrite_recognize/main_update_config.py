@@ -122,14 +122,13 @@ def main_best_channels():
 def main_several_channels():
 
     # 波段选择依据
-    # 以最佳的划分方式: 0.6: 0.2: 0.2(5个)
     # 最优的波段排序: 
     #       [850, 870, 930, 730, 790, 910, 770, 750, 670, 950, 990, 830, 890, 810, 970, 690, 710, 650, 590, 570, 630, 610, 550]
     # 依次选择多个波段进行实验
     CHANNEL_SORT = [850, 870, 930, 730, 790, 910, 770, 750, 670, 950, 990, 830, 890, 810, 970, 690, 710, 650, 590, 570, 630, 610, 550]
     
-    for splitidx in range(1, 6):
-        usedChannelsList = [CHANNEL_SORT[:i+2] for i in range(23)]
+    for splitidx in range(31, 36):
+        usedChannelsList = [CHANNEL_SORT[:i+1] for i in range(23)]
 
         for usedChannels in usedChannelsList:
             
