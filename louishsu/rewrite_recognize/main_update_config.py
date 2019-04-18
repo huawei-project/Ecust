@@ -400,9 +400,5 @@ def main_finetune_channels():
 if __name__ == "__main__":
     # main_split()
     # main_best_channels()
-<<<<<<< HEAD
-    main_several_channels()
-=======
     # main_several_channels()
     main_finetune_channels()
->>>>>>> channels
