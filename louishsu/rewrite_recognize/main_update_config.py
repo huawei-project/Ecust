@@ -180,6 +180,6 @@ def main_several_channels():
 
 
 if __name__ == "__main__":
-    main_split()
-    main_best_channels()
+    # main_split()
+    # main_best_channels()
     main_several_channels()
