@@ -266,7 +266,7 @@ def main_finetune_channels():
                 model = torch.load(modelpath_pretrain)
                 model.features[0] = nn.Conv2d(len(usedChannels), 64, 3, stride=1, padding=1)
                 params = [
-                    {'params': model.features[1:].parameters(), 'lr': configer.lrbase*0.1, },
+                    {'params': model.features[1:].parameters(), 'lr': configer.lrbase*0.01, },
                     {'params': model.features[0].parameters(),}
                 ]
                 torch.save(model, modelpath)
