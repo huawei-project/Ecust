@@ -331,7 +331,7 @@ def main_several_channels_k_fold(k=5):
 
             ## start testing
             model.eval()
-            for i_batch, (X, y) in enumerate(validset):
+            for i_batch, (X, y) in enumerate(validloader):
                 # get batch
                 X = Variable(X.float()); y = Variable(y)
                 if configer.cuda and is_available():
