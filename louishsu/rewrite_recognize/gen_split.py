@@ -48,6 +48,7 @@ def gen_Multi_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2):
                             - 21~25: 划分比例 0.2: 0.6: 0.2
                             - 25~30: 划分比例 0.1: 0.7: 0.2
                             - 31~35: 划分比例 0.7: 0.1: 0.2
+                            - 36~40: 划分比例 0.8: 0.1: 0.1
                             """
                             subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
                         
@@ -122,3 +123,5 @@ if __name__ == "__main__":
     #     gen_split(configer.datapath, SPLITMODE.format(i+1), train=0.1, valid=0.7, test=0.2)
     # for i in range(30, 35):
     #     gen_split(configer.datapath, SPLITMODE.format(i+1), train=0.7, valid=0.1, test=0.2)
+    for i in range(35, 40):
+        gen_split(configer.datapath, SPLITMODE.format(i+1), train=0.8, valid=0.1, test=0.1)
