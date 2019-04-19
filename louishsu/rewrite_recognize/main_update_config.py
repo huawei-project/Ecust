@@ -271,8 +271,6 @@ def main_several_channels_k_fold(k=5):
             trainloader = DataLoader(trainset, configer.batchsize, shuffle=True)
             validloader = DataLoader(validset, configer.batchsize, shuffle=False)
 
-            continue
-
             ## model
             modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
             modeldir  = '/'.join(modelpath.split('/')[:-1])
