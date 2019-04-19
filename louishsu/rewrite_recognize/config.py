@@ -15,7 +15,7 @@ configer.gamma = 0.2
 configer.cuda = True
 
 
-configer.splitmode = 'split_{}x{}_2'.format(configer.dsize[0], configer.dsize[1])
+configer.splitmode = 'split_{}x{}_1'.format(configer.dsize[0], configer.dsize[1])
 configer.modelbase = 'recognize_vgg11_bn'
 
 

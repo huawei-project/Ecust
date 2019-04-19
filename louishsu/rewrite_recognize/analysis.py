@@ -51,11 +51,23 @@ def analysis(configer):
         glasses = None
 
         while illum not in ['normal', 'illum1', 'illum2', 'none']:
-            illum = input("please input illumination: <normal/illum1/illum2 or none>")
+            illum = input("please input illumination: <normal(1)/illum1(2)/illum2(3) or none(n)>")
+            if illum == '1':
+                illum = 'normal'
+            elif illum == '2':
+                illum = 'illum1'
+            elif illum == '3':
+                illum = 'illum2'
+            elif illum == 'n':
+                illum = 'none'
         while position not in [str(i+1) for i in range(7)] + ['none']:
-            position = input("please input position: <1~7 or none>")
+            position = input("please input position: <1~7 or none(n)>")
+            if position == 'n':
+                position = 'none'
         while glasses not in ['1', '5'] + ['none']:
-            glasses = input("please input glass condition: <1/5 or none>")
+            glasses = input("please input glass condition: <1/5 or none(n)>")
+            if glasses == 'n':
+                glasses = 'none'
 
         cond, index = filter_condition(testfiles, illum, position, glasses)
         print('-----------------------------------------------------')
@@ -77,14 +89,14 @@ def analysis(configer):
         acc = accuracy(y_pred_label_filt, y_true_label_filt)
         print('accuracy score is: {}'.format(acc))
 
-        for i in range(63):
-            idx = y_true_label_filt==i
-            y_true_bin = idx.astype('int')
-            y_pred_bin = y_pred_proba_filt[:, i]
-            fpr, tpr, thresholds = roc_curve(y_true_bin, y_pred_bin)
-            plt.figure(i)
-            plt.plot(fpr, tpr, marker='o')
-            plt.show()
+        # for i in range(63):
+        #     idx = y_true_label_filt==i
+        #     y_true_bin = idx.astype('int')
+        #     y_pred_bin = y_pred_proba_filt[:, i]
+        #     fpr, tpr, thresholds = roc_curve(y_true_bin, y_pred_bin)
+        #     plt.figure(i)
+        #     plt.plot(fpr, tpr, marker='o')
+        #     plt.show()
         # ======================================================= #
 
         print('=====================================================')
