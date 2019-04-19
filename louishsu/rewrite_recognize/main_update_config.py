@@ -254,7 +254,7 @@ def main_several_channels_k_fold(k=5):
             configer.modelbase = 'recognize_vgg11_bn'
             configer.usedChannels = usedChannels
             configer.n_usedChannels = len(configer.usedChannels)
-            configer.modelname = '{}_{}_{}_[{}/{}]fold'.\
+            configer.modelname = '{}_{}_{}_[{}_{}]fold'.\
                             format(configer.modelbase, configer.splitmode, 
                                     '_'.join(list(map(str, configer.usedChannels))), i+1, k)
             configer.datapath = '/home/louishsu/Work/Workspace/ECUST2019_{}x{}'.\
