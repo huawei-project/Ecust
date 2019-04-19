@@ -204,8 +204,7 @@ def main_several_channels_k_fold(k=5):
     class KFoldDataset(Dataset):
         def __init__(self, datapath, filelist, usedChannels):
             filelist = list(map(lambda x: os.path.join('/'.join(datapath.split('/')[:-1]), x.strip()), filelist))
-            # self.samplelist = list(map(lambda x: [RecognizeDataset._load_image(x, 'Multi', usedChannels), getLabel(x)-1], filelist))
-            self.samplelist = [[1, 2], [3, 4]]
+            self.samplelist = list(map(lambda x: [RecognizeDataset._load_image(x, 'Multi', usedChannels), getLabel(x)-1], filelist))
         def __getitem__(self, index):
             image, label = self.samplelist[index]
             return image, label
