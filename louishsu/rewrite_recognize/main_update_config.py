@@ -14,7 +14,7 @@ from tensorboardX import SummaryWriter
 
 from datasets import RecognizeDataset
 from models import modeldict
-from utiles import accuracy, getTime
+from utiles import accuracy, getTime, getLabel
 
 from train import train
 from test  import test
@@ -226,12 +226,12 @@ def main_several_channels_k_fold(k=5):
     foldlist = []
     for i in range(k-1):
         foldlist += [filelist[i*n_files_fold: (i+1)*n_files_fold]]
-    foldlist += [filelist[(k-1)*n_files_fold:]]
+    foldlist += [filelist[(k-1)*n_files_fold: ]]
 
     for i in range(k):
 
         ## k折交叉验证
-        validset = filelist[i]
+        validset = foldlist[i]
         trainlist = list(filter(lambda x: x not in validset, filelist))
 
         for i_usedChannels in range(len(usedChannelsList)):
