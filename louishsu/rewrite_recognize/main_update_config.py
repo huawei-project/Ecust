@@ -204,7 +204,8 @@ def main_several_channels_k_fold(k=5):
     class KFoldDataset(Dataset):
         def __init__(self, datapath, filelist, usedChannels):
             filelist = list(map(lambda x: os.path.join('/'.join(datapath.split('/')[:-1]), x.strip()), filelist))
-            self.samplelist = list(map(lambda x: [RecognizeDataset._load_image(x, 'Multi', usedChannels), getLabel(x)-1], filelist))
+            # self.samplelist = list(map(lambda x: [RecognizeDataset._load_image(x, 'Multi', usedChannels), getLabel(x)-1], filelist))
+            self.samplelist = [[1, 2], [3, 4]]
         def __getitem__(self, index):
             image, label = self.samplelist[index]
             return image, label
@@ -231,8 +232,8 @@ def main_several_channels_k_fold(k=5):
     for i in range(k):
 
         ## k折交叉验证
-        validset = foldlist[i]
-        trainlist = list(filter(lambda x: x not in validset, filelist))
+        validlist = foldlist[i]
+        trainlist = list(filter(lambda x: x not in validlist, filelist))
 
         for i_usedChannels in range(len(usedChannelsList)):
             usedChannels = usedChannelsList[i_usedChannels]
@@ -266,9 +267,11 @@ def main_several_channels_k_fold(k=5):
 
             ## datasets
             trainset = KFoldDataset(configer.datapath, trainlist, usedChannels)
-            validset = KFoldDataset(configer.datapath, validset,  usedChannels)
+            validset = KFoldDataset(configer.datapath, validlist,  usedChannels)
             trainloader = DataLoader(trainset, configer.batchsize, shuffle=True)
             validloader = DataLoader(validset, configer.batchsize, shuffle=False)
+
+            continue
 
             ## model
             modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
