@@ -333,6 +333,7 @@ def main_several_channels_k_fold(k=5):
             model.eval()
             loss_test = []
             acc_test  = []
+            output = None
             for i_batch, (X, y) in enumerate(validloader):
                 # get batch
                 X = Variable(X.float()); y = Variable(y)
