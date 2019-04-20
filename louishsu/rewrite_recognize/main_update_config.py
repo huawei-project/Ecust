@@ -381,7 +381,7 @@ def main_finetune_channels():
         usedChannelsList = [CHANNEL_SORT[:i+1] for i in range(23)]
 
         # for i_usedChannels in range(len(usedChannelsList)):
-        for i_usedChannels in range(5, 6):
+        for i_usedChannels in [4, 6]:
 
             usedChannels = usedChannelsList[i_usedChannels]
 
@@ -722,7 +722,7 @@ def main_pca():
 if __name__ == "__main__":
 
     print("重做划分4, 5个通道, finetune--------------------------------")
-    main_finetune_channels()    # TODO: 重做 划分4, 5个通道
+    main_finetune_channels()    # TODO: 重做 划分4, 4, 6个通道
     print("PCA------------------------------------------------------")
     main_pca()                  # TODO: 各划分,依次选择1~23通道降维
     # main_split()
