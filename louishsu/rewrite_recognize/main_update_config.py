@@ -546,8 +546,8 @@ def main_pca():
 
         configer.dsize = (64, 64)
         configer.datatype = 'Multi'
-        configer.n_epoch   = 300 if configer.datatype == 'Multi' else 350
-        configer.lrbase = 0.001  if configer.datatype == 'Multi' else 0.0005
+        configer.n_epoch   = 500
+        configer.lrbase = 0.0001
 
         configer.n_channel = 23
         configer.n_class = 63
@@ -578,7 +578,7 @@ def main_pca():
         trainloader = DataLoader(trainset, configer.batchsize, shuffle=True)
         validloader = DataLoader(validset, configer.batchsize, shuffle=False)
 
-        for chs in range(1, 24):
+        for chs in range(10, 24):
 
             print(getTime(), splitidx, 'reduce to ', chs, '...')
             
@@ -600,7 +600,7 @@ def main_pca():
             params = model.parameters()
             optimizer = optim.Adam(params, configer.lrbase, weight_decay=1e-3)
             scheduler = lr_scheduler.StepLR(optimizer, configer.stepsize, configer.gamma)
-            logpath = os.path.join(configer.logspath, configer.modelname)
+            logpath = os.path.join(configer.logspath, configer.modelname) + '{}chs'.format(chs)
             if not os.path.exists(logpath): os.makedirs(logpath)
             logger = SummaryWriter(logpath)
 
