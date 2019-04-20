@@ -680,7 +680,7 @@ def main_pca():
             ## start testing
             model.eval()
             testset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'test', configer.usedChannels)
-            trainloader = DataLoader(trainset, configer.batchsize, shuffle=True)
+            testloader = DataLoader(testset, configer.batchsize, shuffle=False)
             loss_test = []
             acc_test  = []
             output = None
