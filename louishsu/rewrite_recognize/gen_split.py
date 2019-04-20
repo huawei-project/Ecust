@@ -38,7 +38,7 @@ def gen_Multi_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2):
                     
                     if os.path.exists(filepath):
                         
-                        if configer.splitmode in ['split_64x64_{}'.format(i+1) for i in range(5*7)]:
+                        if splitmode in ['split_64x64_{}'.format(i+1) for i in range(5*8)]:
                             """ 
                             - 无特殊条件
                             -  1~ 5: 划分比例 0.6: 0.2: 0.2
@@ -52,6 +52,13 @@ def gen_Multi_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2):
                             """
                             subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
                         
+                        elif splitmode in ['split_64x64_{}'.format(i+1) for i in range(40, 45)]:
+                            """ 
+                            - 无特殊条件
+                            - 41~45: 划分比例 0.6: 0.2: 0.2
+                            """
+                            if filename.split('_')[1] in [str(i+1) for i in range(4)]:
+                                subfiles += ['{}/{}'.format(datapath.split('/')[-1], filename) + '\n']
                         
         i_items = len(subfiles)
         i_train = int(i_items*train); n_train += i_train
@@ -123,5 +130,8 @@ if __name__ == "__main__":
     #     gen_split(configer.datapath, SPLITMODE.format(i+1), train=0.1, valid=0.7, test=0.2)
     # for i in range(30, 35):
     #     gen_split(configer.datapath, SPLITMODE.format(i+1), train=0.7, valid=0.1, test=0.2)
-    for i in range(35, 40):
-        gen_split(configer.datapath, SPLITMODE.format(i+1), train=0.8, valid=0.1, test=0.1)
+    # for i in range(35, 40):
+    #     gen_split(configer.datapath, SPLITMODE.format(i+1), train=0.8, valid=0.1, test=0.1)
+
+    for i in range(40, 45):
+        gen_split(configer.datapath, SPLITMODE.format(i+1), train=0.6, valid=0.2, test=0.2)

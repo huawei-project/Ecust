@@ -77,7 +77,7 @@ def main_best_channels():
     # 以最佳的划分方式: 
     # 依次选择每个波段进行实验
 
-    for splitidx in range(6, 36):   # TODO
+    for splitidx in range(41, 46):
         for datatype in ['Multi', 'RGB']:
 
             if datatype == 'Multi':
@@ -377,10 +377,11 @@ def main_finetune_channels():
 
     CHANNEL_SORT = [850, 870, 930, 730, 790, 910, 770, 750, 670, 950, 990, 830, 890, 810, 970, 690, 710, 650, 590, 570, 630, 610, 550]
     
-    for splitidx in range(1, 6):
+    for splitidx in range(4, 5):
         usedChannelsList = [CHANNEL_SORT[:i+1] for i in range(23)]
 
-        for i_usedChannels in range(len(usedChannelsList)):
+        # for i_usedChannels in range(len(usedChannelsList)):
+        for i_usedChannels in range(5, 6):
 
             usedChannels = usedChannelsList[i_usedChannels]
 
@@ -536,9 +537,196 @@ def main_finetune_channels():
             test(configer)
 
 
+def main_pca():
+    from tensorPCA import NDarrayPCA
+
+    for splitidx in range(1, 6):
+        
+        configer = EasyDict()
+
+        configer.dsize = (64, 64)
+        configer.datatype = 'Multi'
+        configer.n_epoch   = 300 if configer.datatype == 'Multi' else 350
+        configer.lrbase = 0.001  if configer.datatype == 'Multi' else 0.0005
+
+        configer.n_channel = 23
+        configer.n_class = 63
+        configer.batchsize = 32
+        configer.stepsize = 250
+        configer.gamma = 0.2
+        configer.cuda = True
+
+        configer.splitmode = 'split_{}x{}_{}'.format(configer.dsize[0], configer.dsize[1], splitidx)
+        configer.modelbase = 'recognize_vgg11_bn'
+
+        configer.usedChannels = [550+i*20 for i in range(23)]
+        configer.n_usedChannels = len(configer.usedChannels)
+        configer.modelname = '{}_{}_{}_chPCA'.\
+                        format(configer.modelbase, configer.splitmode, 
+                                '_'.join(list(map(str, configer.usedChannels))))
+
+        configer.datapath = '/home/louishsu/Work/Workspace/ECUST2019_{}x{}'.\
+                                        format(configer.dsize[0], configer.dsize[1])
+        configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/{}_{}_{}subjects_logs'.\
+                                        format(configer.modelbase, configer.splitmode, configer.n_class)
+        configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_{}_{}subjects_models'.\
+                                        format(configer.modelbase, configer.splitmode, configer.n_class)
+
+
+        trainset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'train', configer.usedChannels)
+        validset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'valid', configer.usedChannels)
+        trainloader = DataLoader(trainset, configer.batchsize, shuffle=True)
+        validloader = DataLoader(validset, configer.batchsize, shuffle=False)
+
+        for chs in range(1, 24):
+
+            print(getTime(), splitidx, 'reduce to ', chs, '...')
+            
+            ## fit pca
+            decomposer = NDarrayPCA(n_components=[chs, 64, 64])
+            traindata = np.concatenate([trainset.samplelist[i][0].numpy()[np.newaxis] for i in range(len(trainset.samplelist))], axis=0)
+            decomposer.fit(traindata)
+            del traindata
+
+            ## model
+            modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
+            modeldir  = '/'.join(modelpath.split('/')[:-1])
+            if not os.path.exists(modeldir): os.makedirs(modeldir)
+            model = modeldict[configer.modelbase](configer.n_usedChannels, configer.n_class, configer.dsize[0])
+            if configer.cuda and is_available(): model.cuda()
+
+            ## loss
+            loss = nn.CrossEntropyLoss()
+            params = model.parameters()
+            optimizer = optim.Adam(params, configer.lrbase, weight_decay=1e-3)
+            scheduler = lr_scheduler.StepLR(optimizer, configer.stepsize, configer.gamma)
+            logpath = os.path.join(configer.logspath, configer.modelname)
+            if not os.path.exists(logpath): os.makedirs(logpath)
+            logger = SummaryWriter(logpath)
+
+            ## initialize
+            acc_train = 0.
+            acc_valid = 0.
+            loss_train = float('inf')
+            loss_valid = float('inf')
+            loss_valid_last = float('inf')
+
+
+            ## start training
+            for i_epoch in range(configer.n_epoch):
+
+                if configer.cuda and is_available(): empty_cache()
+                scheduler.step(i_epoch)
+                acc_train = []; acc_valid = []
+                loss_train = []; loss_valid = []
+
+                model.train()
+                for i_batch, (X, y) in enumerate(trainloader):
+
+                    X = torch.from_numpy(decomposer.transform(X.numpy()))
+                    
+                    # get batch
+                    X = Variable(X.float()); y = Variable(y)
+                    if configer.cuda and is_available():
+                        X = X.cuda(); y = y.cuda()
+
+                    # forward
+                    y_pred_prob = model(X)
+                    loss_i = loss(y_pred_prob, y)
+                    acc_i  = accuracy(y_pred_prob, y)
+
+                    # backward
+                    optimizer.zero_grad()
+                    loss_i.backward() 
+                    optimizer.step()
+
+                    loss_train += [loss_i.detach().cpu().numpy()]
+                    acc_train  += [acc_i.cpu().numpy()]
+                
+                model.eval()
+                for i_batch, (X, y) in enumerate(validloader):
+
+                    X = torch.from_numpy(decomposer.transform(X.numpy()))
+                    
+                    # get batch
+                    X = Variable(X.float()); y = Variable(y)
+                    if configer.cuda and is_available():
+                        X = X.cuda(); y = y.cuda()
+
+                    # forward
+                    y_pred_prob = model(X)
+                    loss_i = loss(y_pred_prob, y)
+                    acc_i  = accuracy(y_pred_prob, y)
+
+                    loss_valid += [loss_i.detach().cpu().numpy()]
+                    acc_valid  += [acc_i.cpu().numpy()]
+
+                loss_train = np.mean(np.array(loss_train))
+                acc_train  = np.mean(np.array(acc_train))
+                loss_valid = np.mean(np.array(loss_valid))
+                acc_valid  = np.mean(np.array(acc_valid))
+                
+                logger.add_scalars('accuracy', {'train': acc_train,  'valid': acc_valid},  i_epoch)
+                logger.add_scalars('logloss',  {'train': loss_train, 'valid': loss_valid}, i_epoch)
+                logger.add_scalar('lr', scheduler.get_lr()[-1], i_epoch)
+
+                if loss_valid_last > loss_valid:
+
+                    loss_valid_last = loss_valid
+                    torch.save(model, modelpath)
+
+
+
+            ## start testing
+            model.eval()
+            testset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'test', configer.usedChannels)
+            trainloader = DataLoader(trainset, configer.batchsize, shuffle=True)
+            loss_test = []
+            acc_test  = []
+            output = None
+            for i_batch, (X, y) in enumerate(testloader):
+
+                X = torch.from_numpy(decomposer.transform(X.numpy()))
+
+                # get batch
+                X = Variable(X.float()); y = Variable(y)
+                if configer.cuda and is_available():
+                    X = X.cuda(); y = y.cuda()
+                # forward
+                y_pred_prob = model(X)
+                loss_i = loss(y_pred_prob, y)
+                acc_i  = accuracy(y_pred_prob, y)
+                # log
+                loss_test += [loss_i.detach().cpu().numpy()]
+                acc_test  += [acc_i.cpu().numpy()]
+
+                # save output
+                if output is None:
+                    output = y_pred_prob.detach().cpu().numpy()
+                else:
+                    output = np.concatenate([output, y_pred_prob.detach().cpu().numpy()], axis=0)
+
+            # print('------------------------------------------------------------------------------------------------------------------')
+
+            loss_test = np.mean(np.array(loss_test))
+            acc_test  = np.mean(np.array(acc_test))
+            print_log = "{} || test | acc: {:2.2%}, loss: {:4.4f}".\
+                    format(getTime(), acc_test, loss_test)
+            print(print_log)
+            with open(os.path.join(logpath, 'test_log.txt'), 'w') as  f:
+                f.write(print_log + '\n')
+            np.save(os.path.join(logpath, 'test_out.npy'), output)
+    
+
+
 if __name__ == "__main__":
+
+    print("重做划分4, 5个通道, finetune--------------------------------")
+    main_finetune_channels()    # TODO: 重做 划分4, 5个通道
+    print("PCA------------------------------------------------------")
+    main_pca()                  # TODO: 各划分,依次选择1~23通道降维
     # main_split()
-    # main_best_channels()
+    print("单侧图像---------------------------------------------------")
+    main_best_channels()        # TODO: 划分,只有一侧的图像
     # main_several_channels()
-    main_several_channels_k_fold()
-    # main_finetune_channels()
+    # main_several_channels_k_fold()
