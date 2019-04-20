@@ -592,7 +592,7 @@ def main_pca():
             modelpath = os.path.join(configer.mdlspath, configer.modelname) + '{}chs.pkl'.format(chs)
             modeldir  = '/'.join(modelpath.split('/')[:-1])
             if not os.path.exists(modeldir): os.makedirs(modeldir)
-            model = modeldict[configer.modelbase](configer.n_usedChannels, configer.n_class, configer.dsize[0])
+            model = modeldict[configer.modelbase](chs, configer.n_class, configer.dsize[0])
             if configer.cuda and is_available(): model.cuda()
 
             ## loss
