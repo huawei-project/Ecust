@@ -13,4 +13,5 @@ modeldict = {
     'recognize_dense121': lambda inp, outp, size: DenseNet(in_channels=inp, num_classes=outp),
     'recognize_convlstm': lambda inp, outp, size: ConvLSTM(1, outp, size, inp),
     'recognize_convlstm2': lambda inp, outp, size: ConvLSTMNet(1, outp, size, inp),
+    'recognize_resnet34': lambda inp, outp,size: ResNet(in_channels=inp,num_classes=outp),
 }
