@@ -561,7 +561,7 @@ def main_pca():
 
         configer.usedChannels = [550+i*20 for i in range(23)]
         configer.n_usedChannels = len(configer.usedChannels)
-        configer.modelname = '{}_{}_{}_chPCA'.\
+        configer.modelname = '{}_{}_{}_PCA'.\
                         format(configer.modelbase, configer.splitmode, 
                                 '_'.join(list(map(str, configer.usedChannels))))
 
@@ -589,7 +589,7 @@ def main_pca():
             del traindata
 
             ## model
-            modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
+            modelpath = os.path.join(configer.mdlspath, configer.modelname) + '{}chs.pkl'.format(chs)
             modeldir  = '/'.join(modelpath.split('/')[:-1])
             if not os.path.exists(modeldir): os.makedirs(modeldir)
             model = modeldict[configer.modelbase](configer.n_usedChannels, configer.n_class, configer.dsize[0])
@@ -721,8 +721,7 @@ def main_pca():
 
 if __name__ == "__main__":
 
-    print("重做划分4, 5个通道, finetune--------------------------------")
-    main_finetune_channels()    # TODO: 重做 划分4, 4, 6个通道
+    # main_finetune_channels()
     print("PCA------------------------------------------------------")
     main_pca()                  # TODO: 各划分,依次选择1~23通道降维
     # main_split()
