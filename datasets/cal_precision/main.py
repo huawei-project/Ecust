@@ -109,6 +109,8 @@ if __name__ == "__main__":
         error += [list(cnnres - manres)]
     
     error = np.array(error)
+    error = error**2
 
-    error_mse = np.sqrt(np.mean(error**2, axis=0))
+    error = error.reshape(error.shape[0], 5, 2)
+    error = np.mean(np.sqrt(np.sum(error, axis=2)), axis=0) # 每个关键点的误差欧氏距离
     pass
