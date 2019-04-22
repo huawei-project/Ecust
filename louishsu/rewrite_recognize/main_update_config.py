@@ -141,8 +141,9 @@ def main_several_channels():
     # 依次选择多个波段组合进行实, 组合的意思是[[850], [850, 870], [850, 870, 930], ..., [850, ..., 550]]
     CHANNEL_SORT = [850, 870, 930, 730, 790, 910, 770, 750, 670, 950, 990, 830, 890, 810, 970, 690, 710, 650, 590, 570, 630, 610, 550]
     
-    for splitidx in range(31, 36):
-        usedChannelsList = [CHANNEL_SORT[:i+1] for i in range(23)]
+    for splitidx in range(46, 51):
+        # usedChannelsList = [CHANNEL_SORT[:i+1] for i in range(23)]
+        usedChannelsList = [[CHANNEL_SORT[:i+1] for i in range(23)][-1]]
 
         for usedChannels in usedChannelsList:
             
@@ -722,10 +723,10 @@ def main_pca():
 if __name__ == "__main__":
 
     # main_finetune_channels()
-    print("PCA------------------------------------------------------")
-    main_pca()                  # TODO: 各划分,依次选择1~23通道降维
+    # print("PCA------------------------------------------------------")
+    # main_pca()                 
     # main_split()
-    print("单侧图像---------------------------------------------------")
-    main_best_channels()        # TODO: 划分,只有一侧的图像
-    # main_several_channels()
+    # print("单侧图像---------------------------------------------------")
+    # main_best_channels()        
+    main_several_channels()
     # main_several_channels_k_fold()
