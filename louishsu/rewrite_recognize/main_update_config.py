@@ -190,7 +190,6 @@ def main_several_channels():
 
             train(configer)
             test(configer)
-            gen_out_excel(configer)
 
 
 def main_several_channels_k_fold(k=5):
