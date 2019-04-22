@@ -77,13 +77,15 @@ def main_best_channels():
     # 以最佳的划分方式: 
     # 依次选择每个波段进行实验
 
-    for splitidx in range(41, 46):
+    for splitidx in range(46, 51):
         for datatype in ['Multi', 'RGB']:
 
             if datatype == 'Multi':
-                usedChannelsList = [[i] for i in range(23)]
+                # usedChannelsList = [[i] for i in range(23)]
+                usedChannelsList = [[550+20*i for i in range(23)]]
             else:
-                usedChannelsList = ['R', 'G', 'B']
+                # usedChannelsList = ['R', 'G', 'B']
+                usedChannelsList = ['RGB',]
 
             for usedChannels in usedChannelsList:
                 
@@ -130,7 +132,6 @@ def main_best_channels():
 
                 train(configer)
                 test(configer)
-                gen_out_excel(configer)
         
 
 def main_several_channels():
@@ -142,8 +143,7 @@ def main_several_channels():
     CHANNEL_SORT = [850, 870, 930, 730, 790, 910, 770, 750, 670, 950, 990, 830, 890, 810, 970, 690, 710, 650, 590, 570, 630, 610, 550]
     
     for splitidx in range(46, 51):
-        # usedChannelsList = [CHANNEL_SORT[:i+1] for i in range(23)]
-        usedChannelsList = [[CHANNEL_SORT[:i+1] for i in range(23)][-1]]
+        usedChannelsList = [CHANNEL_SORT[:i+1] for i in range(23)]
 
         for usedChannels in usedChannelsList:
             
@@ -188,8 +188,6 @@ def main_several_channels():
             configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_{}_{}subjects_models'.\
                                             format(configer.modelbase, configer.splitmode, configer.n_class)
 
-            train(configer)
-            test(configer)
 
 
 def main_several_channels_k_fold(k=5):
@@ -726,6 +724,6 @@ if __name__ == "__main__":
     # main_pca()                 
     # main_split()
     # print("单侧图像---------------------------------------------------")
-    # main_best_channels()        
-    main_several_channels()
+    main_best_channels()        
+    # main_several_channels()
     # main_several_channels_k_fold()
