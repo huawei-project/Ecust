@@ -16,6 +16,10 @@ from models import modeldict
 from utiles import accuracy, getTime
 
 def train(configer):
+    """
+    Update:
+        2019.04.24: 固定权值
+    """
 
     ## datasets
     trainset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'train', configer.usedChannels)
@@ -23,11 +27,26 @@ def train(configer):
     trainloader = DataLoader(trainset, configer.batchsize, shuffle=True)
     validloader = DataLoader(validset, configer.batchsize, shuffle=False)
 
-    ## model
+    ## model: pre-initialized
     modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
     modeldir  = '/'.join(modelpath.split('/')[:-1])
     if not os.path.exists(modeldir): os.makedirs(modeldir)
+    preInitdir = os.path.join('/'.join(configer.mdlspath.split('/')[:-1]), "preinit")
+    if not os.path.exists(preInitdir): os.makedirs(preInitdir)
+    preInitmodelpath = os.path.join(preInitdir, configer.modelbase + '.pkl')
+
     model = modeldict[configer.modelbase](configer.n_usedChannels, configer.n_class, configer.dsize[0])
+    if not os.path.exists(preInitmodelpath):
+        model_state = model.state_dict()
+        torch.save(model_state, preInitmodelpath)
+    else:
+        preinit_state = torch.load(preInitmodelpath)
+        model_state = model.state_dict()
+        toload_state = {k: v for k, v in preinit_state.items() \
+                    if preinit_state[k].shape==model_state[k].shape}
+        model_state.update(toload_state)
+        model.load_state_dict(model_state)
+
     if configer.cuda and is_available(): model.cuda()
 
     ## loss
