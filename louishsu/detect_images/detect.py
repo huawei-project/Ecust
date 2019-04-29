@@ -9,9 +9,10 @@ from models.mtcnn.models import P_Net, R_Net, O_Net
 from load_data import load_rgb, load_multi, show_result
 from utiles import getTime, getVol, getWavelen
 from processbar import ProcessBar
+from noise import gaussianNoise, signal_to_noise_ratio
 
 ORIGINSIZE = (1648, 1236)
-DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019_rename"
+DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019"
 DIRNAME    = "DATA{volidx}/{subidx}/{datatype}/{illumtype}/{datatype}_{posidx}_W1_{glass}"
 
 def init_detector():
@@ -181,6 +182,53 @@ def detect_size(detector, filelist, dsize):
         ## save result
         f.write(line)
 
+    f.close()
+
+def detect_noise(detector, filelist, noise_rate):
+    """
+    Params:
+        detector:   {MtcnnDetector}
+        filelist:   {list[str]}
+        dsize:      {tuple(w: int, h: int)}
+    """
+    dsize = (800, 600)
+
+    annodir = './anno'
+    if not os.path.exists(annodir):
+        os.mkdir(annodir)
+    annofile = os.path.join(annodir, '{}x{}_{}.txt'.format(dsize[0], dsize[1], noise_rate))
+    filelist = list(filter(lambda x: x.split('/')[2]=='Multi', filelist))
+
+    bar = ProcessBar(total_step=len(filelist), title='{:.2f} Almost D'.format(noise_rate))
+    f = open(annofile, 'w')
+    snr = []
+    
+    for filename in filelist:
+        bar.step()
+
+        ## read image
+        img = cv2.imread(os.path.join(DATAPATH, filename), cv2.IMREAD_ANYCOLOR)
+        img = cv2.resize(img, dsize)
+
+        ## add noise
+        image = gaussianNoise(img, 0, 75, noise_rate)
+        cv2.imshow("", image); cv2.waitKey(0)
+        snr += [signal_to_noise_ratio(img, image)]
+
+        image = image[:, :, np.newaxis]
+        image = np.concatenate([image, image, image], axis=2)
+        
+        ## detect
+        score, bbox, landmark = _detect_c3(detector, image)
+        score = "" if score is None else str(score)
+        bbox = "" if bbox is None else ' '.join(map(str, list(bbox)))
+        landmark = "" if landmark is None else ' '.join(map(str, list(landmark)))
+        line = "{} {} {} {}\n".format(filename, score, bbox, landmark)
+        
+        ## save result
+        f.write(line)
+
+    f.write("SNR: {:.6f}".format(np.mean(np.array(snr))))
     f.close()
 
 def detect_statistic(dsize):
