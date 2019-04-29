@@ -12,7 +12,7 @@ from processbar import ProcessBar
 from noise import gaussianNoise, signal_to_noise_ratio
 
 ORIGINSIZE = (1648, 1236)
-DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019"
+DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019_rename"
 DIRNAME    = "DATA{volidx}/{subidx}/{datatype}/{illumtype}/{datatype}_{posidx}_W1_{glass}"
 
 def init_detector():
