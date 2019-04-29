@@ -11,7 +11,7 @@ from utiles import getTime, getVol, getWavelen
 from processbar import ProcessBar
 
 ORIGINSIZE = (1648, 1236)
-DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019"
+DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019_rename"
 DIRNAME    = "DATA{volidx}/{subidx}/{datatype}/{illumtype}/{datatype}_{posidx}_W1_{glass}"
 
 def init_detector():
