@@ -17,7 +17,7 @@ DIRNAME    = "DATA{volidx}/{subidx}/{datatype}/{illumtype}/{datatype}_{posidx}_W
 
 def init_detector():
     thresh = [0.9, 0.6, 0.7]
-    min_face_size = 24
+    min_face_size = 12
     stride = 2
     slide_window = False
     detectors = [None, None, None]
