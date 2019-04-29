@@ -183,8 +183,43 @@ def detect_size(detector, filelist, dsize):
 
     f.close()
 
-if __name__ == "__main__":
-    detector = init_detector()
-    filelist = listFiles()
-    detect_size(detector, filelist, ORIGINSIZE)
+def detect_statistic(dsize):
+    """
+    Params:
+        dsize:      {tuple(w: int, h: int)}
+    """
+    annofile = "./anno/{}x{}.txt".format(dsize[0], dsize[1])
+    with open(annofile, 'r') as f:
+        anno_all = f.readlines()
+    anno_all = list(map(lambda x: x.strip().split(' '), anno_all))
+
+    ## 按图片数统计
+    anno_multi_image = list(filter(lambda x: x[0].split('/')[2]=='Multi', anno_all))
+    anno_rgb_image   = list(filter(lambda x: x[0].split('/')[2]=='RGB',   anno_all))
+    anno_multi_image_detected = list(filter(lambda x: len(x)!=1, anno_multi_image))
+    anno_rgb_image_detected   = list(filter(lambda x: len(x)!=1, anno_rgb_image  ))
+
+    n_multi = len(anno_multi_image)
+    n_rgb   = len(anno_rgb_image)
+    n_multi_detected = len(anno_multi_image_detected)
+    n_rgb_detected   = len(anno_rgb_image_detected)
+    multi_image_ratio = n_multi_detected / n_multi
+    rgb_image_ratio   = n_rgb_detected / n_rgb
+
+    ## 按张量统计
+    anno_multi_tensor = list(set(map(lambda x: '/'.join(x[0].split('/')[:-1]), anno_multi_image)))
+    anno_multi_tensor_detected = list(set(map(lambda x: '/'.join(x[0].split('/')[:-1]), anno_multi_image_detected)))
+
+    n_multi = len(anno_multi_tensor)
+    n_multi_detected = len(anno_multi_tensor_detected)
+    multi_tensor_ratio = n_multi_detected / n_multi
+    rgb_tensor_ratio = rgb_image_ratio
+
+    return multi_image_ratio, rgb_image_ratio, multi_tensor_ratio, rgb_tensor_ratio
     
+if __name__ == "__main__":
+    # detector = init_detector()
+    # filelist = listFiles()
+    # detect_size(detector, filelist, ORIGINSIZE)
+    # detect_statistic((400, 300))    
+    pass
