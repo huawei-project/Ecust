@@ -1,9 +1,10 @@
 import cv2
 import random
 import numpy as np
+import skimage
 from matplotlib import pyplot as plt
 
-#高斯噪声
+# 高斯噪声
 def gaussianNoise(src, means, sigma, percetage):
     dst = src.copy()
     num = int(percetage*src.shape[0]*src.shape[1])
@@ -14,6 +15,20 @@ def gaussianNoise(src, means, sigma, percetage):
         dst[dst<0] = 0
         dst[dst>255] = 255
     return dst
+
+# 椒盐噪声
+def spNoise(image, amount):
+    """ 
+    Parameters:
+        image:  {ndarray(H, W, C)}
+        amount: {float} roportion of image pixels to replace with noise on range [0, 1]
+    Notes:
+        Function to add random noise of various types to a floating-point image.
+    """
+    dtype = image.dtype
+    image = skimage.util.random_noise(image, mode='s&p', amount=amount)
+    image = (image * 255).astype(dtype)
+    return image
 
 def signal_to_noise_ratio(oriImg, noisedImg):
     
@@ -34,21 +49,31 @@ def drawGaussian(mean, sigma):
     plt.show()
 
 if __name__ == "__main__":
-    drawGaussian(0, 75)
 
-    img = cv2.imread('test.png')
-    img = cv2.resize(img, (160, 120)[::-1])
+    img = cv2.imread('/home/louishsu/Desktop/test.bmp')
+    img = cv2.resize(img, (120, 160)[::-1])
     img = cv2.cvtColor(img ,cv2.COLOR_BGR2GRAY)
-    img_01 = gaussianNoise(img, 0, 75, 0.1)
-    img_02 = gaussianNoise(img, 0, 75, 0.2)
-    img_03 = gaussianNoise(img, 0, 75, 0.3)
-    img_04 = gaussianNoise(img, 0, 75, 0.4)
-    img_05 = gaussianNoise(img, 0, 75, 0.5)
-    img_06 = gaussianNoise(img, 0, 75, 0.6)
-    img_07 = gaussianNoise(img, 0, 75, 0.7)
-    img_08 = gaussianNoise(img, 0, 75, 0.8)
-    img_09 = gaussianNoise(img, 0, 75, 0.9)
-    img_10 = gaussianNoise(img, 0, 75, 1.0)
+    # img_01 = gaussianNoise(img, 0, 75, 0.1)
+    # img_02 = gaussianNoise(img, 0, 75, 0.2)
+    # img_03 = gaussianNoise(img, 0, 75, 0.3)
+    # img_04 = gaussianNoise(img, 0, 75, 0.4)
+    # img_05 = gaussianNoise(img, 0, 75, 0.5)
+    # img_06 = gaussianNoise(img, 0, 75, 0.6)
+    # img_07 = gaussianNoise(img, 0, 75, 0.7)
+    # img_08 = gaussianNoise(img, 0, 75, 0.8)
+    # img_09 = gaussianNoise(img, 0, 75, 0.9)
+    # img_10 = gaussianNoise(img, 0, 75, 1.0)
+
+    img_01 = spNoise(img, 0.1)
+    img_02 = spNoise(img, 0.2)
+    img_03 = spNoise(img, 0.3)
+    img_04 = spNoise(img, 0.4)
+    img_05 = spNoise(img, 0.5)
+    img_06 = spNoise(img, 0.6)
+    img_07 = spNoise(img, 0.7)
+    img_08 = spNoise(img, 0.8)
+    img_09 = spNoise(img, 0.9)
+    img_10 = spNoise(img, 1.0)
 
     fig = plt.figure("images")
     sp1 = fig.add_subplot(431)
@@ -63,6 +88,12 @@ if __name__ == "__main__":
     sp5.imshow(img_05)
     sp6 = fig.add_subplot(436)
     sp6.imshow(img_06)
+    sp7 = fig.add_subplot(437)
+    sp7.imshow(img_07)
+    sp8 = fig.add_subplot(438)
+    sp8.imshow(img_08)
+    sp9 = fig.add_subplot(439)
+    sp9.imshow(img_09)
     plt.show()
 
     snr_01 = signal_to_noise_ratio(img, img_01)

@@ -14,14 +14,17 @@ def main_size():
         # print("{:.4%}\n{:.4%}\n{:.4%}\n{:.4%}\n".format(multi_image_ratio, rgb_image_ratio, multi_tensor_ratio, rgb_tensor_ratio))
 
 def main_noise():
+    
+    dsize = (120, 90)
+
     detector = init_detector()
     filelist = listFiles()
+    nrs = [0.02*(i+1) for i in range(5)] + [0.1*(i+2) for i in range(5)]
 
-    for i in range(10):
-        nr = 0.01*(i+1)
+    for nr in nrs:
         detect_noise(detector, filelist, nr)
 
 if __name__ == "__main__":
-    main_size()
-    # main_noise()
+    # main_size()
+    main_noise()
     

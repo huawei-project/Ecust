@@ -9,10 +9,11 @@ from models.mtcnn.models import P_Net, R_Net, O_Net
 from load_data import load_rgb, load_multi, show_result
 from utiles import getTime, getVol, getWavelen
 from processbar import ProcessBar
-from noise import gaussianNoise, signal_to_noise_ratio
+from noise import gaussianNoise, spNoise, signal_to_noise_ratio
 
 ORIGINSIZE = (1648, 1236)
-DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019_rename"
+# DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019_rename"
+DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019"
 DIRNAME    = "DATA{volidx}/{subidx}/{datatype}/{illumtype}/{datatype}_{posidx}_W1_{glass}"
 
 def init_detector():
@@ -191,7 +192,7 @@ def detect_noise(detector, filelist, noise_rate):
         filelist:   {list[str]}
         dsize:      {tuple(w: int, h: int)}
     """
-    dsize = (800, 600)
+    dsize = (120, 90)
 
     annodir = './anno'
     if not os.path.exists(annodir):
@@ -211,8 +212,9 @@ def detect_noise(detector, filelist, noise_rate):
         img = cv2.resize(img, dsize)
 
         ## add noise
-        image = gaussianNoise(img, 0, 75, noise_rate)
-        cv2.imshow("", image); cv2.waitKey(0)
+        # image = gaussianNoise(img, 0, 75, noise_rate)
+        image = spNoise(img, noise_rate)
+        cv2.imshow("", image); cv2.waitKey(1)
         snr += [signal_to_noise_ratio(img, image)]
 
         image = image[:, :, np.newaxis]
@@ -231,12 +233,16 @@ def detect_noise(detector, filelist, noise_rate):
     f.write("SNR: {:.6f}".format(np.mean(np.array(snr))))
     f.close()
 
-def detect_statistic(dsize):
+def detect_statistic(dsize, noise_rate=None):
     """
     Params:
         dsize:      {tuple(w: int, h: int)}
     """
-    annofile = "./anno/{}x{}.txt".format(dsize[0], dsize[1])
+    if noise_rate is None:
+        annofile = "./anno/{}x{}.txt".format(dsize[0], dsize[1])
+    else:
+        annofile = "./anno/{}x{}_{}.txt".format(dsize[0], dsize[1], noise_rate)
+
     with open(annofile, 'r') as f:
         anno_all = f.readlines()
     anno_all = list(map(lambda x: x.strip().split(' '), anno_all))
