@@ -1,6 +1,6 @@
 import os
 
-from detect import init_detector, detect_size, detect_noise, listFiles, detect_statistic
+from detect import init_detector, detect_size, detect_noise, listFiles, detect_statistic_size, detect_statistic_noise
 
 def main_size():
     detector = init_detector()
@@ -10,7 +10,7 @@ def main_size():
     for dsize in [(160, 120), (140, 105), (120, 90), (100, 75), (80, 60), (60, 45), (40, 30)]:
         print("dsize: {}x{}".format(dsize[0], dsize[1]))
         detect_size(detector, filelist, dsize)
-        # multi_image_ratio, rgb_image_ratio, multi_tensor_ratio, rgb_tensor_ratio = detect_statistic(dsize)
+        # multi_image_ratio, rgb_image_ratio, multi_tensor_ratio, rgb_tensor_ratio = detect_statistic_size(dsize)
         # print("{:.4%}\n{:.4%}\n{:.4%}\n{:.4%}\n".format(multi_image_ratio, rgb_image_ratio, multi_tensor_ratio, rgb_tensor_ratio))
 
 def main_noise():
@@ -19,10 +19,13 @@ def main_noise():
 
     detector = init_detector()
     filelist = listFiles()
-    nrs = [0.02*(i+1) for i in range(5)] + [0.1*(i+2) for i in range(5)]
+#     nrs = [0.02*(i+1) for i in range(5)] + [0.1*(i+2) for i in range(5)]
+    nrs = [0.002*(i+1) for i in range(9)]
 
     for nr in nrs:
-        detect_noise(detector, filelist, nr)
+        detect_noise(detector, filelist, dsize, nr)
+        # multi_image_ratio, multi_tensor_ratio = detect_statistic_noise(dsize, noise_rate=nr)
+        # print("{:.4%}\n{:.4%}\n".format(multi_image_ratio, multi_tensor_ratio))
 
 if __name__ == "__main__":
     # main_size()

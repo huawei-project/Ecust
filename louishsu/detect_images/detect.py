@@ -12,8 +12,8 @@ from processbar import ProcessBar
 from noise import gaussianNoise, spNoise, signal_to_noise_ratio
 
 ORIGINSIZE = (1648, 1236)
-# DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019_rename"
-DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019"
+DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019_rename"
+# DATAPATH   = "/home/louishsu/Work/Workspace/ECUST2019"
 DIRNAME    = "DATA{volidx}/{subidx}/{datatype}/{illumtype}/{datatype}_{posidx}_W1_{glass}"
 
 def init_detector():
@@ -185,14 +185,13 @@ def detect_size(detector, filelist, dsize):
 
     f.close()
 
-def detect_noise(detector, filelist, noise_rate):
+def detect_noise(detector, filelist, dsize, noise_rate):
     """
     Params:
         detector:   {MtcnnDetector}
         filelist:   {list[str]}
         dsize:      {tuple(w: int, h: int)}
     """
-    dsize = (120, 90)
 
     annodir = './anno'
     if not os.path.exists(annodir):
@@ -214,7 +213,7 @@ def detect_noise(detector, filelist, noise_rate):
         ## add noise
         # image = gaussianNoise(img, 0, 75, noise_rate)
         image = spNoise(img, noise_rate)
-        cv2.imshow("", image); cv2.waitKey(1)
+        # cv2.imshow("", image); cv2.waitKey(1)
         snr += [signal_to_noise_ratio(img, image)]
 
         image = image[:, :, np.newaxis]
@@ -233,15 +232,12 @@ def detect_noise(detector, filelist, noise_rate):
     f.write("SNR: {:.6f}".format(np.mean(np.array(snr))))
     f.close()
 
-def detect_statistic(dsize, noise_rate=None):
+def detect_statistic_size(dsize):
     """
     Params:
         dsize:      {tuple(w: int, h: int)}
     """
-    if noise_rate is None:
-        annofile = "./anno/{}x{}.txt".format(dsize[0], dsize[1])
-    else:
-        annofile = "./anno/{}x{}_{}.txt".format(dsize[0], dsize[1], noise_rate)
+    annofile = "./anno/{}x{}.txt".format(dsize[0], dsize[1])
 
     with open(annofile, 'r') as f:
         anno_all = f.readlines()
@@ -270,6 +266,33 @@ def detect_statistic(dsize, noise_rate=None):
     rgb_tensor_ratio = rgb_image_ratio
 
     return multi_image_ratio, rgb_image_ratio, multi_tensor_ratio, rgb_tensor_ratio
+
+def detect_statistic_noise(dsize, noise_rate):
+    annofile = "./anno/{}x{}_{}.txt".format(dsize[0], dsize[1], noise_rate)
+
+    with open(annofile, 'r') as f:
+        anno_all = f.readlines()
+        print(anno_all[-1])
+        anno_all = anno_all[:-1]
+    anno_all = list(map(lambda x: x.strip().split(' '), anno_all))
+
+    ## 按图片数统计
+    anno_multi_image = list(filter(lambda x: x[0].split('/')[2]=='Multi', anno_all))
+    anno_multi_image_detected = list(filter(lambda x: len(x)!=1, anno_multi_image))
+
+    n_multi = len(anno_multi_image)
+    n_multi_detected = len(anno_multi_image_detected)
+    multi_image_ratio = n_multi_detected / n_multi
+
+    ## 按张量统计
+    anno_multi_tensor = list(set(map(lambda x: '/'.join(x[0].split('/')[:-1]), anno_multi_image)))
+    anno_multi_tensor_detected = list(set(map(lambda x: '/'.join(x[0].split('/')[:-1]), anno_multi_image_detected)))
+
+    n_multi = len(anno_multi_tensor)
+    n_multi_detected = len(anno_multi_tensor_detected)
+    multi_tensor_ratio = n_multi_detected / n_multi
+
+    return multi_image_ratio, multi_tensor_ratio
     
 if __name__ == "__main__":
     # detector = init_detector()
