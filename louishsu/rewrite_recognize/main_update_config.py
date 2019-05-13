@@ -188,7 +188,8 @@ def main_several_channels():
             configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_{}_{}subjects_models'.\
                                             format(configer.modelbase, configer.splitmode, configer.n_class)
 
-
+            train(configer)
+            test(configer)
 
 def main_several_channels_k_fold(k=5):
 
@@ -768,6 +769,9 @@ def main_spectral_resolution():
             configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_{}_{}subjects_models'.\
                                             format(configer.modelbase, configer.splitmode, configer.n_class)
 
+            train(configer)
+            test(configer)
+            
 if __name__ == "__main__":
 
     # main_finetune_channels()
