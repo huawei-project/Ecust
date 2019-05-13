@@ -721,7 +721,7 @@ def main_spectral_resolution():
     # 光谱分辨率验证
     # 依次以1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ..., 23 为间隔选取
     # 划分比例为 0.6: 0.2: 0.2
-    CHANNEL_SORT = [i + 1 for i in range(23)]
+    CHANNEL_SORT = [550 + 20*i for i in range(23)]
     
     for splitidx in range(1, 6):
         usedChannelsList = [CHANNEL_SORT[::i+1] for i in range(22)]
@@ -771,7 +771,7 @@ def main_spectral_resolution():
 
             train(configer)
             test(configer)
-            
+
 if __name__ == "__main__":
 
     # main_finetune_channels()
