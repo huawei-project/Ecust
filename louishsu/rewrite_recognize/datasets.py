@@ -99,9 +99,9 @@ class RecognizeDataset(Dataset):
         
         image = ToTensor()(image)
         
-        X = image[0].numpy()
-        cv2.imshow("", X)
-        cv2.waitKey(0)
+        # X = image[0].numpy()
+        # cv2.imshow("", X)
+        # cv2.waitKey(0)
 
         return image
     
