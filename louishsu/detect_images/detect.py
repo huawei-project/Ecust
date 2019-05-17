@@ -293,10 +293,54 @@ def detect_statistic_noise(dsize, noise_rate):
     multi_tensor_ratio = n_multi_detected / n_multi
 
     return multi_image_ratio, multi_tensor_ratio
+
+def detect_statistic_spectral_resolution(dsize):
+    annofile = "./anno/{}x{}.txt".format(dsize[0], dsize[1])
+
+    with open(annofile, 'r') as f:
+        anno_all = f.readlines()
+    anno_all = map(lambda x: x.strip().split(' '), anno_all)
+
+    ## 按图片数统计
+    anno_multi_image = list(filter(lambda x: x[0].split('/')[2]=='Multi', anno_all))
+    anno_multi_image_detected = list(filter(lambda x: len(x)!=1, anno_multi_image))
+    anno_multi_image = list(map(lambda x: x[0], anno_multi_image))
+    anno_multi_image_detected = list(map(lambda x: x[0], anno_multi_image_detected))
+
+    CHANNEL_SORT = [550 + 20*i for i in range(23)]
+    channelsList = [CHANNEL_SORT[::i+1] for i in range(22)]
+    dict_saved = dict()
+    for channels in channelsList:
+
+        anno_multi_image_sub = list(filter(lambda x: int(x.split('.')[0].split('_')[-1]) in channels, anno_multi_image))
+        anno_multi_image_detected_sub = list(filter(lambda x: int(x.split('.')[0].split('_')[-1]) in channels, anno_multi_image_detected))
+
+        ## 按张量统计
+        anno_multi_tensor = list(set(map(lambda x: '/'.join(x.split('/')[:-1]), anno_multi_image_sub)))
+        anno_multi_tensor_detected = list(set(map(lambda x: '/'.join(x.split('/')[:-1]), anno_multi_image_detected_sub)))
+
+        n_multi = len(anno_multi_tensor)
+        n_multi_detected = len(anno_multi_tensor_detected)
+        multi_tensor_ratio = n_multi_detected / n_multi
+        
+        dict_saved[channels[1] - channels[0]] = multi_tensor_ratio
     
+    return dict_saved
+
 if __name__ == "__main__":
     # detector = init_detector()
     # filelist = listFiles()
     # detect_size(detector, filelist, ORIGINSIZE)
-    # detect_statistic((400, 300))    
-    pass
+    # detect_statistic((400, 300))
+    
+    resolutions = [(40+20*i, 30+15*i) for i in range(9)] + [(400+200*i, 300+150*i) for i in range(6)] + [(1648, 1236)]
+    for resolution in resolutions:
+        
+        res = detect_statistic_spectral_resolution(resolution)
+
+        print(resolution)
+        res = sorted(res.items(), key = lambda x: x[0])
+        for k, v in res:
+            print(v)
+
+        print()
