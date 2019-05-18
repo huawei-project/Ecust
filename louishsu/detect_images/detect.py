@@ -327,20 +327,52 @@ def detect_statistic_spectral_resolution(dsize):
     
     return dict_saved
 
+def detect_list_bad(dsize):
+    """
+    Params:
+        dsize:      {tuple(w: int, h: int)}
+    """
+    annofile = "./anno/{}x{}.txt".format(dsize[0], dsize[1])
+
+    with open(annofile, 'r') as f:
+        anno_all = f.readlines()
+    anno_all = list(map(lambda x: x.strip().split(' '), anno_all))
+
+    ## 按图片数统计
+    anno_multi_image = list(filter(lambda x: x[0].split('/')[2]=='Multi', anno_all))
+    anno_multi_image_not_detected = list(filter(lambda x: len(x)==1, anno_multi_image))
+    sorted(anno_multi_image_not_detected, key=lambda x: int(x.split('/')[1]))
+
+    anno_multi_tensor = list(set(map(lambda x: '/'.join(x[0].split('/')[:-1]), anno_multi_image)))
+    anno_multi_tensor_not_detected = list(set(map(lambda x: '/'.join(x[0].split('/')[:-1]), anno_multi_image_not_detected)))
+    sorted(anno_multi_tensor_not_detected, key=lambda x: int(x.split('/')[1]))
+    
+    anno_rgb_image   = list(filter(lambda x: x[0].split('/')[2]=='RGB',   anno_all))
+    anno_rgb_image_not_detected   = list(filter(lambda x: len(x)==1, anno_rgb_image  ))
+    sorted(anno_rgb_image_not_detected, key=lambda x: int(x.split('/')[1]))
+
+    return anno_multi_image_not_detected, anno_multi_tensor_not_detected, anno_rgb_image_not_detected
+
+
 if __name__ == "__main__":
     # detector = init_detector()
     # filelist = listFiles()
     # detect_size(detector, filelist, ORIGINSIZE)
     # detect_statistic((400, 300))
     
-    resolutions = [(40+20*i, 30+15*i) for i in range(9)] + [(400+200*i, 300+150*i) for i in range(6)] + [(1648, 1236)]
-    for resolution in resolutions:
+
+    # resolutions = [(40+20*i, 30+15*i) for i in range(9)] + [(400+200*i, 300+150*i) for i in range(6)] + [(1648, 1236)]
+    # for resolution in resolutions:
         
-        res = detect_statistic_spectral_resolution(resolution)
+    #     res = detect_statistic_spectral_resolution(resolution)
 
-        print(resolution)
-        res = sorted(res.items(), key = lambda x: x[0])
-        for k, v in res:
-            print(v)
+    #     print(resolution)
+    #     res = sorted(res.items(), key = lambda x: x[0])
+    #     for k, v in res:
+    #         print(v)
 
-        print()
+    #     print()
+
+
+    a, b, c = detect_list_bad((1648, 1236))
+    print("\n".join(b))
