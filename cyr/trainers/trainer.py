@@ -36,7 +36,7 @@ class Trainer(object):
         self.batch_size = batch_size
         self.batch_size_valid = batch_size_valid
         self.max_epochs = max_epochs
-        self.test_freq = test_freq  # 0 means don't test during training
+        self.test_freq = test_freq  # use 0 to disable test during training
         self.use_gpu = use_gpu
         self.resume = resume
         self.sets = sets
@@ -51,10 +51,10 @@ class Trainer(object):
         # Dataloader
         self.trainset = self.datasets[self.sets[0]]
         self.trainloader = DataLoader(self.trainset, self.batch_size,
-                                      shuffle=True, num_workers=8, drop_last=False)
+                                      shuffle=True, num_workers=2, drop_last=False)
         self.validset = self.datasets[self.sets[1]]
         self.validloader = DataLoader(self.validset, self.batch_size_valid,
-                                      shuffle=False, num_workers=8, drop_last=False)
+                                      shuffle=False, num_workers=2, drop_last=False)
         if 'test' in self.sets:
             self.testset = self.datasets[self.sets[2]]
             self.testloader = DataLoader(self.testset, 1, shuffle=False)
@@ -66,16 +66,16 @@ class Trainer(object):
             raise Exception("Workspace dir doesn't exist!")
         if self.log_dir is not None:
             if not os.path.exists(self.log_dir):
-                os.makedirs(self.log_dir)
+                os.mkdir(self.log_dir)
             logging = init_log(self.log_dir)
             self.print = logging.info
-            self.print("Log dir: {}".format(self.log_dir))
         else:
             self.print = print
 
     def train(self):
         """Do training, you can overload this function according to your need."""
         torch.backends.cudnn.benchmark = True
+        self.print("Log dir: {}".format(self.log_dir))
         # Calculate total step
         self.n_train = len(self.trainset)
         self.steps_per_epoch = np.ceil(
@@ -199,12 +199,16 @@ class Trainer(object):
             raise Exception("Resume doesn't exist!")
 
     def load_checkpoint(self, checkpoint=None, finetune=False):
-        """Loads a network checkpoint file.
-        Can be called in two different ways:
-            load_checkpoint(epoch_num):
-                Loads the network at the given epoch number (int).
-            load_checkpoint(path_to_checkpoint):
-                Loads the file from the given absolute path (str).
+        """checkpoint:
+                Loads a network checkpoint file. Can be called in two different ways:
+                    load_checkpoint(epoch_num):
+                        Loads the network at the given epoch number (int).
+                    load_checkpoint(path_to_checkpoint):
+                        Loads the file from the given absolute path (str).
+            finetune:
+                If finetune=True, load the pretrained model and start training from epoch 1,
+                else reload the model and restart training from the breakpoint. IT IS NOTED THAT
+                you must initialize the optimizer and lr_scheduler after execute this function!
         """
         net_type = type(self.net).__name__
         if isinstance(checkpoint, int):
@@ -223,18 +227,24 @@ class Trainer(object):
             checkpoint_path, map_location={'cuda:1': 'cuda:0'})
         #assert net_type == checkpoint_dict['net_type'], 'Network is not of correct type.'
         if finetune:
+            net_state_dict = self.net.state_dict()
+            new_model_dict = {key: value for key, value in checkpoint_dict['net'].items()
+                              if key in net_state_dict and value.shape == net_state_dict[key].shape}
+            net_state_dict.update(new_model_dict)
             start_epoch = 1
             best_acc = 0
         else:
+            net_state_dict = checkpoint_dict['net']
             start_epoch = checkpoint_dict['epoch'] + 1
             best_acc = checkpoint_dict['acc']
+            self.optimizer.load_state_dict(checkpoint_dict['optimizer'])
+            if 'lr_scheduler' in checkpoint_dict:
+                self.lr_scheduler.load_state_dict(
+                    checkpoint_dict['lr_scheduler'])
+                self.lr_scheduler.last_epoch = start_epoch - 1
         self.start_epoch = start_epoch
         self.best_acc = best_acc
-        self.net.load_state_dict(checkpoint_dict['net'])
-        self.optimizer.load_state_dict(checkpoint_dict['optimizer'])
-        if 'lr_scheduler' in checkpoint_dict:
-            self.lr_scheduler.load_state_dict(checkpoint_dict['lr_scheduler'])
-            self.lr_scheduler.last_epoch = start_epoch - 1
+        self.net.load_state_dict(net_state_dict)
         self.stats = checkpoint_dict['stats']
         self.use_gpu = checkpoint_dict['use_gpu']
         return True

@@ -3,10 +3,11 @@ from torch import nn
 from models.mobilefacenet import MobileFacenet
 from dataloader.CASIA_Face_loader import CASIA_Face
 from dataloader.LFW_loader import LFW
-from dataloader.HyperECUST_loader import HyperECUST_FV, HyperECUST_FI
+from dataloader.HyperECUST_loader import HyperECUST_FV, HyperECUST_FI, HyperECUST_FI_MI, HyperECUST_FV_MI
 from trainers.faceverification_trainer import MobileFacenetTrainer
 from utils.faceverification_utils import Evaluation_10_fold
 from torch.optim import lr_scheduler
+import torch
 import torch.optim as optim
 import numpy as np
 # gpu init
@@ -20,7 +21,7 @@ LFW_txt = '~/yrc/myFile/sphereface/test/data/pairs.txt'
 ECUST_path = '~/myDataset/ECUST_112x96'
 
 
-def main(split=13, fold=0, s=0):
+def main(split=14, fold=0, c=12, bands=None):
     params = {
         'trainset_path': ECUST_path,
         'trainset_txt': '~/yrc/myFile/huaweiproj/code/cyr/datasets/face_verification_split/split_{}/train_fold_{}.txt'.format(split, fold),
@@ -30,30 +31,30 @@ def main(split=13, fold=0, s=0):
         # '~/yrc/myFile/huaweiproj/code/cyr/datasets/face_verfication_split/split_1/pairs.txt',
         'testset_path': ECUST_path,
         'testset_txt': '~/yrc/myFile/huaweiproj/code/cyr/datasets/face_verification_split/split_{}/pairs_fold_{}.txt'.format(split, fold),
-        #'~/yrc/myFile/huaweiproj/code/datasets/cyr/face_verfication_split/split_{}/pairs_exp_{}.txt'.format(split, 0),
-        'workspace_dir': '~/yrc/myFile/huaweiproj/code/cyr/workspace/112x96_noise_{}'.format(s),
+        #'~/yrc/myFile/huaweiproj/code/cyr/datasets/face_verfication_split/split_{}/pairs_exp_{}.txt'.format(split, 0),
+        'workspace_dir': '~/yrc/myFile/huaweiproj/code/cyr/workspace/112x96_{}'.format(c),
         'log_dir': 'MobileFacenet_HyperECUST_fold_{}'.format(fold),
         #'MobileFacenet_split_{}_exp_{}'.format(split, 0),
-        'batch_size': 256,
-        'batch_size_valid': 256,
-        'max_epochs': 20,
+        'batch_size': 21,
+        'batch_size_valid': 32,
+        'max_epochs': 40,
         'num_classes': 33,
         'use_gpu': True,
         'height': 112,
         'width': 96,
         'test_freq': 1,
-        'resume': './workspace/112x96/MobileFacenet_HyperECUST_fold_{}/MobileFacenet_best.pkl'.format(fold),
-        #'./workspace/MobileFacenet_CASIA_Face/MobileFacenet_best.pkl'
+        'resume': './workspace/MobileFacenet_CASIA_Face/MobileFacenet_best.pkl'
+        #'./workspace/'  + '/MobileFacenet_HyperECUST_fold_{}/MobileFacenet_best.pkl'.format(fold),
         #'./workspace/' + resolution + '/MobileFacenet/MobileFacenet_best.pkl'
         #'./workspace/MobileFacenet_split_{}_exp_{}/MobileFacenet_best.pkl'.format(split, 0)
     }
     # Dataset
-    trainset = HyperECUST_FI(params['trainset_path'],
-                             params['trainset_txt'])
-    validset = HyperECUST_FV(params['validset_path'],
-                             params['validset_txt'], snr=1 - s)
-    testset = HyperECUST_FV(params['testset_path'],
-                            params['testset_txt'], snr=1 - s)
+    trainset = HyperECUST_FI_MI(params['trainset_path'], params['trainset_txt'],
+                                bands=bands)
+    validset = HyperECUST_FV_MI(params['validset_path'], params['validset_txt'],
+                                bands=bands)
+    testset = HyperECUST_FV_MI(params['testset_path'], params['testset_txt'],
+                               bands=bands)
     datasets = {'train': trainset, 'valid': validset, 'test': testset}
     # Define model
     net = MobileFacenet(trainset.class_nums)
@@ -95,10 +96,10 @@ def main(split=13, fold=0, s=0):
     # return
 
     # Evaluate one epoch
-    Trainer.reload()
-    acc, threshold, _ = Trainer.eval_epoch(filename='valid_result.mat')
-    print("acc {:.4f}, threshold {:.4f}".format(acc, threshold))
-    return
+    # Trainer.reload()
+    # acc, threshold, _ = Trainer.eval_epoch(filename='valid_result.mat')
+    # print("acc {:.4f}, threshold {:.4f}".format(acc, threshold))
+    # return
 
     # Test model
     # Trainer.load_checkpoint(params['resume'])
@@ -107,9 +108,17 @@ def main(split=13, fold=0, s=0):
 
     # Finetune
     # Load the pretrained model
-    # @ Note: the optimizer and lr_scheduler should be redefined if execute Trainer.reload(True),
+    # @Note: the optimizer and lr_scheduler should be redefined if execute Trainer.reload(True),
     Trainer.reload(finetune=True)
     net = Trainer.net
+    # modify the weigth of conv1
+    w = net.conv1.conv.weight
+    if c == 5:
+        new_w = torch.cat((w, w[:, :2, :, :]), 1)
+    else:
+        new_w = w.repeat(1, c // 3, 1, 1)
+    net.conv1.conv.weight.data = new_w
+    print(net.conv1.conv.weight.shape)
     # Define optimizers
     ignored_params = list(map(id, net.linear1.parameters()))
     ignored_params += [id(net.weight)]
@@ -127,7 +136,7 @@ def main(split=13, fold=0, s=0):
         {'params': prelu_params, 'weight_decay': 0.0}
     ], lr=0.01, momentum=0.9, nesterov=True)
     exp_lr_scheduler = lr_scheduler.MultiStepLR(
-        optimizer, milestones=[12], gamma=0.1)
+        optimizer, milestones=[24, 36], gamma=0.1)
 
     Trainer.optimizer = optimizer
     Trainer.lr_scheduler = exp_lr_scheduler
@@ -139,7 +148,16 @@ def main(split=13, fold=0, s=0):
 # -----------------------------------------------------------------------------------
 if __name__ == '__main__':
     # main()
-    for s in [0.006, 0.008, 0.010, 0.012, 0.014, 0.016, 0.018, 0.020, 0.04, 0.06]:
+    bands1 = np.arange(590, 991, 20)
+    bands2 = np.arange(550, 991, 40)
+    bands3 = [550, 610, 670, 730, 790, 850, 910, 970, 990]
+    bands4 = np.arange(570, 991, 80)
+    bands5 = np.arange(550, 991, 100)
+    choice = [bands1, bands5]
+    channel = [21, 5]
+    for j in range(len(choice)):
+        bands = choice[j]
+        c = channel[j]
         for i in range(5):
-            print('---------fold_{}_snr_{}---------'.format(i, s))
-            main(fold=i, s=s)
+            print('---------fold_{}_c_{}---------'.format(i, c))
+            main(fold=i, c=c, bands=bands)

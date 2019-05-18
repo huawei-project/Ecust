@@ -5,16 +5,18 @@
 """
 import numpy as np
 import scipy.misc
+import cv2
 import torch
 import os
 from torchvision.transforms import ToTensor
 
 
 class LFW(object):
-    def __init__(self, dataset_path, pairs_path):
+    def __init__(self, dataset_path, pairs_path, facesize=None):
 
         self.dataset_path = os.path.expanduser(dataset_path)
         self.pairs_path = os.path.expanduser(pairs_path)
+        self.facesize = facesize
         self.parseList(self.pairs_path)
 
     def parseList(self, root):
@@ -48,13 +50,24 @@ class LFW(object):
         return
 
     def __getitem__(self, index):
-        imgl = scipy.misc.imread(self.nameLs[index])
+        #imgl = scipy.misc.imread(self.nameLs[index])
+        imgl = cv2.imread(self.nameLs[index], cv2.IMREAD_COLOR)
+        if imgl is None:
+            print(self.nameLs[index])
+            raise ValueError
+        if self.facesize is not None:
+            imgl = cv2.resize(imgl, self.facesize[::-1])
         if len(imgl.shape) == 2:
             imgl = np.stack([imgl] * 3, 2)
-        imgr = scipy.misc.imread(self.nameRs[index])
+        #imgr = scipy.misc.imread(self.nameRs[index])
+        imgr = cv2.imread(self.nameRs[index], cv2.IMREAD_COLOR)
+        if imgr is None:
+            print(self.nameRs[index])
+            raise ValueError
+        if self.facesize is not None:
+            imgr = cv2.resize(imgr, self.facesize[::-1])
         if len(imgr.shape) == 2:
             imgr = np.stack([imgr] * 3, 2)
-
         imglist = [imgl, imgl[:, ::-1, :], imgr, imgr[:, ::-1, :]]
         for i in range(len(imglist)):
             imglist[i] = (imglist[i] - 127.5) / 128.0

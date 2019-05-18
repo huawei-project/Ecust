@@ -4,94 +4,139 @@ import numpy as np
 import scipy.io
 
 
-def getAccuracy(scores, flags, threshold):
-    p = np.sum(scores[flags == 1] > threshold)
-    n = np.sum(scores[flags == -1] < threshold)
-    return 1.0 * (p + n) / len(scores)
+def getAccuracy(scores, labels, threshold, weighted=False):
+    """
+        params:
+            scores: shape (n_sample, )
+            labels: shape (n_sample, )
+            threshold: scalar
+            weighted: assign the weights of positive and negative acc according to their number of samples
+    """
+    w_p = 2 / len(scores)
+    w_n = 2 / len(scores)
+    if weighted:
+        w_p = 1 / len(scores[labels == 1])
+        w_n = 1 / len(scores[labels == -1])
+    p = np.sum(scores[labels == 1] > threshold)
+    n = np.sum(scores[labels == -1] < threshold)
+    return (p * w_p + n * w_n) / 2
 
 
-def getThreshold(scores, flags, thrNum):
+def getThreshold(scores, labels, thrNum, weighted):
     accuracys = np.zeros((2 * thrNum + 1, 1))
     thresholds = np.arange(-thrNum, thrNum + 1) * 1.0 / thrNum
     for i in range(2 * thrNum + 1):
-        accuracys[i] = getAccuracy(scores, flags, thresholds[i])
-
+        accuracys[i] = getAccuracy(scores, labels, thresholds[i], weighted)
     max_index = np.squeeze(accuracys == np.max(accuracys))
     bestThreshold = np.mean(thresholds[max_index])
     return bestThreshold
 
 
-def Evaluation_10_fold(root='./result/pytorch_result.mat'):
+def Evaluation_10_fold(fLs, fRs, labels, weighted=False, arc=True):
+    """
+        params: fLs, fRs: shape (n_sample, feature_dim)
+        params: labels: shape (n_sample,)
+        params: arc: scores = cos(fLs, fRs), else scores = norm(fLs, fRs)
+    """
+    if arc:
+        fLs = fLs / np.sqrt(np.sum(fLs**2, 1, keepdims=True))
+        fRs = fRs / np.sqrt(np.sum(fRs**2, 1, keepdims=True))
+        scores = np.sum(np.multiply(fLs, fRs), 1)
+    else:
+        dim = fLs.shape[1]
+        scores = ((fLs - fRs)**2).sum(-1) / dim
     ACCs = np.zeros(10)
     Thresholds = np.zeros(10)
-    result = scipy.io.loadmat(root)
+    predictions = np.zeros_like(labels)
+
+    n_pos = (labels == 1).sum()
+    n_neg = (labels == -1).sum()
+
+    print("Total samples {}, positive samples {}, negative samples {}".format(
+        len(fLs), n_pos, n_neg))
+    n_pos_f = int(np.ceil(n_pos / 10))
+    n_neg_f = int(np.ceil(n_neg / 10))
+    idx_pos = np.where(labels == 1)[0]
+    idx_neg = np.where(labels == -1)[0]
+    predictions = np.zeros_like(labels)
+    Thresholds = np.zeros(10)
+    ACCs = np.zeros(10)
+    Folds = np.zeros_like(scores)
     for i in range(10):
-        fold = result['fold']
-        flags = result['flag']
-        featureLs = result['fl']
-        featureRs = result['fr']
+        idx_pos_val = idx_pos[n_pos_f:]
+        idx_pos_test = idx_pos[:n_pos_f]
+        idx_neg_val = idx_neg[n_neg_f:]
+        idx_neg_test = idx_neg[:n_neg_f]
+        valFold = np.concatenate((idx_pos_val, idx_neg_val), 0)
+        testFold = np.concatenate((idx_pos_test, idx_neg_test), 0)
+        Folds[testFold] = i
 
-        valFold = fold != i
-        testFold = fold == i
-        flags = np.squeeze(flags)
+        scores_val = scores[valFold]
+        scores_test = scores[testFold]
+        labels_val = labels[valFold]
+        labels_test = labels[testFold]
+        Thresholds[i] = getThreshold(scores_val, labels_val, 1000, weighted)
+        ACCs[i] = getAccuracy(scores_test, labels_test, Thresholds[i])
+        predictions[idx_pos_test] = scores[idx_pos_test] > Thresholds[i]
+        predictions[idx_neg_test] = scores[idx_neg_test] < Thresholds[i]
+        print('---{}---'.format(i))
+        print('pos val {} pos test {}, neg val {} neg test {}.'.format(
+            len(idx_pos_val), len(idx_pos_test), len(idx_neg_val), len(idx_neg_test)))
+        print('fold {}, acc {:.4f}, threshold {:.4f}'.format(
+            i, ACCs[i], Thresholds[i]))
+        idx_pos = np.concatenate((idx_pos[n_pos_f:], idx_pos[:n_pos_f]), 0)
+        idx_neg = np.concatenate((idx_neg[n_neg_f:], idx_neg[:n_neg_f]), 0)
 
-        mu = np.mean(np.concatenate(
-            (featureLs[valFold[0], :], featureRs[valFold[0], :]), 0), 0, keepdims=True)
-        featureLs = featureLs - mu
-        featureRs = featureRs - mu
-        featureLs = featureLs / np.sqrt(np.sum(featureLs**2, 1, keepdims=True))
-        featureRs = featureRs / np.sqrt(np.sum(featureRs**2, 1, keepdims=True))
-
-        scores = np.sum(np.multiply(featureLs, featureRs), 1)
-        Thresholds[i] = getThreshold(
-            scores[valFold[0]], flags[valFold[0]], 10000)
-        ACCs[i] = getAccuracy(scores[testFold[0]],
-                              flags[testFold[0]], Thresholds[i])
-        #     print('{}    {:.2f}'.format(i+1, ACCs[i] * 100))
-        # print('--------')
-        # print('AVE    {:.2f}'.format(np.mean(ACCs) * 100))
-    return ACCs, Thresholds
+    return ACCs, Thresholds, scores, predictions, Folds
 
 
-def getFeatureFromTorch(lfw_dir, feature_save_dir, resume=None, gpu=True):
-    net = model.MobileFacenet()
-    if gpu:
-        net = net.cuda()
-    if resume:
-        ckpt = torch.load(resume)
-        net.load_state_dict(ckpt['net_state_dict'])
-        net.eval()
-        nl, nr, flods, flags = parseList(lfw_dir)
-        lfw_dataset = LFW(nl, nr)
-        lfw_loader = torch.utils.data.DataLoader(
-            lfw_dataset, batch_size=32, shuffle=False, num_workers=8, drop_last=False)
+def EvaluationLDA_10_fold(fLs, fRs, labels, weighted=False):
+    """
+        params: fLs, fRs: shape (n_sample, feature_dim)
+        params: labels: shape (n_sample,)
+    """
+    N = fLs.shape[0]
+    scores = (fLs - fRs).sum(-1)
+    ACCs = np.zeros(10)
+    Thresholds = np.zeros(10)
+    predictions = np.zeros_like(labels)
 
-    featureLs = None
-    featureRs = None
-    count = 0
+    n_pos = (labels == 1).sum()
+    n_neg = (labels == -1).sum()
+    n_pos_f = int(np.ceil(n_pos / 10))
+    n_neg_f = int(np.ceil(n_neg / 10))
+    idx_pos = np.where(labels == 1)[0]
+    idx_neg = np.where(labels == -1)[0]
+    predictions = np.zeros_like(labels)
+    Thresholds = np.zeros(10)
+    ACCs = np.zeros(10)
+    Folds = np.zeros_like(scores)
+    for i in range(10):
+        idx_pos_val = idx_pos[n_pos_f:]
+        idx_pos_test = idx_pos[:n_pos_f]
+        idx_neg_val = idx_neg[n_neg_f:]
+        idx_neg_test = idx_neg[:n_neg_f]
+        valFold = np.concatenate((idx_pos_val, idx_neg_val), 0)
+        testFold = np.concatenate((idx_pos_test, idx_neg_test), 0)
+        Folds[testFold] = i
 
-    for data in lfw_loader:
-        if gpu:
-            for i in range(len(data)):
-                data[i] = data[i].cuda()
-    count += data[0].size(0)
-    print('extracing deep features from the face pair {}...'.format(count))
-    res = [net(d).data.cpu().numpy()for d in data]
-    featureL = np.concatenate((res[0], res[1]), 1)
-    featureR = np.concatenate((res[2], res[3]), 1)
-    if featureLs is None:
-        featureLs = featureL
-    else:
-        featureLs = np.concatenate((featureLs, featureL), 0)
-    if featureRs is None:
-        featureRs = featureR
-    else:
-        featureRs = np.concatenate((featureRs, featureR), 0)
-    # featureLs.append(featureL)
-    # featureRs.append(featureR)
+        scores_val = scores[valFold]
+        scores_test = scores[testFold]
+        labels_val = labels[valFold]
+        labels_test = labels[testFold]
+        Thresholds[i] = getThreshold(scores_val, labels_val, 1000, weighted)
+        ACCs[i] = getAccuracy(scores_test, labels_test, Thresholds[i])
+        predictions[idx_pos_test] = scores[idx_pos_test] > 0.3
+        predictions[idx_neg_test] = scores[idx_neg_test] < 0.3
+        print('---{}---'.format(i))
+        print('pos val {} pos test {}, neg val {} neg test {}.'.format(
+            len(idx_pos_val), len(idx_pos_test), len(idx_neg_val), len(idx_neg_test)))
+        print('fold {}, acc {:.4f}, threshold {:.4f}'.format(
+            i, ACCs[i], Thresholds[i]))
+        idx_pos = np.concatenate((idx_pos[n_pos_f:], idx_pos[:n_pos_f]), 0)
+        idx_neg = np.concatenate((idx_neg[n_neg_f:], idx_neg[:n_neg_f]), 0)
 
-    result = {'fl': featureLs, 'fr': featureRs, 'fold': flods, 'flag': flags}
-    scipy.io.savemat(feature_save_dir, result)
+    return ACCs, Thresholds, scores, predictions, Folds
 
 
 if __name__ == '__main__':
