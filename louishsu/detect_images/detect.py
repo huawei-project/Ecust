@@ -340,16 +340,16 @@ def detect_list_bad(dsize):
 
     ## 按图片数统计
     anno_multi_image = list(filter(lambda x: x[0].split('/')[2]=='Multi', anno_all))
-    anno_multi_image_not_detected = list(filter(lambda x: len(x)==1, anno_multi_image))
-    sorted(anno_multi_image_not_detected, key=lambda x: int(x.split('/')[1]))
+    anno_multi_image_detected = list(filter(lambda x: len(x)!=1, anno_multi_image))
+    anno_multi_image_not_detected = list(filter(lambda x: x not in anno_multi_image_detected, anno_multi_image))
 
     anno_multi_tensor = list(set(map(lambda x: '/'.join(x[0].split('/')[:-1]), anno_multi_image)))
-    anno_multi_tensor_not_detected = list(set(map(lambda x: '/'.join(x[0].split('/')[:-1]), anno_multi_image_not_detected)))
-    sorted(anno_multi_tensor_not_detected, key=lambda x: int(x.split('/')[1]))
+    anno_multi_tensor_detected = list(set(map(lambda x: '/'.join(x[0].split('/')[:-1]), anno_multi_image_detected)))
+    anno_multi_tensor_not_detected = list(filter(lambda x: x not in anno_multi_tensor_detected, anno_multi_tensor))
     
     anno_rgb_image   = list(filter(lambda x: x[0].split('/')[2]=='RGB',   anno_all))
-    anno_rgb_image_not_detected   = list(filter(lambda x: len(x)==1, anno_rgb_image  ))
-    sorted(anno_rgb_image_not_detected, key=lambda x: int(x.split('/')[1]))
+    anno_rgb_image_detected   = list(filter(lambda x: len(x)!=1, anno_rgb_image  ))
+    anno_rgb_image_not_detected = list(filter(lambda x: x not in anno_rgb_image_detected, anno_rgb_image))
 
     return anno_multi_image_not_detected, anno_multi_tensor_not_detected, anno_rgb_image_not_detected
 
