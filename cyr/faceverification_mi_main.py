@@ -36,7 +36,7 @@ def main(split=14, fold=0, c=12, bands=None):
         'log_dir': 'MobileFacenet_HyperECUST_fold_{}'.format(fold),
         #'MobileFacenet_split_{}_exp_{}'.format(split, 0),
         'batch_size': 21,
-        'batch_size_valid': 32,
+        'batch_size_valid': 64,
         'max_epochs': 40,
         'num_classes': 33,
         'use_gpu': True,
@@ -113,10 +113,10 @@ def main(split=14, fold=0, c=12, bands=None):
     net = Trainer.net
     # modify the weigth of conv1
     w = net.conv1.conv.weight
-    if c == 5:
-        new_w = torch.cat((w, w[:, :2, :, :]), 1)
-    else:
-        new_w = w.repeat(1, c // 3, 1, 1)
+    new_w = w.repeat(1, c // 3, 1, 1)
+    cc = c % 3
+    if cc:
+        new_w = torch.cat((new_w, w[:, :cc, :, :]), 1)
     net.conv1.conv.weight.data = new_w
     print(net.conv1.conv.weight.shape)
     # Define optimizers
@@ -148,13 +148,13 @@ def main(split=14, fold=0, c=12, bands=None):
 # -----------------------------------------------------------------------------------
 if __name__ == '__main__':
     # main()
-    bands1 = np.arange(590, 991, 20)
+    bands1 = np.arange(550, 991, 20)
     bands2 = np.arange(550, 991, 40)
-    bands3 = [550, 610, 670, 730, 790, 850, 910, 970, 990]
-    bands4 = np.arange(570, 991, 80)
+    bands3 = np.arange(550, 991, 60)
+    bands4 = np.arange(550, 991, 80)
     bands5 = np.arange(550, 991, 100)
-    choice = [bands1, bands5]
-    channel = [21, 5]
+    choice = [bands3]
+    channel = [8]
     for j in range(len(choice)):
         bands = choice[j]
         c = channel[j]
