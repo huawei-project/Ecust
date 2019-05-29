@@ -444,19 +444,21 @@ class MtcnnDetector(object):
             return [x1, y1, x2, y2, xx1, yy1, xx2, yy2]
 
         imh, imw, _ = image.shape
-        n_boxes = bbox_s.shape[0]
 
         x1, y1, x2, y2, score = np.hsplit(bbox_s, 5)    
         pw = x2 - x1 + 1; ph = y2 - y1 + 1
         pshape = np.hstack([ph, pw, 3*np.ones(shape=(score.shape[0], 1))]).astype('int')   # (n_boxes, 3)
-        keep = np.bitwise_or(pw > 0, ph > 0).reshape(-1); pshape = pshape[keep]
+        keep = np.bitwise_or(pw > 0, ph > 0).reshape(-1)
+        pshape = pshape[keep]; bbox_s = bbox_s[keep]
+        n_boxes = bbox_s.shape[0]
 
         x1, y1, x2, y2, xx1, yy1, xx2, yy2 = locate(bbox_s, imh, imw) # (n_boxes, 1)
 
         patches = []
         for i_boxes in range(n_boxes):
             patch = np.zeros(shape=pshape[i_boxes], dtype='uint8')
-            patch[yy1[i_boxes]: yy2[i_boxes], xx1[i_boxes]: xx2[i_boxes]] = image[y1[i_boxes]: y2[i_boxes], x1[i_boxes]: x2[i_boxes]]
+            patch[yy1[i_boxes]: yy2[i_boxes], xx1[i_boxes]: xx2[i_boxes]] = \
+                        image[y1[i_boxes]: y2[i_boxes], x1[i_boxes]: x2[i_boxes]]
             patch = cv2.resize(patch, (size, size))
             patches += [patch]
         
@@ -486,61 +488,3 @@ def show_bbox(image, bbox, landmark=None, show_score=False):
     cv2.waitKey(0)
 
 
-def test_24(net):
-    
-    FILE = "/home/louishsu/Desktop/patches/24/{:d}.jpg"
-    
-    outs = []
-    for i in range(184):
-        file = FILE.format(i)
-        img = ToTensor()(cv2.imread(file)).unsqueeze(0)
-        out = ' '.join(map(str, list(net(img).squeeze().detach().numpy()))) + '\n'
-        outs += [out]
-
-    with open("/home/louishsu/Desktop/patches/p_24.txt", 'w') as f:
-        f.writelines(outs)
-
-
-def test_48(net):
-    
-    FILE = "/home/louishsu/Desktop/patches/48/{:d}.jpg"
-    
-    outs = []
-    for i in range(1):
-        file = FILE.format(i)
-        img = ToTensor()(cv2.imread(file)).unsqueeze(0)
-        out = ' '.join(map(str, list(net(img).squeeze().detach().numpy()))) + '\n'
-        outs += [out]
-
-    with open("/home/louishsu/Desktop/patches/p_48.txt", 'w') as f:
-        f.writelines(outs)
-
-def test():
-    detector = MtcnnDetector(min_face=12, thresh=[0.9, 0.7, 0.7], scale=0.79, stride=2, cellsize=12)
-
-    test_24(detector.rnet)
-    test_48(detector.onet)
-
-def main():
-
-    import sys
-    
-    detector = MtcnnDetector(min_face=12, thresh=[0.8, 0.6, 0.7], scale=0.79, stride=2, cellsize=12)
-    
-    # imgfile = sys.argv[1]
-    imgfile = os.path.expanduser("~/Desktop/test.jpg")
-
-    image = cv2.imread(imgfile)
-    
-    boxes, boxes_c, landmark = detector._detect_pnet(image)
-    show_bbox(image.copy(), boxes_c, landmark, False)
-
-    boxes, boxes_c, landmark = detector._detect_rnet(image, boxes_c)
-    show_bbox(image.copy(), boxes_c, landmark, True)
-
-    boxes, boxes_c, landmark = detector._detect_onet(image, boxes_c)
-    show_bbox(image.copy(), boxes_c, landmark, True)
-    
-if __name__ == "__main__":
-    # test()
-    main()
