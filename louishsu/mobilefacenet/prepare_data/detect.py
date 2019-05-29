@@ -48,7 +48,7 @@ def detect_casia(prefix='../data/CASIA-WebFace'):
             
             imfile = os.path.join(subdir, imidx)
 
-            img = cv2.imread(imfile, cv2.IMREAD_ANYCOLOR)
+            img = cv2.imread(imfile, cv2.IMREAD_COLOR)
             boxes_c, landmark = detector.detect_image(img)
             if boxes_c.shape[0] == 0: continue
             
