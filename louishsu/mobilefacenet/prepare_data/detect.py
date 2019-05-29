@@ -10,10 +10,17 @@ import torch_mtcnn.detector as mtcnn
 from torch_mtcnn.detector import show_bbox
 
 def keep_one(image, boxes_c):
+    """
+    Params:
+        image: {ndarray(H, W, 3)}
+        boxes_c:{ndarray(N, 5)}
+    Returns:
+        idx:    {int} index of the kept box
+    """
     c = np.array(image.shape[:-1]) / 2
     boxes = boxes_c[:, :-1]
-    c_x = (boxes[:, 0] + boxes[:, 2]).reshape(-1, 1) / 2
-    c_y = (boxes[:, 1] + boxes[:, 3]).reshape(-1, 1) / 2
+    c_x = np.mean(boxes[:, [0, 2]], axis=1)
+    c_y = np.mean(boxes[:, [1, 3]], axis=1)
     cs = np.c_[c_x, c_y]
 
     d = np.linalg.norm(cs-c, axis=1)
@@ -23,7 +30,12 @@ def keep_one(image, boxes_c):
 def detect_casia(prefix='../data/CASIA-WebFace'):
     """
     Notes:
-        只保存检测出人脸的文件及其坐标
+        - 只保存检测出人脸的文件及其坐标
+        - 结果保存在`../dta/CASIA_detect.txt`
+        - 保存格式为
+            ```
+            filename x1, y1, x2, y2, score, xx1, yy1, ..., xx5, yy5
+            ```
     """
     print('\033[2J\033[1;1H')
 
