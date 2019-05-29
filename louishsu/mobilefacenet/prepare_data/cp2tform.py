@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 
 # see [Chen-Zhihui/cvn - Github](https://github.com/Chen-Zhihui/cvn/tree/093672ed4a890ce6bd240c51a068bca8a3597bde/src/Cvutil/include/Cvn/Cvutil)
@@ -133,7 +134,7 @@ def warpCoordinate(coord, M):
     return coord
 
 def warpImage(im, M):
-    return cv2.warpAffine(im, M, im.shape[:2])
+    return cv2.warpAffine(im, M, im.shape[:2][::-1])
 
 def drawCoordinate(im, coord):
     """
