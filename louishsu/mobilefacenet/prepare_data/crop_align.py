@@ -1,4 +1,5 @@
 import numpy as np
+from cp2tform import cp2tform, warpImage, warpCoordinate
 
 ALIGNED = [30.2946, 51.6963,    # xx1, yy1
             65.5318, 51.5014,   # xx2, yy2
@@ -6,36 +7,33 @@ ALIGNED = [30.2946, 51.6963,    # xx1, yy1
             33.5493, 92.3655,   # xx4, yy4
             62.7299, 92.2041]   # xx5, yy5
 
-def crop(image, box):
+def imageAlignCrop(image, bbox, landmark, size):
     """
     Params:
-        image:  {ndarray(H, W, 3)}
-        box:    {ndarray(N, 5)}
+        image:      {ndarray(H, W, 3)}
+        bbox:        {ndarray(5)}
+        landmark:   {ndarray(10)}
+        size:       {tuple/list(H, W)}
     """
-    ...
-
-def align(image, box, landmark):
-    """
-    Params:
-        image:  {ndarray(H, W, 3)}
-        box:    {ndarray(N, 5)}
-        landmark: {ndarray(N, 10)}
-    """
-    ...
+    box = bbox[:-1].reshape(-1, 2)
+    landmark = landmark.reshape(-1, 2)
+    
+    M = cp2tform()
+    
 
 if __name__ == "__main__":
     
     import cv2
     # '1982597/308.jpg 49.52332992240136 24.06662541083861 202.37791485006906 233.98998851107498 0.9853229522705078 103.38385577776721 107.99730841372376 152.95072083710804 94.07187004712003 129.71222954219695 134.1165372861388 125.4369617285715 165.95677781823343 162.23256272370804 154.00411073077635\n'
     im = cv2.imread("/home/louishsu/Desktop/308.jpg")
-    box = np.array([[49.52332992240136, 24.06662541083861, 
+    box = np.array([49.52332992240136, 24.06662541083861, 
                     202.37791485006906, 233.98998851107498, 
-                    0.9853229522705078]])
-    landmark = np.array([[103.38385577776721, 107.99730841372376, 
+                    0.9853229522705078])
+    landmark = np.array([103.38385577776721, 107.99730841372376, 
                             152.95072083710804, 94.07187004712003, 
                             129.71222954219695, 134.1165372861388, 
                             125.4369617285715, 165.95677781823343, 
-                            162.23256272370804, 154.00411073077635]]).reshape(-1, 2) # 5x2
+                            162.23256272370804, 154.00411073077635])
     offset = box[:, :2] # (x1, y1) 1x2
     landmark -= offset
 
