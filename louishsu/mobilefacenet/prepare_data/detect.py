@@ -27,7 +27,7 @@ def keep_one(image, boxes_c):
     idx = np.argmin(d)
     return idx
 
-def detect_casia(prefix='../data/CASIA-WebFace'):
+def detect_casia(prefix='../data/CASIA-WebFace', detected = '../data/CASIA_detect.txt'):
     """
     Notes:
         - 只保存检测出人脸的文件及其坐标
@@ -40,7 +40,7 @@ def detect_casia(prefix='../data/CASIA-WebFace'):
     print('\033[2J\033[1;1H')
 
     detector = mtcnn.MtcnnDetector(min_face=24, thresh=[0.8, 0.6, 0.7], scale=0.79, stride=2, cellsize=12)
-    fp = open('../data/CASIA_detect.txt', 'w')
+    fp = open(detected, 'w')
     
     i = 0; n = 494414
     elapsed_time = 0
