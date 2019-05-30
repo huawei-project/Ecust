@@ -5,6 +5,8 @@
 1. 下载CASIA数据集`CASIA_WebFace`，解压到`data/CASIA-WebFace`
 2. 标签文件`data/CASIA_labels.txt`
 3. 运行`prepare_data/detect.py`，检测结果保存在`data/CASIA_detect.txt`
+4. 运行`prepare_data/crop.py`，剪裁结果保存在`data/CASIA-WebFace-Unaligned`，对齐后数据保存在`data/CASIA-WebFace-Aligned`
+
 
 ### 剪裁与对齐
 注意，利用关键点计算变换矩阵$M_{2\times3}$，再调用函数`cv2.warpAffine`对齐
