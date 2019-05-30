@@ -59,6 +59,12 @@ def imageAlignCrop(im, bbox, landmark, dsize=(112, 96), return_unaligned=False):
         y2 = y1 + h
 
     cropedImage = im[y1: y2, x1: x2]
+    if x1 == x2 or y1 == y2:
+        if return_unaligned:
+            return None, None
+        else:
+            return None
+    
     box = bbox[:4].reshape(-1, 2) - bbox[:2]    ## [[x1, y1], [x2, y2]]
     src = landmark.reshape(-1, 2) - bbox[:2]    ## [[x1, y1], [x2, y2], ..., [x5, y5]]
     ## 以图像尺寸计算对齐后的关键点位置

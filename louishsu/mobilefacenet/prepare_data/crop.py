@@ -59,6 +59,7 @@ def crop_casia(prefix='../data/CASIA-WebFace', detected='../data/CASIA_detect.tx
             warpedImage, unWarpedImage = imageAlignCrop(srcImg, box, landmark, dsize, return_unaligned=True)
 
             ## 保存结果
+            if (warpedImage is None) or (unWarpedImage is None): continue
             cv2.imwrite(os.path.join(subdirUnWarped, imidx), unWarpedImage)
             cv2.imwrite(os.path.join(subdirWarped, imidx), warpedImage)
 
