@@ -72,7 +72,6 @@ def imageAlignCrop(im, bbox, landmark, dsize=(112, 96), return_unaligned=False):
     # x1, y1, x2, y2 = box.reshape(-1)
     # coord = np.r_[np.array([[x1, y1], [x2, y1], [x1, y2], [x2, y2]]), src]
     # warpedCoord = warpCoordinate(coord, M)
-    cv2.imshow("warpedImage", warpedImage); cv2.imshow("cropedImage", cropedImage); cv2.waitKey(0)
 
     ## 缩放
     warpedImage = cv2.resize(warpedImage, dsize[::-1])
