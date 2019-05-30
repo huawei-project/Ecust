@@ -59,7 +59,8 @@ def imageAlignCrop(im, bbox, landmark, dsize=(112, 96), return_unaligned=False):
         y2 = y1 + h
 
     cropedImage = im[y1: y2, x1: x2]
-    if x1 == x2 or y1 == y2:
+    ch, cw, cc = cropedImage.shape
+    if ch == 0 or cw == 0:
         if return_unaligned:
             return None, None
         else:
