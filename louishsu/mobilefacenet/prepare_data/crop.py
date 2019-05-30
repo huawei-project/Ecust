@@ -15,7 +15,14 @@ def parseCoord(coords):
     return np.array(box), score, np.array(landmark)
 
 def crop_casia(prefix='../data/CASIA-WebFace', detected='../data/CASIA_detect.txt', 
-        unaligned='../data/CASIA-WebFace-Unaligned', aligned='../data/CASIA-WebFace-Croped-Aligned', dsize=(112, 96)):
+        unaligned='../data/CASIA-WebFace-Unaligned', aligned='../data/CASIA-WebFace-Aligned', dsize=(112, 96)):
+    """
+    Notes:
+        根据检测出的结果，进行截取，结果保存在文件夹
+        - 未对齐： `../data/CASIA-WebFace-Unaligned`
+        - 已对齐： `../data/CASIA-WebFace-Aligned`
+        目录结构一致
+    """
     if not os.path.exists(unaligned): os.mkdir(unaligned)
     if not os.path.exists(aligned): os.mkdir(aligned)
     
