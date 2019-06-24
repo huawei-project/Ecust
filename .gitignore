@@ -2,3 +2,4 @@
 *.pyc
 louishsu/detect_images/anno/
 louishsu/mobilefacenet/data/
+build/
