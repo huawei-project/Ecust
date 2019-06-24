@@ -10,6 +10,7 @@ static CvFont font;
 
 static HANDLE g_xiCap = NULL;
 static XI_RETURN g_xiStat = XI_OK;
+static int g_iExposure = 20000;
 
 static image g_imFrame[3];
 static int g_index = 0;
@@ -58,9 +59,11 @@ image xiImage_to_image(XI_IMG src)
             im.data[i * w + j] = (float)(data[i * w + j])/255.;
         }
     }
-    memcpy(im.data, im.data + 1*h*w, h*w*sizeof(float));
-    memcpy(im.data, im.data + 2*h*w, h*w*sizeof(float));
+    memcpy(im.data, im.data + 1*h*w, h*w);
+    memcpy(im.data, im.data + 2*h*w, h*w);
     image resized = resize_image(im, w / 4, h / 4);
+
+    free_image(im);
     return resized;
 }
 
@@ -118,6 +121,7 @@ void* display_frame_in_thread(void* ptr)
     while(g_running);
 
     image im = g_imFrame[(g_index + 1) % 3];
+
     IplImage* iplFrame = image_to_ipl(im);
     for (int i = 0; i < g_ndets; i++ ){
         detect det = g_dets[i];
@@ -171,11 +175,23 @@ void* display_frame_in_thread(void* ptr)
 
         g_cosine = distCosine(g_feat_saved, g_feat_toverify, N*2);
         g_isOne = g_cosine < THRESH? 0: 1;
+    } else if (c == '[') { 
+        g_iExposure--;
+        xiSetParamInt(g_xiCap, XI_PRM_EXPOSURE, g_iExposure);
+    } else if (c == ']') {
+        g_iExposure++;
+        xiSetParamInt(g_xiCap, XI_PRM_EXPOSURE, g_iExposure);
+    } else if (c == ';') { 
+        g_iExposure -= 100;
+        xiSetParamInt(g_xiCap, XI_PRM_EXPOSURE, g_iExposure);
+    } else if (c == '\'') {
+        g_iExposure += 100;
+        xiSetParamInt(g_xiCap, XI_PRM_EXPOSURE, g_iExposure);
     }
 
-    printf("\033[2J");
-    printf("\033[1;1H");
-    printf("\nFPS:%.1f\n", g_fps);
+    printf("\033[2J"); printf("\033[1;1H\n");
+    printf("FPS:%.1f\n", g_fps);
+    printf("Exposure: %d\n", g_iExposure);
     printf("Objects:%d\n", g_ndets);
     printf("Initialized:%d\n", g_initialized);
     printf("Cosine:%.4f\n", g_cosine);
@@ -198,8 +214,8 @@ int verify_video_demo(int argc, char **argv)
     g_xiStat = xiOpenDevice(index, &g_xiCap); 
     HandleResult(g_xiStat, "xiOpenDevice");
 
-    // g_xiStat = xiSetParamInt(g_xiCap, XI_PRM_EXPOSURE, 10000); 
-    // HandleResult(g_xiStat, "xiSetParamInt");
+    g_xiStat = xiSetParamInt(g_xiCap, XI_PRM_EXPOSURE, g_iExposure); 
+    HandleResult(g_xiStat, "xiSetParamInt");
 
     g_xiStat = xiStartAcquisition(g_xiCap); 
     HandleResult(g_xiStat, "xiStartAcquisition");
