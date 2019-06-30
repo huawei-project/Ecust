@@ -1,0 +1,9 @@
+# accquire 20447 positive samples, 278070 negitive samples.
+  for every band, 
+- trainset include 2260 glasses samples, 556 sunglasses samples, 1330 nonglasses samples.
+- testset include 21755 glasses samples, 5349 sunglasses samples, 18053 nonglasses samples.
+- glasses samples and sunglasses samples are defined as long as at least one of two input images is wearing glasses or sunglasses.
+- nonglasses samples are defined as neither of two input images are wearing glasses or sunglasses.
+- classification threshold and acc are determined by 10-fold cross validation in validset.
+
+

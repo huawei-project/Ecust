@@ -1,0 +1,9 @@
+# accquire 20447 positive samples, 278070 negitive samples.
+  for every band, 
+- include 2260 glasses samples, 556 sunglasses samples, 1330 nonglasses samples.
+- include 21755 glasses samples, 5349 sunglasses samples, 18053 nonglasses samples.
+- glasses samples and sunglasses samples are defined as long as at least one of two input images is wearing glasses or sunglasses.
+- nonglasses samples are defined as neither of two input images are wearing glasses or sunglasses.
+- scores are computed by calculating the cosine of feature vectors of two input images.
+
+
