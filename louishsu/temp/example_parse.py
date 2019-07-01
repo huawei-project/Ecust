@@ -27,13 +27,16 @@ def parse(raw):
 
     return img
 
-# raw = misc.imread('image.tif')
-raw = cv2.imread('demo_image.jpg', cv2.IMREAD_GRAYSCALE)
-bsq = readBsq('SSM5x5-NIR_18880754_20190630094951.bsq')
+# raw = misc.imread('../images/image.tif')
+# bsq = readBsq('SSM5x5-NIR_18880754_20190630094951.bsq')
+raw = cv2.imread('../images/SSM5x5-NIR_18880754_20190630094951.jpg', cv2.IMREAD_GRAYSCALE)
+
+# raw = raw / 255 * 65535; raw = raw.astype(np.uint16)
+clahe = cv2.createCLAHE(tileGridSize=(8,8)); raw = clahe.apply(raw)
 
 image = parse(raw)
 
-cv2.imshow("raw", raw*10)
+cv2.imshow("raw", raw)
 for c in range(25):
-    cv2.imshow("%d" % c, image[c]*10)
+    cv2.imshow("%d" % c, image[c])
 cv2.waitKey(0)
