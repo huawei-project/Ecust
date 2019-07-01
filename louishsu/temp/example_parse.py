@@ -39,4 +39,5 @@ image = parse(raw)
 cv2.imshow("raw", raw)
 for c in range(25):
     cv2.imshow("%d" % c, image[c])
+    # cv2.imwrite("../images/parse/%d.jpg" % c, image[c])
 cv2.waitKey(0)
