@@ -36,6 +36,7 @@ static int g_initialized = 0;
 static float* g_feat_saved = NULL;
 static float* g_feat_toverify = NULL;
 static float g_cosine = 0;
+static float g_thresh = 0.5;
 static int g_isOne = -1;
 
 #define HandleResult(res,place) if (res!=XI_OK) {printf("Error after %s (%d)\n",place,res);goto finish;}
@@ -44,43 +45,68 @@ image xiImage_to_image(XI_IMG src)
 {
     int h = src.height;
     int w = src.width;
-    int c = 3;
+    int c = 25;
 
     if (w == 0 || h == 0){
         printf("get image 0 x 0\n");
     }
 
+    h /= 5; w /= 5; 
+
     image im = make_image(w, h, c);
     unsigned char *data = (unsigned char *)src.bp;
-    
-    int i, j;
-    for(i = 0; i < h; ++i){
-        for(j = 0; j < w; ++j){
-            im.data[i * w + j] = (float)(data[i * w + j])/255.;
+
+    int idx_i = 0, idx_j = 0;
+    for (int i = 0; i < h; i++){
+        idx_i = i*5;
+        
+        for (int j = 0; j < w; j++){
+            idx_j = j*5;
+            
+            for (int k = 0; k < 25; k++){
+                int idx = (idx_i + k / 5) * src.width + (idx_j + k % 5);
+                im.data[k*w*h + i*w + j] = (float)(data[idx]) / 255.;
+            }
         }
     }
-    memcpy(im.data, im.data + 1*h*w, h*w);
-    memcpy(im.data, im.data + 2*h*w, h*w);
-    image resized = resize_image(im, w / 4, h / 4);
-
-    free_image(im);
-    return resized;
+    return im;
 }
 
-image _frame()
+void _equalizeHist(image* im)
+{
+    IplImage* ipl = image_to_ipl(*im);
+    cvEqualizeHist(ipl, ipl);
+    image equalized = ipl_to_image(ipl);
+    memcpy(im->data, equalized.data, im->h*im->w*sizeof(float));
+    free_image(equalized);
+}
+
+image _frame(int hist)
 {
     XI_IMG xiFrame;
 	memset(&xiFrame, 0, sizeof(xiFrame));
 	xiFrame.size = sizeof(XI_IMG);
     g_xiStat = xiGetImage(g_xiCap, 5000, &xiFrame);
-    image dst = xiImage_to_image(xiFrame); 
-    return dst;
+    image frame = xiImage_to_image(xiFrame);
+
+    if (hist){  // 直方图均衡化
+        image temp = make_image(frame.w, frame.h, 1);
+        int size = frame.w*frame.h;
+        for (int i = 0; i < frame.c; i++){
+            memcpy(temp.data, frame.data + i*size, size*sizeof(float));
+            _equalizeHist(&temp);
+            memcpy(frame.data + i*size, temp.data, size*sizeof(float));
+        }
+        free_image(temp);
+    }
+
+    return frame;
 }
 
 void* read_frame_in_thread(void* ptr)
 {
     free_image(g_imFrame[g_index]);
-    g_imFrame[g_index] = _frame();
+    g_imFrame[g_index] = _frame(1);
     if (g_imFrame[g_index].data == 0){
         g_videoDone = 1;
         return 0;
@@ -94,15 +120,31 @@ void* detect_frame_in_thread(void* ptr)
 
     image frame = g_imFrame[(g_index + 2) % 3];
     g_dets = realloc(g_dets, 0); g_ndets = 0;
-    detect_image(pnet, rnet, onet, frame, &g_ndets, &g_dets, p);
 
+    image temp = make_image(frame.w, frame.h, 3);
+    int i = 0; int size = frame.w*frame.h;
+    // while (g_ndets == 0){   // 当有一个波段检测到人脸即可结束
+    //     for (int k = 0; k < temp.c; k++){
+    //         memcpy(temp.data + k*size, frame.data + i*size, size*sizeof(float));
+    //     }
+    //     detect_image(pnet, rnet, onet, temp, &g_ndets, &g_dets, p);
+    //     if(++i == frame.c){
+    //         break;
+    //     }
+    // }
+
+    for (int k = 0; k < temp.c; k++){
+        memcpy(temp.data + k*size, frame.data + i*size, size*sizeof(float));
+    }
+    detect_image(pnet, rnet, onet, temp, &g_ndets, &g_dets, p);
+    
+    free_image(temp);
     g_running = 0;
 }
 
-void generate_feature(image im, bbox box, landmark mark, float* X)
+void _generate_feature_v1(image im, landmark mark, float* X)
 {
     float* x = NULL;
-    // image warped = image_crop_aligned(im, box, mark, g_aligned, H, W, g_mode);
     image warped = image_aligned_v2(im, mark, g_aligned, H, W, g_mode);
     image cvt = convert_mobilefacenet_image(warped);
     
@@ -116,11 +158,38 @@ void generate_feature(image im, bbox box, landmark mark, float* X)
     free_image(warped); free_image(cvt);
 }
 
+/*
+ * 每个波段产生一个N*2的向量，共25个通道 
+ */
+void _generate_feature_v2(image im, landmark mark, float* X)
+{
+    float* x = NULL;
+    int size = im.w*im.h;
+    image warped = image_aligned_v2(im, mark, g_aligned, H, W, g_mode);
+    image cvt = convert_mobilefacenet_image(warped);
+    image temp = make_image(cvt.w, cvt.h, 3);
+
+    for (int i = 0; i < cvt.c; i++){
+        for (int c = 0; c < im.c; c++){
+            memcpy(temp.data + c*size, cvt.data + i*size, size*sizeof(float));
+        }
+        x = network_predict(mobilefacenet, temp.data); memcpy(X + i*N, x, N*sizeof(float));
+        flip_image(temp);
+        x = network_predict(mobilefacenet, temp.data); memcpy(X + (i+1)*N, x, N*sizeof(float));
+    }
+
+    free_image(warped); free_image(cvt); free_image(temp);
+}
+
 void* display_frame_in_thread(void* ptr)
 {
     while(g_running);
 
-    image im = g_imFrame[(g_index + 1) % 3];
+    image src = g_imFrame[(g_index + 1) % 3]; int size = src.w*src.h;
+    image im = make_image(src.w, src.h, 3);
+    for (int i = 0; i < im.c; i++){
+        memcpy(im.data + i*size, src.data, size*sizeof(float));
+    }
 
     IplImage* iplFrame = image_to_ipl(im);
     for (int i = 0; i < g_ndets; i++ ){
@@ -149,38 +218,35 @@ void* display_frame_in_thread(void* ptr)
         cvCircle(iplFrame, cvPoint((int)mk.x5, (int)mk.y5),
                     1, cvScalar(255, 255, 255, 0), 1, 8, 0);
     }
-    im = ipl_to_image(iplFrame);
+    image draw = ipl_to_image(iplFrame);
     cvReleaseImage(&iplFrame);
 
-    int c = show_image(im, winname, 1);
-
+    int c = show_image(draw, winname, 1);
 
     if (c != -1) c = c%256;
     if (c == 27) {          // Esc
         g_videoDone = 1;
         return 0;
     } else if (c == 's') {  // save feature
-        im = g_imFrame[(g_index + 1) % 3];
-        int idx = keep_one(g_dets, g_ndets, im);
+        image _im = g_imFrame[(g_index + 1) % 3];
+        int idx = keep_one(g_dets, g_ndets, _im);
         if (idx < 0) return 0;
-        bbox box = g_dets[idx].bx; landmark mark = g_dets[idx].mk;
-        generate_feature(im, box, mark, g_feat_saved);
+        landmark mark = g_dets[idx].mk;
+        _generate_feature_v2(_im, mark, g_feat_saved);
         g_initialized = 1;
     } else if (c == 'v') {  // verify
-        im = g_imFrame[(g_index + 1) % 3];
-        int idx = keep_one(g_dets, g_ndets, im);
+        image _im = g_imFrame[(g_index + 1) % 3];
+        int idx = keep_one(g_dets, g_ndets, _im);
         if (idx < 0) return 0;
-        bbox box = g_dets[idx].bx; landmark mark = g_dets[idx].mk;
-        generate_feature(im, box, mark, g_feat_toverify);
+        landmark mark = g_dets[idx].mk;
+        _generate_feature_v2(_im, mark, g_feat_toverify);
 
-        g_cosine = distCosine(g_feat_saved, g_feat_toverify, N*2);
-        g_isOne = g_cosine < THRESH? 0: 1;
+        g_cosine = distCosine(g_feat_saved, g_feat_toverify, N*2*25);
+        g_isOne = g_cosine < g_thresh? 0: 1;
     } else if (c == '[') { 
-        g_iExposure--;
-        xiSetParamInt(g_xiCap, XI_PRM_EXPOSURE, g_iExposure);
+        g_thresh -= 0.05;
     } else if (c == ']') {
-        g_iExposure++;
-        xiSetParamInt(g_xiCap, XI_PRM_EXPOSURE, g_iExposure);
+        g_thresh += 0.05;
     } else if (c == ';') { 
         g_iExposure -= 100;
         xiSetParamInt(g_xiCap, XI_PRM_EXPOSURE, g_iExposure);
@@ -191,12 +257,14 @@ void* display_frame_in_thread(void* ptr)
 
     printf("\033[2J"); printf("\033[1;1H\n");
     printf("FPS:%.1f\n", g_fps);
-    printf("Exposure: %d\n", g_iExposure);
+    printf("Exposure: %d\n\n", g_iExposure);
     printf("Objects:%d\n", g_ndets);
     printf("Initialized:%d\n", g_initialized);
+    printf("Threshold:%.4f\n", g_thresh);
     printf("Cosine:%.4f\n", g_cosine);
     printf("Verify:%d\n", g_isOne);
 
+    free_image(im); free_image(draw);
     return 0;
 }
 
@@ -208,19 +276,18 @@ int verify_video_demo(int argc, char **argv)
     mobilefacenet = load_mobilefacenet();
     printf("\n\n");
 
+    // ======================================================================
     printf("Initializing Capture...");
-    int index = find_int_arg(argc, argv, "--index", 0);
-
-    g_xiStat = xiOpenDevice(index, &g_xiCap); 
+    g_xiStat = xiOpenDevice(0, &g_xiCap); 
     HandleResult(g_xiStat, "xiOpenDevice");
-
+    g_xiStat = xiSetParamInt(g_xiCap, XI_PRM_IMAGE_DATA_FORMAT, XI_MONO8);
+    HandleResult(g_xiStat, "xiSetParamInt (image format)");
     g_xiStat = xiSetParamInt(g_xiCap, XI_PRM_EXPOSURE, g_iExposure); 
-    HandleResult(g_xiStat, "xiSetParamInt");
-
+    HandleResult(g_xiStat, "xiSetParamInt (exposure set)");
     g_xiStat = xiStartAcquisition(g_xiCap); 
     HandleResult(g_xiStat, "xiStartAcquisition");
     
-    g_imFrame[0] = _frame();
+    g_imFrame[0] = _frame(1);
     g_imFrame[1] = copy_image(g_imFrame[0]);
     g_imFrame[2] = copy_image(g_imFrame[0]);
 
@@ -228,22 +295,36 @@ int verify_video_demo(int argc, char **argv)
     cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 0.5, 0.5, 1, 2, 8);
     printf("OK!\n");
 
+    // ======================================================================
     printf("Initializing detection...");
     p = initParams(argc, argv);
     g_dets = calloc(0, sizeof(detect)); g_ndets = 0;
     printf("OK!\n");
 
+    // ======================================================================
     printf("Initializing verification...");
     // g_aligned = initAlignedOffset();
     g_aligned = initAligned();
     g_mode = find_int_arg(argc, argv, "--mode", 1);
-    g_feat_saved = calloc(2*N, sizeof(float));
-    g_feat_toverify = calloc(2*N, sizeof(float));
+    g_feat_saved    = calloc(N*2*25, sizeof(float));
+    g_feat_toverify = calloc(N*2*25, sizeof(float));
     printf("OK!\n");
 
+    // ======================================================================
     pthread_t thread_read;
     pthread_t thread_detect;
     pthread_t thread_display;
+
+    // image im = _frame(1);
+    // image tmp = make_image(im.w, im.h, 3);
+    // for (int i = 0; i < im.c; i++){
+    //     memcpy(tmp.data + 0*tmp.w*tmp.h, im.data + i*im.w*im.h, im.w*im.h*sizeof(float));
+    //     memcpy(tmp.data + 1*tmp.w*tmp.h, im.data + i*im.w*im.h, im.w*im.h*sizeof(float));
+    //     memcpy(tmp.data + 2*tmp.w*tmp.h, im.data + i*im.w*im.h, im.w*im.h*sizeof(float));
+    //     show_image(tmp, "tmp", 0);
+    // }
+    // free_image(tmp);
+    // exit(0);
 
     g_time = what_time_is_it_now();
     while(!g_videoDone){

@@ -18,7 +18,6 @@
 
 network* load_mobilefacenet();
 image convert_mobilefacenet_image(image im);
-void generate_feature(image im, bbox box, landmark mark, float* X);
 int verify(network* net, image im1, image im2, float* cosine);
 
 int verify_input_images(int argc, char** argv);
