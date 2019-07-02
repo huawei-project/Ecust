@@ -11,7 +11,7 @@ print('Opening first camera...')
 cam.open_device()
 
 #settings
-cam.set_imgdataformat('XI_MONO16')
+cam.set_imgdataformat('XI_MONO8')
 cam.set_exposure(20000)
 
 #create instance of Image to store image data and metadata
@@ -29,7 +29,9 @@ cam.get_image(img)
 data = img.get_image_data_numpy()
 
 # save image
-cv2.imwrite("demo_image.jpg", (data / 65535 * 255).astype('uint8'))
+# image = (data.copy() / 65535 * 255).astype('uint8')
+image = data.astype('uint8')
+cv2.imwrite("demo_image.jpg", image)
 
 #stop data acquisition
 print('Stopping acquisition...')
