@@ -2,6 +2,7 @@ from ximea import xiapi
 import cv2
 import numpy as np
 from scipy import misc
+import time
 
 #create instance for first connected camera 
 cam = xiapi.Camera()
@@ -31,7 +32,8 @@ data = img.get_image_data_numpy()
 # save image
 # image = (data.copy() / 65535 * 255).astype('uint8')
 image = data.astype('uint8')
-cv2.imwrite("demo_image.jpg", image)
+cv2.imwrite("../images/{}.jpg".\
+    format(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime())), image)
 
 #stop data acquisition
 print('Stopping acquisition...')
