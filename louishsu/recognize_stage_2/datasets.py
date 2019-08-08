@@ -66,7 +66,7 @@ class RecognizeDataset(Dataset):
                                             self._get_label(x)
                                         ], self.filelist))
         
-        print("Total: {}".format(len(self))
+        print("Total: {}".format(len(self)))
 
     @staticmethod
     def load_image(datapath, path, type, usedChannels=None, hist=True):
@@ -168,10 +168,10 @@ class RecognizeDataset(Dataset):
 
 if __name__ == "__main__":
     # trainset = RecognizeDataset('/datasets/ECUSTDETECT', 'Multi', 
-    #             'split_112x96_1', 'train', [1, 4, 6], load_in_memory=True)
+    #             'split_112x96_[0.10:0.70:0.20]_[1]', 'train', [1, 4, 6], load_in_memory=True)
     # trainset = RecognizeDataset('/datasets/ECUSTDETECT', 'RGB', 
-    #             'split_112x96_1', 'train', "RGB", load_in_memory=False)
+    #             'split_112x96_[0.10:0.70:0.20]_[1]', 'train', "RGB", load_in_memory=False)
     trainset = RecognizeDataset('/datasets/ECUSTDETECT', 'RGB', 
-                'split_112x96_1', 'train', "RGB", condition=utils.is_with_no_sun_glasses, load_in_memory=False)
+                'split_112x96_[0.10:0.70:0.20]_[1]', 'train', "RGB", condition=utils.is_with_no_sun_glasses, load_in_memory=False)
     for i in range(10):
         X, y = trainset[i]

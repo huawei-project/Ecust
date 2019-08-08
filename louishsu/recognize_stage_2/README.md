@@ -32,6 +32,41 @@
 运行
 ``` python
 python gen_split.py
+n_items: 7350, n_train: 701, n_valid: 5126, n_test: 1523, ratio: 0.095: 0.697: 0.207
+n_items: 7350, n_train: 701, n_valid: 5126, n_test: 1523, ratio: 0.095: 0.697: 0.207
+n_items: 7350, n_train: 701, n_valid: 5126, n_test: 1523, ratio: 0.095: 0.697: 0.207
+n_items: 7350, n_train: 701, n_valid: 5126, n_test: 1523, ratio: 0.095: 0.697: 0.207
+n_items: 7350, n_train: 701, n_valid: 5126, n_test: 1523, ratio: 0.095: 0.697: 0.207
+n_items: 7350, n_train: 1452, n_valid: 4379, n_test: 1519, ratio: 0.198: 0.596: 0.207
+n_items: 7350, n_train: 1452, n_valid: 4379, n_test: 1519, ratio: 0.198: 0.596: 0.207
+n_items: 7350, n_train: 1452, n_valid: 4379, n_test: 1519, ratio: 0.198: 0.596: 0.207
+n_items: 7350, n_train: 1452, n_valid: 4379, n_test: 1519, ratio: 0.198: 0.596: 0.207
+n_items: 7350, n_train: 1452, n_valid: 4379, n_test: 1519, ratio: 0.198: 0.596: 0.207
+n_items: 7350, n_train: 2172, n_valid: 3672, n_test: 1506, ratio: 0.296: 0.500: 0.205
+n_items: 7350, n_train: 2172, n_valid: 3672, n_test: 1506, ratio: 0.296: 0.500: 0.205
+n_items: 7350, n_train: 2172, n_valid: 3672, n_test: 1506, ratio: 0.296: 0.500: 0.205
+n_items: 7350, n_train: 2172, n_valid: 3672, n_test: 1506, ratio: 0.296: 0.500: 0.205
+n_items: 7350, n_train: 2172, n_valid: 3672, n_test: 1506, ratio: 0.296: 0.500: 0.205
+n_items: 7350, n_train: 2921, n_valid: 2921, n_test: 1508, ratio: 0.397: 0.397: 0.205
+n_items: 7350, n_train: 2921, n_valid: 2921, n_test: 1508, ratio: 0.397: 0.397: 0.205
+n_items: 7350, n_train: 2921, n_valid: 2921, n_test: 1508, ratio: 0.397: 0.397: 0.205
+n_items: 7350, n_train: 2921, n_valid: 2921, n_test: 1508, ratio: 0.397: 0.397: 0.205
+n_items: 7350, n_train: 2921, n_valid: 2921, n_test: 1508, ratio: 0.397: 0.397: 0.205
+n_items: 7350, n_train: 3672, n_valid: 2172, n_test: 1506, ratio: 0.500: 0.296: 0.205
+n_items: 7350, n_train: 3672, n_valid: 2172, n_test: 1506, ratio: 0.500: 0.296: 0.205
+n_items: 7350, n_train: 3672, n_valid: 2172, n_test: 1506, ratio: 0.500: 0.296: 0.205
+n_items: 7350, n_train: 3672, n_valid: 2172, n_test: 1506, ratio: 0.500: 0.296: 0.205
+n_items: 7350, n_train: 3672, n_valid: 2172, n_test: 1506, ratio: 0.500: 0.296: 0.205
+n_items: 7350, n_train: 4379, n_valid: 1450, n_test: 1521, ratio: 0.596: 0.197: 0.207
+n_items: 7350, n_train: 4379, n_valid: 1450, n_test: 1521, ratio: 0.596: 0.197: 0.207
+n_items: 7350, n_train: 4379, n_valid: 1450, n_test: 1521, ratio: 0.596: 0.197: 0.207
+n_items: 7350, n_train: 4379, n_valid: 1450, n_test: 1521, ratio: 0.596: 0.197: 0.207
+n_items: 7350, n_train: 4379, n_valid: 1450, n_test: 1521, ratio: 0.596: 0.197: 0.207
+n_items: 7350, n_train: 5126, n_valid: 701, n_test: 1523, ratio: 0.697: 0.095: 0.207
+n_items: 7350, n_train: 5126, n_valid: 701, n_test: 1523, ratio: 0.697: 0.095: 0.207
+n_items: 7350, n_train: 5126, n_valid: 701, n_test: 1523, ratio: 0.697: 0.095: 0.207
+n_items: 7350, n_train: 5126, n_valid: 701, n_test: 1523, ratio: 0.697: 0.095: 0.207
+n_items: 7350, n_train: 5126, n_valid: 701, n_test: 1523, ratio: 0.697: 0.095: 0.207
 ```
 
 在当前目录下，生成文件夹`split`，其目录结构如下
