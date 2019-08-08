@@ -8,14 +8,32 @@ getWavelen  = lambda path: int(path.split('.')[0].split('_')[-1])
 getLabel    = lambda path: int(path[path.find('DATA') + len('DATAx/'):].split('/')[0])
 
 class ImageAttributes():
+    """ Gather attributes of given image path
 
-    def __init__(self, path):
+    Examples:
+        ```
+        paths = [
+            '1/multi/illum3/Multi_3_W1_1/2/22.jpg',
+            '1/multi/illum3/Multi_3_W1_5/22.jpg',
+            '1/multi/illum3/Multi_3_W1_1/2/',
+            '1/multi/illum3/Multi_3_W1_5/',
+            '1/rgb/illum3/RGB_3_W1_1/2.jpg',
+            '1/rgb/illum3/RGB_3_W1_5.jpg',
+        ]
+        for path in paths:
+            print(ImageAttributes(path))
+        ```
+    """
+
+    def __init__(self, path, return_channel_index=False):
         """
         Params:
             path:   {str}
                 - 若为多光谱，则路径形如
                     - '1/multi/illum3/Multi_3_W1_1/2/22.jpg'；
                     - '1/multi/illum3/Multi_3_W1_5/22.jpg'；
+                    - '1/multi/illum3/Multi_3_W1_1/2/'；
+                    - '1/multi/illum3/Multi_3_W1_5/'；
                 - 若为可见光，则路径形如
                     - '1/rgb/illum3/RGB_3_W1_1/2.jpg'；
                     - '1/rgb/illum3/RGB_3_W1_5.jpg'；
@@ -24,7 +42,7 @@ class ImageAttributes():
         self.path = path
         self.label, self.image_type, self.illum_type, \
             self.position, self.glass_type, \
-                self.image_index, self.channel_index = self.parse(path)
+                self.image_index, self.channel_index = self.parse(path, return_channel_index)
 
     def __repr__(self):
 
@@ -41,7 +59,7 @@ class ImageAttributes():
                 self.position, self.glass_type, self.image_index, self.channel_index)
 
     @staticmethod
-    def parse(path):
+    def parse(path, return_channel_index):
 
         path = path.strip('/').split('/')
 
@@ -60,11 +78,12 @@ class ImageAttributes():
             
             if glass_type != 5:
                 image_index = int(path[4])
-                channel_index = int(path[5].split('.')[0])
+                channel_index = int(path[5].split('.')[0]) if return_channel_index else None
             else:
-                channel_index = int(path[4].split('.')[0])
+                channel_index = int(path[4].split('.')[0]) if return_channel_index else None
 
         return label, image_type, illum_type, position, glass_type, image_index, channel_index
+
 
 def get_path_by_attr(label, image_type, illum_type, position, glass_type, 
                             image_index=None, channel_index=None):

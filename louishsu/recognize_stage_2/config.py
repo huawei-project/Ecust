@@ -2,40 +2,42 @@ from easydict import EasyDict
 
 configer = EasyDict()
 
-configer.dsize = (112, 96)
-configer.datatype = 'Multi'
-configer.n_epoch  = 300 \
-    if configer.datatype == 'Multi' else 350
-configer.lrbase = 0.001 \
-    if configer.datatype == 'Multi' else 0.0005
-
-configer.n_channel = 23
-configer.n_class = 63
-configer.batchsize = 32
+## -------------------------- 训练相关 --------------------------
+configer.n_epoch  = 300
 configer.stepsize = 250
+configer.batchsize = 32
+configer.lrbase = 0.001
 configer.gamma = 0.2
-configer.cuda = True
+configer.cuda = False
 
-configer.splitmode = 'split_{}x{}_1'.format(configer.dsize[0], configer.dsize[1])
+## ------------------------- 数据集相关 -------------------------
+configer.dsize = (112, 96)
+configer.n_channel = 25                 # 一份多光谱数据，包含25通道
+configer.n_class = 92                   # 人员数目共92人
+
+configer.datatype = 'Multi'             # "Multi", "RGB"
+configer.usedChannels = [i + 1 for i in range(25)]  # 多光谱: 列表，包含所用通道索引(1~25)； 可见光: 字符串，"RGB"或"R", "G", "B"
+configer.splitratio = [0.6, 0.2, 0.2]   # 划分比例
+configer.splitcount = 1
+
+## -------------------------- 模型相关 --------------------------
 configer.modelbase = 'recognize_vgg11_bn'
 
-if configer.datatype == 'Multi':
-    configer.usedChannels = [550+i*20 for i in range(23)]
-    configer.n_usedChannels = len(configer.usedChannels)
-    configer.modelname = '{}_{}_{}'.\
-                    format(configer.modelbase, configer.splitmode, 
-                            '_'.join(list(map(str, configer.usedChannels))))
-elif configer.datatype == 'RGB':
-    configer.usedChannels = 'RGB'
-    configer.n_usedChannels = len(configer.usedChannels)
-    configer.modelname = '{}_{}_{}'.\
-                    format(configer.modelbase, configer.splitmode, configer.usedChannels)
+
+## ========================== 无需修改 ==========================
+configer.splitmode = 'split_{}x{}_[{:.2f}:{:.2f}:{:.2f}]_[{:d}]'.\
+            format(configer.dsize[0], configer.dsize[1], 
+            configer.splitratio[0], configer.splitratio[1], configer.splitratio[2], 
+            configer.splitcount)
+configer.n_usedChannels = len(configer.usedChannels)
+configer.modelname = '[{}]_{}_[{}]'.\
+                format(configer.modelbase, configer.splitmode, 
+                        '_'.join(list(map(str, configer.usedChannels))) \
+                            if isinstance(configer.usedChannels, list) \
+                            else configer.usedChannels)
 
 
-configer.datapath = '/home/louishsu/Work/Workspace/ECUST2019_{}x{}'.\
-                                format(configer.dsize[0], configer.dsize[1])
-configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/logs/{}_{}_{}subjects_logs'.\
-                                format(configer.modelbase, configer.splitmode, configer.n_class)
-configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/{}_{}_{}subjects_models'.\
-                                format(configer.modelbase, configer.splitmode, configer.n_class)
+configer.datapath = "/datasets/ECUSTDETECT"
+configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/stage2/{}/logs'.format(configer.modelname)
+configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/stage2/{}/models'.format(configer.modelname)
 

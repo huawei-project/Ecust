@@ -74,38 +74,8 @@ def test(configer):
     ftest.close()
 
 
-def test_samples():
-
-    samplefiles = ['{}normal/Multi_4_W1_1', '{}illum1/Multi_4_W1_1', '{}illum2/Multi_4_W1_1', '{}normal/Multi_1_W1_1', '{}normal/Multi_4_W1_5']
-    samplefiles = list(map(lambda x: x.format('/home/louishsu/Work/Workspace/ECUST2019_64x64/DATA1/1/Multi/'), samplefiles))
-
-    ## 23 channels
-    modelpath = "/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/recognize_vgg11_bn_split_64x64_1_63subjects_models/recognize_vgg11_bn_split_64x64_1_23chs_550sta_20nm.pkl"
-    model = torch.load(modelpath, map_location='cuda' if torch.cuda.is_available() else 'cpu')
-    images = []
-    for samplefile in samplefiles:
-        images += [RecognizeDataset._load_image(samplefile, 'Multi', [550+i*20 for i in range(23)]).unsqueeze(0)]
-    images = torch.cat(images, 0)
-    y_pred_23chs = model(images).detach().numpy()
-    
-    ## single channel
-    MODELPATH = "/home/louishsu/Work/Workspace/HUAWEI/pytorch/modelfiles/recognize_vgg11_bn_split_64x64_1_63subjects_models/recognize_vgg11_bn_split_64x64_1_1chs_{}sta_20nm.pkl"
-    for samplefile in samplefiles:
-        y_pred = []
-        for ch in [550+i*20 for i in range(23)]:
-            image = RecognizeDataset._load_image(samplefile, 'Multi', [ch]).unsqueeze(0)
-            model = torch.load(MODELPATH.format(ch), 
-                map_location='cuda' if torch.cuda.is_available() else 'cpu')
-            y_pred += [model(image).detach().numpy()]
-        y_pred += [y_pred_23chs[samplefiles.index(samplefile)].reshape((1, -1))]
-        y_pred = np.concatenate(y_pred, axis=0)
-
-        filename = '/home/louishsu/Desktop/' + '_'.join(samplefile.split('/')[-2: ])
-        np.save(filename + '.npy', y_pred)
-
-        # import scipy.io as io
-        # io.savemat(filename + ".mat", y_pred)
-
-
 if __name__ == "__main__":
-	test_samples()
+    
+    from config import configer
+    
+    test(configer)

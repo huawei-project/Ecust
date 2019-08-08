@@ -34,7 +34,8 @@ class VGG(nn.Module):
         'VGG19_bn': 'https://download.pytorch.org/models/vgg19_bn-c79401a0.pth',
     }
     
-    def __init__(self, in_channels, n_classes, input_size, netname, batch_norm=False, init_weights=True, finetune=True, pretrain_path=None):
+    def __init__(self, in_channels, n_classes, input_size, netname, 
+            batch_norm=False, init_weights=True, finetune=True, pretrain_path=None):
         super(VGG, self).__init__()
         self.features = self._make_layer(netname, in_channels, input_size, batch_norm)
         self.classifier = nn.Sequential(

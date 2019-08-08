@@ -31,7 +31,7 @@ def train(configer):
     modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
     modeldir  = '/'.join(modelpath.split('/')[:-1])
     if not os.path.exists(modeldir): os.makedirs(modeldir)
-    preInitdir = os.path.join('/'.join(configer.mdlspath.split('/')[:-1]), "preinit")
+    preInitdir = os.path.join('/'.join(configer.mdlspath.split('/')[:-2]), "preinit")
     if not os.path.exists(preInitdir): os.makedirs(preInitdir)
     preInitmodelpath = os.path.join(preInitdir, configer.modelbase + '.pkl')
 
@@ -48,6 +48,7 @@ def train(configer):
         model.load_state_dict(model_state)
 
     if configer.cuda and is_available(): model.cuda()
+    torch.save(model, modelpath)
 
     ## loss
     loss = nn.CrossEntropyLoss()
@@ -167,3 +168,9 @@ def train(configer):
             # print(print_log)
 
         # print('==================================================================================================================')
+
+if __name__ == "__main__":
+    
+    from config import configer
+
+    train(configer)
