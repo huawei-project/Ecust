@@ -114,6 +114,17 @@ def gen_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2):
     ftrain_Multi.close(); fvalid_Multi.close(); ftest_Multi.close()
     ftrain_RGB.close(); fvalid_RGB.close(); ftest_RGB.close()
 
+
 if __name__ == "__main__":
 
-    gen_split("/datasets/ECUSTDETECT", "split_112x96_1", train=0.6, valid=0.2, test=0.2)
+    REPEAT = 5
+    test = 0.2
+    TRAIN = [0.1*(i+1) for i in range(7)]    # 0.1, ..., 0. 7
+
+    for train in TRAIN:
+        valid = 1 - test - train
+        
+        for i in range(REPEAT):
+
+            gen_split("/datasets/ECUSTDETECT", "split_112x96_[{:.2f}:{:.2f}:{:.2f}]_[{}]".format(
+                            train, valid, test, i + 1), train, valid, test)

@@ -23,4 +23,24 @@
 # 划分数据集
 
 1. 划分方式与上阶段一致，在每人的数据中，保留`Multi`与`RGB`同时检测出的图片路径，打乱后按一定比例划分；
-2. 本次实验划分时不做特殊处理，若需要其中指定条件的数据，可在`RecognizeDataset`中指定参数；
+2. 本次实验划分时不做特殊处理，若需要其中指定条件的数据，可在`RecognizeDataset`中指定筛选条件；
+
+运行
+``` python
+python gen_split.py
+```
+
+在当前目录下，生成文件夹`split`，其目录结构如下
+```
+split
+└── split_112x96_[比例]_[划分计数]
+    ├── note.txt
+    ├── test_Multi.txt
+    ├── test_RGB.txt
+    ├── train_Multi.txt
+    ├── train_RGB.txt
+    ├── valid_Multi.txt
+    └── valid_RGB.txt
+```
+
+其中比例形式为`训练集：验证集：测试集`，划分计数为1~5
