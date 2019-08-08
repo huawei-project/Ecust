@@ -8,9 +8,11 @@ configer.stepsize = 250
 configer.batchsize = 32
 configer.lrbase = 0.001
 configer.gamma = 0.2
-configer.cuda = False
+configer.cuda = True
+configer.savepath = '/home/louishsu/Work/Workspace/HUAWEI/stage2'
 
 ## ------------------------- 数据集相关 -------------------------
+configer.datapath = "/datasets/ECUSTDETECT"
 configer.dsize = (112, 96)
 configer.n_channel = 25                 # 一份多光谱数据，包含25通道
 configer.n_class = 92                   # 人员数目共92人
@@ -36,8 +38,6 @@ configer.modelname = '[{}]_{}_[{}]'.\
                             if isinstance(configer.usedChannels, list) \
                             else configer.usedChannels)
 
-
-configer.datapath = "/datasets/ECUSTDETECT"
-configer.logspath = '/home/louishsu/Work/Workspace/HUAWEI/stage2/{}/logs'.format(configer.modelname)
-configer.mdlspath = '/home/louishsu/Work/Workspace/HUAWEI/stage2/{}/models'.format(configer.modelname)
+configer.logspath = '{}/{}/logs'.format(configer.savepath, configer.modelname)
+configer.mdlspath = '{}/{}/models'.format(configer.savepath, configer.modelname)
 

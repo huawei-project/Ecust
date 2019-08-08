@@ -71,6 +71,8 @@ def main_split():
             test(configer)
             gen_out_excel(configer)
 
+# =================================================================================================================================
+
 def main_best_channels():
 
     # 波段选择依据
@@ -133,6 +135,7 @@ def main_best_channels():
                 train(configer)
                 test(configer)
         
+# =================================================================================================================================
 
 def main_several_channels():
 
@@ -363,10 +366,6 @@ def main_several_channels_k_fold(k=5):
                 f.write(print_log + '\n')
             np.save(os.path.join(logpath, 'test_out.npy'), output)
 
-
-
-
-
 def main_finetune_channels():
 
     # 波段选择依据
@@ -535,6 +534,7 @@ def main_finetune_channels():
 
             test(configer)
 
+# =================================================================================================================================
 
 def main_pca():
     from tensorPCA import NDarrayPCA
@@ -715,7 +715,9 @@ def main_pca():
             with open(os.path.join(logpath, 'test_log.txt'), 'w') as  f:
                 f.write(print_log + '\n')
             np.save(os.path.join(logpath, 'test_out.npy'), output)
-    
+
+# =================================================================================================================================
+
 def main_spectral_resolution():
 
     # 光谱分辨率验证
