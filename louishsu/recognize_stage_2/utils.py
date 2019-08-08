@@ -4,8 +4,6 @@ import torch
 import numpy as np
 
 getTime     = lambda: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-getWavelen  = lambda path: int(path.split('.')[0].split('_')[-1])
-getLabel    = lambda path: int(path[path.find('DATA') + len('DATAx/'):].split('/')[0])
 
 class ImageAttributes():
     """ Gather attributes of given image path
@@ -189,3 +187,69 @@ def accuracy(y_pred_prob, y_true):
     y_pred = torch.argmax(y_pred_prob, 1)
     acc = torch.mean((y_pred==y_true).float())
     return acc
+
+def gen_markdown_table_2d(head_name, rows_name, cols_name, data):
+    """
+    Params:
+        head_name: {str} 表头名， 如"count\比例"
+        rows_name, cols_name: {list[str]} 项目名， 如 1,2,3
+        data: {ndarray(H, W)}
+    
+    Returns:
+        table: {str}
+
+    Example:
+        H = 5; W = 6
+        data = np.arange(H*W).reshape(H, W)
+        head_name = "行\列"
+        rows_name = [str(i + 1) for i in range(H)]
+        cols_name = [str(i + 10) for i in range(W)]
+
+        gen_markdown_table_2d(head_name, rows_name, cols_name, data)
+
+        [out]:
+            | 行\列 | 10 | 11 | 12 | 13 | 14 | 15 |
+            | ---: | --: | --: | --: | --: | --: | --: |
+            | 1 | 0 | 1 | 2 | 3 | 4 | 5 |
+            | 2 | 6 | 7 | 8 | 9 | 10 | 11 |
+            | 3 | 12 | 13 | 14 | 15 | 16 | 17 |
+            | 4 | 18 | 19 | 20 | 21 | 22 | 23 |
+            | 5 | 24 | 25 | 26 | 27 | 28 | 29 |
+    """
+    ELEMENT = " {} |"
+
+    H, W = data.shape
+    LINE = "|" + ELEMENT * W
+    
+    lines = []
+
+    ## 表头部分
+    lines += ["| {} | {} |".format(head_name, ' | '.join(cols_name))]
+
+    ## 分割线
+    SPLIT = "{}:"
+    line = "| {} |".format(SPLIT.format('-'*len(head_name)))
+    for i in range(W):
+        line = "{} {} |".format(line, SPLIT.format('-'*len(cols_name[i])))
+    lines += [line]
+    
+    ## 数据部分
+    for i in range(H):
+        d = list(map(str, list(data[i])))
+        lines += ["| {} | {} |".format(rows_name[i], ' | '.join(d))]
+
+    table = '\n'.join(lines)
+
+    return table
+
+if __name__ == '__main__':
+
+    H = 5; W = 6
+    data = np.arange(H*W).reshape(H, W)
+    head_name = "行\列"
+    rows_name = [str(i + 1) for i in range(H)]
+    cols_name = [str(i + 10) for i in range(W)]
+
+    table = gen_markdown_table_2d(head_name, rows_name, cols_name, data)
+    print(table)
+    

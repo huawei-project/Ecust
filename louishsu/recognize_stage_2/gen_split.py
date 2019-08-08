@@ -104,8 +104,8 @@ def gen_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2):
 
     ## 统计数目
     n_items = n_train + n_valid + n_test
-    print_log = 'n_items: {}, n_train: {}, n_valid: {}, n_test: {}, ratio: {:.3f}: {:.3f}: {:.3f}'.\
-                    format(n_items, n_train, n_valid, n_test, n_train / n_items, n_valid / n_items, n_test  / n_items)
+    print_log = '[{}] n_items: {}, n_train: {}, n_valid: {}, n_test: {}, ratio: {:.3f}: {:.3f}: {:.3f}'.\
+                    format(splitmode, n_items, n_train, n_valid, n_test, n_train / n_items, n_valid / n_items, n_test  / n_items)
     print(print_log)
     with open('{}/note.txt'.format(splitdir), 'w') as f:
         f.write(print_log)

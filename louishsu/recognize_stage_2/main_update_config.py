@@ -1,6 +1,7 @@
 import os
 import time
 import numpy as np
+from matplotlib import pyplot as plt 
 from easydict import EasyDict
 
 import torch
@@ -14,7 +15,7 @@ from tensorboardX import SummaryWriter
 
 from datasets import RecognizeDataset
 from models import modeldict
-from utils import accuracy, getTime, getLabel
+from utils import accuracy, gen_markdown_table_2d
 
 from train import train
 from test  import test
@@ -88,7 +89,59 @@ def get_configer(n_epoch=300, stepsize=250, batchsize=32, lrbase=0.001, gamma=0.
 
 def main_3_1():
 
-    pass
+    splitcounts = [i for i in range(1, 6)]
+    trains      = [0.1*(i + 1) for i in range(7)]
+    H, W = len(splitcounts), len(trains)
+
+    data_acc  = np.zeros(shape=(H, W))
+    data_loss = np.zeros(shape=(H, W))
+
+    for i in range(H):                  # 1, 2, ..., 5
+
+        splitcount = splitcounts[i]
+        test = 0.2
+
+        for j in range(W):
+
+            valid = 1 - test - trains[j]
+
+            splitratio = [train, valid, test]
+
+            configer = get_configer(splitratio=splitratio, splitcount=splitcount)
+
+            train(configer)
+            data_acc[i, j], data_loss[i, j] = test(configer)
+    
+    avg_acc  = np.mean(data_acc,  axis=0)
+    avg_loss = np.mean(data_loss, axis=0)
+
+    ## 保存数据
+    table_data_acc  = np.r_[data_acc,  avg_acc.reshape(1, -1) ]
+    table_data_loss = np.r_[data_loss, avg_loss.reshape(1, -1)]
+    table_data = np.concatenate([table_data_acc[np.newaxis], 
+                                table_data_loss[np.newaxis]], axis=0)
+    np.savetxt("images/数据3_1.txt", table_data)
+
+    ## 做表格
+    head_name = "count/比例"
+    rows_name = [str(i) for i in splitcounts] + ['average']
+    cols_name = ["{:.2f}: {:.2f}: 0.2".format(i, 0.8 - i) for i in trains]
+    
+    table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
+    table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
+
+    with open("images/表3_1.txt", 'w') as f:
+        f.write("\n\nacc\n")
+        f.write(table_acc)
+        f.write("\n\nloss\n")
+        f.write(table_loss)
+    
+    ## 作图
+    plt.figure()
+    plt.subplot(121); plt.title("acc");  plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
+    plt.subplot(122); plt.title("loss"); plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
+    plt.savefig("images/图3_1.png")
+    
 
 def main_3_2():
 
