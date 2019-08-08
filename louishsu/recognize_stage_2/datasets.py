@@ -28,7 +28,7 @@ class RecognizeDataset(Dataset):
     
     Update:
     """
-    labels = [i+1 for i in range(63)]
+    labels = [i+1 for i in range(92)]
     
     def __init__(self, datapath, type, splitmode, mode, 
                     usedChannels=None, condition=None, hist=True, load_in_memory=True):
