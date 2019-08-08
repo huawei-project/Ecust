@@ -62,7 +62,7 @@ def gen_Multi_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2):
                         
                         elif splitmode in ['split_64x64_{}'.format(i+1) for i in range(45, 50)]:
                             """ 
-                            - 只含
+                            - 只含`normal`无眼镜
                             - 46~50: 划分比例 0.6: 0.2: 0.2
                             """
                             if filename.split('/')[3] == 'normal' and filename.split('_')[-1] == '1':
