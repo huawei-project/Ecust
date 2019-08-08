@@ -64,8 +64,9 @@ class RecognizeDataset(Dataset):
                                         [
                                             self.load_image(self.datapath, x, self.type, self.usedChannels, self.hist), 
                                             self._get_label(x)
-                                        ], 
-                                        self.filelist))
+                                        ], self.filelist))
+        
+        print("Total: {}".format(len(self))
 
     @staticmethod
     def load_image(datapath, path, type, usedChannels=None, hist=True):

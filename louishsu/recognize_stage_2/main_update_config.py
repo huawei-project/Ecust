@@ -19,7 +19,7 @@ from utils import accuracy, getTime, getLabel
 from train import train
 from test  import test
 
-def get_configer(n_epoch=300, stepsize=250, batchsize=32, lrbase=0,001, gamma=0.2, cuda=True, 
+def get_configer(n_epoch=300, stepsize=250, batchsize=32, lrbase=0.001, gamma=0.2, cuda=True, 
                 dsize=(112, 96), n_channel=25, n_class=92, datatype='Multi', 
                 usedChannels=[i+1 for i in range(25)], splitratio=[0.6, 0.2, 0.2], 
                 splitcount=1, modelbase='recognize_vgg11_bn',
