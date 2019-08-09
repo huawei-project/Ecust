@@ -219,13 +219,15 @@ def main_3_2(make_table_figure=False):
 
                 configer = get_configer(datatype=datatype, splitcount=splitcount, usedChannels=usedChannels)
 
-                modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
-                if os.path.exists(modelpath): continue
-
                 elapsed_time += time.time() - start_time
                 start_time    = time.time()
                 print("Main 3.2 [{}] [{}] {}... Elaped >>> {} min".\
                             format(configer.datatype, configer.splitmode, usedChannels, elapsed_time/60))
+
+                modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
+                if os.path.exists(modelpath):
+                    print("Skip!")
+                    continue
 
                 train(configer)
                 data_acc[i, j], data_loss[i, j] = test(configer)
