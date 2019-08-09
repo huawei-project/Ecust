@@ -94,6 +94,13 @@ split
 - 统计各情况下5次准确率、损失值，并计算均值；
 - 做出曲线；
 
+``` shell
+cd Ecust/louishsu/recognize_stage_2
+python
+>>> from main_update_config import main_3_2
+>>> main_3_2()
+```
+
 ### Multi
 
 准确率：

@@ -212,7 +212,7 @@ def main_3_2(get_table_figure=False):
         data_acc  = np.zeros(shape=(H, W))
         data_loss = np.zeros(shape=(H, W))
         
-        usedChannels_list = [i for i in range(1, 26)] if datatype == "Multi" else ["R", "G", "B"]
+        usedChannels_list = [[i] for i in range(1, 26)] if datatype == "Multi" else ["R", "G", "B"]
 
         for splitcount in splitcounts:
             for usedChannels in usedChannels_list:
