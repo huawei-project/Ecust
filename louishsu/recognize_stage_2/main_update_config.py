@@ -89,8 +89,7 @@ def get_configer(n_epoch=70, stepsize=50, batchsize=2**7, lrbase=5e-4, gamma=0.2
 
 def main_3_1(make_table_figure=False):
 
-    # datatypes   = ["Multi", "RGB"]
-    datatypes   = ["RGB"]   # TODO
+    datatypes   = ["Multi", "RGB"]
     splitcounts = [i for i in range(1, 6)]
     trains      = [0.1*(i + 1) for i in range(7)]
     H, W = len(splitcounts), len(trains)
