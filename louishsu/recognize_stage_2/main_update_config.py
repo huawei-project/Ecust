@@ -25,7 +25,7 @@ def get_configer(n_epoch=70, stepsize=50, batchsize=2**7, lrbase=5e-4, gamma=0.2
                 usedChannels=[i+1 for i in range(25)], splitratio=[0.6, 0.2, 0.2], 
                 splitcount=1, modelbase='recognize_vgg11_bn',
                 datapath = "/datasets/ECUSTDETECT",
-                savepath = '/home/louishsu/Work/Workspace/HUAWEI/stage2'):
+                savepath = 'checkpoints'):
     """
     Params:
     n_epoch:        {int}                   总计迭代周期数
