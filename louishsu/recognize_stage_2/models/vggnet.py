@@ -34,10 +34,10 @@ class VGG(nn.Module):
         'VGG19_bn': 'https://download.pytorch.org/models/vgg19_bn-c79401a0.pth',
     }
     
-    def __init__(self, in_channels, n_classes, input_size, netname, 
+    def __init__(self, in_channels, n_classes, netname, 
             batch_norm=False, init_weights=True, finetune=True, pretrain_path=None):
         super(VGG, self).__init__()
-        self.features = self._make_layer(netname, in_channels, input_size, batch_norm)
+        self.features = self._make_layer(netname, in_channels, batch_norm)
         self.classifier = nn.Sequential(
             nn.Linear(512, 256),
             nn.ReLU(True),
@@ -71,7 +71,7 @@ class VGG(nn.Module):
         self.features.load_state_dict(dict_totrain)
 
 
-    def _make_layer(self, netname, in_channels, input_size, batch_norm=False):
+    def _make_layer(self, netname, in_channels, batch_norm=False):
         cfg = self.cfg[netname]
 
         layers = []
@@ -85,7 +85,8 @@ class VGG(nn.Module):
                 else:
                     layers += [conv2d, nn.ReLU(inplace=True)]
                 in_channels = v
-        layers += [nn.AvgPool2d(kernel_size=(input_size//32, input_size//32))]
+                
+        layers += [nn.AdaptiveAvgPool2d((1, 1))]
 
         return nn.Sequential(*layers)
 
@@ -110,3 +111,10 @@ class VGG(nn.Module):
         x = x.view(x.shape[0], -1)
         x = self.classifier(x)
         return x
+
+if __name__ == "__main__":
+    
+    x = torch.randn(32, 3, 112, 96)
+    m = VGG(3, 10, 'VGG11', True)
+    y =m(x)
+    

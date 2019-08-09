@@ -5,4 +5,5 @@ louishsu/mobilefacenet/data/
 louishsu/images/parse/
 louishsu/demo/demo
 louishsu/recognize_stage_2/split/
+louishsu/recognize_stage_2/checkpoints/
 build/

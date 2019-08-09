@@ -5,11 +5,11 @@ configer = EasyDict()
 ## -------------------------- 训练相关 --------------------------
 configer.n_epoch  = 300
 configer.stepsize = 250
-configer.batchsize = 32
-configer.lrbase = 0.001
+configer.batchsize = 2**7
+configer.lrbase = 1e-3
 configer.gamma = 0.2
 configer.cuda = True
-configer.savepath = '/home/louishsu/Work/Workspace/HUAWEI/stage2'
+configer.savepath = 'checkpoints'
 
 ## ------------------------- 数据集相关 -------------------------
 configer.datapath = "/datasets/ECUSTDETECT"

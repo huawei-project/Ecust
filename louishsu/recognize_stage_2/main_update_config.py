@@ -87,11 +87,38 @@ def get_configer(n_epoch=300, stepsize=250, batchsize=32, lrbase=0.001, gamma=0.
 
     return configer
 
-def main_3_1():
+def main_3_1(make_table_figure=False):
 
     splitcounts = [i for i in range(1, 6)]
     trains      = [0.1*(i + 1) for i in range(7)]
     H, W = len(splitcounts), len(trains)
+
+    if get_table_figure:
+
+        table_data = np.loadtxt("images/3_1_data.txt")
+        table_data_acc, table_data_loss = np.vsplit(table_data, 2)      # 按竖直方向划分为两块，即上下
+
+        ## 做表格
+        head_name = "count/比例"
+        rows_name = [str(i) for i in splitcounts] + ['average']
+        cols_name = ["{:.2f}: {:.2f}: 0.2".format(i, 0.8 - i) for i in trains]
+        
+        table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
+        table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
+    
+        with open("images/3_1_table.txt", 'w') as f:
+            f.write("\n\nacc\n")
+            f.write(table_acc)
+            f.write("\n\nloss\n")
+            f.write(table_loss)
+        
+        ## 作图
+        plt.figure()
+        plt.subplot(121); plt.title("acc");  plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
+        plt.subplot(122); plt.title("loss"); plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
+        plt.savefig("images/3_1_figure.png")
+
+        return
 
     data_acc  = np.zeros(shape=(H, W))
     data_loss = np.zeros(shape=(H, W))
@@ -118,30 +145,8 @@ def main_3_1():
     ## 保存数据
     table_data_acc  = np.r_[data_acc,  avg_acc.reshape(1, -1) ]
     table_data_loss = np.r_[data_loss, avg_loss.reshape(1, -1)]
-    table_data = np.concatenate([table_data_acc[np.newaxis], 
-                                table_data_loss[np.newaxis]], axis=0)
-    np.savetxt("images/数据3_1.txt", table_data)
-
-    ## 做表格
-    head_name = "count/比例"
-    rows_name = [str(i) for i in splitcounts] + ['average']
-    cols_name = ["{:.2f}: {:.2f}: 0.2".format(i, 0.8 - i) for i in trains]
-    
-    table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
-    table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
-
-    with open("images/表3_1.txt", 'w') as f:
-        f.write("\n\nacc\n")
-        f.write(table_acc)
-        f.write("\n\nloss\n")
-        f.write(table_loss)
-    
-    ## 作图
-    plt.figure()
-    plt.subplot(121); plt.title("acc");  plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
-    plt.subplot(122); plt.title("loss"); plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
-    plt.savefig("images/图3_1.png")
-    
+    table_data      = np.r_[table_data_acc, table_data_loss]
+    np.savetxt("images/3_1_data.txt", table_data)
 
 def main_3_2():
 
