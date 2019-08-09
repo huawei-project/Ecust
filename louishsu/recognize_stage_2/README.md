@@ -97,8 +97,9 @@ split
 ``` shell
 cd Ecust/louishsu/recognize_stage_2
 python
->>> from main_update_config import main_3_2
->>> main_3_2()
+>>> from main_update_config import main_3_1
+>>> main_3_1()      # 训练、测试
+>>> main_3_1(True)  # 输出文件到`images`
 ```
 
 ### Multi
@@ -158,6 +159,14 @@ python
 - 依次选择单个波段的数据进行实验；
 - 统计各情况下5次准确率、损失值，并计算均值；
 - 做出曲线；
+
+``` shell
+cd Ecust/louishsu/recognize_stage_2
+python
+>>> from main_update_config import main_3_2
+>>> main_3_2()      # 训练、测试
+>>> main_3_2(True)  # 输出文件到`images`
+```
 
 ### Multi
 
@@ -221,6 +230,15 @@ TODO
 - 统计各情况下5次准确率、损失值，并计算均值；
 - 做出曲线；
 
+
+``` shell
+cd Ecust/louishsu/recognize_stage_2
+python
+>>> from main_update_config import main_3_3
+>>> main_3_3()      # 训练、测试
+>>> main_3_3(True)  # 输出文件到`images`
+```
+
 准确率：
 | count\组合数 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 |
 | :---------: | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
@@ -253,6 +271,14 @@ TODO
 - 统计各情况下5次准确率、损失值，并计算均值；
 - 做出曲线；
 
+``` shell
+cd Ecust/louishsu/recognize_stage_2
+python
+>>> from main_update_config import main_3_4
+>>> main_3_4()      # 训练、测试
+>>> main_3_4(True)  # 输出文件到`images`
+```
+
 准确率：
 | count\波段步长 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 |
 | :-----------: | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
@@ -282,6 +308,14 @@ TODO
 - 选用全部波段进行实验；
 - 统计5次实验中，改变条件得到表格；
 - 做出曲线
+
+``` shell
+cd Ecust/louishsu/recognize_stage_2
+python
+>>> from main_update_config import main_3_5
+>>> main_3_5()      # 训练、测试
+>>> main_3_5(True)  # 输出文件到`images`
+```
 
 ### 3.5.1 干扰种类
 

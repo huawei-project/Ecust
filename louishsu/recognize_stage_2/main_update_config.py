@@ -94,7 +94,7 @@ def main_3_1(make_table_figure=False):
     trains      = [0.1*(i + 1) for i in range(7)]
     H, W = len(splitcounts), len(trains)
 
-    if get_table_figure:
+    if make_table_figure:
 
         for datatype in datatypes:
 
@@ -140,7 +140,7 @@ def main_3_1(make_table_figure=False):
             for j in range(W):
 
                 valid = 1 - test - trains[j]
-                splitratio = [train, valid, test]
+                splitratio = [trains[j], valid, test]
 
                 configer = get_configer(splitratio=splitratio, splitcount=splitcount)
 
@@ -162,14 +162,14 @@ def main_3_1(make_table_figure=False):
 
         np.savetxt("images/3_1_<data>_[{}].txt".format(datatype), table_data)
 
-def main_3_2(get_table_figure=False):
+def main_3_2(make_table_figure=False):
 
     datatypes   = ["Multi", "RGB"]
     splitratio = [0.6, 0.2, 0.2]
     splitcounts = [i for i in range(1, 6)]
     H, W = len(splitcounts), 25
 
-    if get_table_figure:
+    if make_table_figure:
 
         for datatype in datatypes:
 
@@ -251,3 +251,7 @@ def main_3_4():
 def main_3_5():
 
     pass
+
+if __name__ == "__main__":
+    
+    main_3_2()
