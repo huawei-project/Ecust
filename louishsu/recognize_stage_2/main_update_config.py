@@ -149,7 +149,8 @@ def main_3_1(make_table_figure=False):
                 valid = 1 - TEST - trains[j]
                 splitratio = [trains[j], valid, TEST]
 
-                configer = get_configer(datatype=datatype, splitratio=splitratio, splitcount=splitcount)
+                configer = get_configer(datatype=datatype, splitratio=splitratio, splitcount=splitcount, 
+                    usedChannels=[i+1 for i in range(25)] if datatype="Multi" else "RGB")
 
                 elapsed_time += time.time() - start_time
                 start_time    = time.time()
@@ -275,6 +276,6 @@ def main_3_5():
 
 if __name__ == "__main__":
     
-    main_3_1(True)
+    main_3_1()
 
     main_3_2()
