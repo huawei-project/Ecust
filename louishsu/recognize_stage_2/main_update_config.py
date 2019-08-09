@@ -28,22 +28,22 @@ def get_configer(n_epoch=300, stepsize=250, batchsize=32, lrbase=0.001, gamma=0.
                 savepath = '/home/louishsu/Work/Workspace/HUAWEI/stage2'):
     """
     Params:
-    n_epoch:        {int}
-    stepsize:       {int}
-    batchsize:      {int}
-    lrbase:         {float}
-    gamma:          {float}
-    cuda:           {bool}
-    dsize:          {tuple(int, int)}
-    n_channel:      {int}
-    n_class:        {int}
-    datatype:       {str}
-    usedChannels:   {list[int] or str}
-    splitratio:     {list[float(3)]}
-    splitcount:     {int}
-    modelbase:      {str}
-    datapath:       {str}
-    savepath:       {str}
+    n_epoch:        {int}                   总计迭代周期数
+    stepsize:       {int}                   学习率衰减周期
+    batchsize:      {int}                   批次大小
+    lrbase:         {float}                 初始学习率
+    gamma:          {float}                 学习率衰减倍率
+    cuda:           {bool}                  是否使用cuda加速
+    dsize:          {tuple(int, int)}       数据空间尺寸
+    n_channel:      {int}                   数据通道数
+    n_class:        {int}                   数据类别数
+    datatype:       {str}                   多光谱或可见光
+    usedChannels:   {list[int] or str}      使用的通道索引
+    splitratio:     {list[float(3)]}        划分比例
+    splitcount:     {int}                   当前划分比例下，当前次随机划分
+    modelbase:      {str}                   使用模型
+    datapath:       {str}                   数据根目录
+    savepath:       {str}                   程序输出目录
     """
     configer = EasyDict()
 
@@ -89,64 +89,79 @@ def get_configer(n_epoch=300, stepsize=250, batchsize=32, lrbase=0.001, gamma=0.
 
 def main_3_1(make_table_figure=False):
 
+    datatypes   = ["Multi", "RGB"]
     splitcounts = [i for i in range(1, 6)]
     trains      = [0.1*(i + 1) for i in range(7)]
     H, W = len(splitcounts), len(trains)
 
     if get_table_figure:
 
-        table_data = np.loadtxt("images/3_1_data.txt")
-        table_data_acc, table_data_loss = np.vsplit(table_data, 2)      # 按竖直方向划分为两块，即上下
+        for datatype in datatypes:
 
-        ## 做表格
-        head_name = "count/比例"
-        rows_name = [str(i) for i in splitcounts] + ['average']
-        cols_name = ["{:.2f}: {:.2f}: 0.2".format(i, 0.8 - i) for i in trains]
+            print("Generating tables and figures [{}]...".format(datatype))
+
+            table_data = np.loadtxt("images/3_1_<data>_[{}].txt".format(datatype))
+            table_data_acc, table_data_loss = np.vsplit(table_data, 2)      # 按竖直方向划分为两块，即上下
+
+            ## 做表格
+            head_name = "count/比例"
+            rows_name = [str(i) for i in splitcounts] + ['average']
+            cols_name = ["{:.2f}: {:.2f}: 0.2".format(i, 0.8 - i) for i in trains]
+            
+            table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
+            table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
         
-        table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
-        table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
-    
-        with open("images/3_1_table.txt", 'w') as f:
-            f.write("\n\nacc\n")
-            f.write(table_acc)
-            f.write("\n\nloss\n")
-            f.write(table_loss)
-        
-        ## 作图
-        plt.figure()
-        plt.subplot(121); plt.title("acc");  plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
-        plt.subplot(122); plt.title("loss"); plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
-        plt.savefig("images/3_1_figure.png")
+            with open("images/3_1_<table>_[{}].txt".format(datatype), 'w') as f:
+                f.write("\n\nacc\n")
+                f.write(table_acc)
+                f.write("\n\nloss\n")
+                f.write(table_loss)
+            
+            ## 作图
+            plt.figure()
+            plt.subplot(121); plt.title("acc");  plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
+            plt.subplot(122); plt.title("loss"); plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
+            plt.savefig("images/3_1_<figure>_[{}].png".format(datatype))
 
         return
 
-    data_acc  = np.zeros(shape=(H, W))
-    data_loss = np.zeros(shape=(H, W))
+    start_time = time.time(); elapsed_time = 0
 
-    for i in range(H):                  # 1, 2, ..., 5
+    for datatype in datatypes:
 
-        splitcount = splitcounts[i]
-        test = 0.2
+        data_acc  = np.zeros(shape=(H, W))
+        data_loss = np.zeros(shape=(H, W))
 
-        for j in range(W):
+        for i in range(H):                  # 1, 2, ..., 5
 
-            valid = 1 - test - trains[j]
+            splitcount = splitcounts[i]
+            test = 0.2
 
-            splitratio = [train, valid, test]
+            for j in range(W):
 
-            configer = get_configer(splitratio=splitratio, splitcount=splitcount)
+                valid = 1 - test - trains[j]
+                splitratio = [train, valid, test]
 
-            train(configer)
-            data_acc[i, j], data_loss[i, j] = test(configer)
-    
-    avg_acc  = np.mean(data_acc,  axis=0)
-    avg_loss = np.mean(data_loss, axis=0)
+                configer = get_configer(splitratio=splitratio, splitcount=splitcount)
 
-    ## 保存数据
-    table_data_acc  = np.r_[data_acc,  avg_acc.reshape(1, -1) ]
-    table_data_loss = np.r_[data_loss, avg_loss.reshape(1, -1)]
-    table_data      = np.r_[table_data_acc, table_data_loss]
-    np.savetxt("images/3_1_data.txt", table_data)
+                elapsed_time += time.time() - start_time
+                start_time    = time.time()
+                print("Main 3.1 <{}> [{}]... Elaped >>> {} min".\
+                            format(configer.datatype, configer.splitmode, elapsed_time/60))
+
+                train(configer)
+
+                data_acc[i, j], data_loss[i, j] = test(configer)
+        
+        ## 保存数据
+        avg_acc  = np.mean(data_acc,  axis=0)
+        avg_loss = np.mean(data_loss, axis=0)
+
+        table_data_acc  = np.r_[data_acc,  avg_acc.reshape(1, -1) ]
+        table_data_loss = np.r_[data_loss, avg_loss.reshape(1, -1)]
+        table_data      = np.r_[table_data_acc, table_data_loss]
+
+        np.savetxt("images/3_1_<data>_[{}].txt".format(datatype), table_data)
 
 def main_3_2():
 

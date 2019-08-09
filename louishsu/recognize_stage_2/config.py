@@ -3,10 +3,10 @@ from easydict import EasyDict
 configer = EasyDict()
 
 ## -------------------------- 训练相关 --------------------------
-configer.n_epoch  = 300
-configer.stepsize = 250
+configer.n_epoch  = 100
+configer.stepsize = 70
 configer.batchsize = 2**7
-configer.lrbase = 1e-3
+configer.lrbase = 5e-4
 configer.gamma = 0.2
 configer.cuda = True
 configer.savepath = 'checkpoints'
