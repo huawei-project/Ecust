@@ -135,12 +135,12 @@ def main_3_1(make_table_figure=False):
         for i in range(H):                  # 1, 2, ..., 5
 
             splitcount = splitcounts[i]
-            test = 0.2
+            TEST = 0.2
 
             for j in range(W):
 
-                valid = 1 - test - trains[j]
-                splitratio = [trains[j], valid, test]
+                valid = 1 - TEST - trains[j]
+                splitratio = [trains[j], valid, TEST]
 
                 configer = get_configer(splitratio=splitratio, splitcount=splitcount)
 
