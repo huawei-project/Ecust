@@ -119,8 +119,15 @@ def main_3_1(make_table_figure=False):
             
             ## 作图
             plt.figure()
-            plt.subplot(121); plt.title("acc");  plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
-            plt.subplot(122); plt.title("loss"); plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
+            
+            plt.subplot(121); plt.title("acc")
+            avg_acc = table_data_acc[-1]
+            plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
+            
+            plt.subplot(122); plt.title("loss")
+            avg_loss = table_data_loss[-1]
+            plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
+            
             plt.savefig("images/3_1_<figure>_[{}].png".format(datatype))
 
         return
@@ -199,8 +206,15 @@ def main_3_2(make_table_figure=False):
             
             ## 作图
             plt.figure()
-            plt.subplot(121); plt.title("acc");  plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
-            plt.subplot(122); plt.title("loss"); plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
+            
+            plt.subplot(121); plt.title("acc")
+            avg_acc = table_data_acc[-1]
+            plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
+            
+            plt.subplot(122); plt.title("loss")
+            avg_loss = table_data_loss[-1]
+            plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
+
             plt.savefig("images/3_2_<figure>_[{}].png".format(datatype))
 
             ## 输出最优波段排序，依据准确率
@@ -261,6 +275,6 @@ def main_3_5():
 
 if __name__ == "__main__":
     
-    main_3_1()
+    main_3_1(True)
 
     main_3_2()
