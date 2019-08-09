@@ -142,12 +142,17 @@ def main_3_1(make_table_figure=False):
                 valid = 1 - TEST - trains[j]
                 splitratio = [trains[j], valid, TEST]
 
-                configer = get_configer(splitratio=splitratio, splitcount=splitcount)
+                configer = get_configer(datatype=datatype, splitratio=splitratio, splitcount=splitcount)
 
                 elapsed_time += time.time() - start_time
                 start_time    = time.time()
                 print("Main 3.1 [{}] [{}]... Elaped >>> {} min".\
                             format(configer.datatype, configer.splitmode, elapsed_time/60))
+
+                modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
+                if os.path.exists(modelpath):
+                    print("Skip!")
+                    continue
 
                 train(configer)
                 data_acc[i, j], data_loss[i, j] = test(configer)
@@ -256,4 +261,6 @@ def main_3_5():
 
 if __name__ == "__main__":
     
+    main_3_1()
+
     main_3_2()
