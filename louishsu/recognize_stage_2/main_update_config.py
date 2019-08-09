@@ -20,7 +20,7 @@ from utils import accuracy, gen_markdown_table_2d
 from train import train
 from test  import test
 
-def get_configer(n_epoch=300, stepsize=250, batchsize=32, lrbase=0.001, gamma=0.2, cuda=True, 
+def get_configer(n_epoch=70, stepsize=50, batchsize=2**7, lrbase=5e-4, gamma=0.2, cuda=True, 
                 dsize=(112, 96), n_channel=25, n_class=92, datatype='Multi', 
                 usedChannels=[i+1 for i in range(25)], splitratio=[0.6, 0.2, 0.2], 
                 splitcount=1, modelbase='recognize_vgg11_bn',
@@ -146,11 +146,10 @@ def main_3_1(make_table_figure=False):
 
                 elapsed_time += time.time() - start_time
                 start_time    = time.time()
-                print("Main 3.1 <{}> [{}]... Elaped >>> {} min".\
+                print("Main 3.1 [{}] [{}]... Elaped >>> {} min".\
                             format(configer.datatype, configer.splitmode, elapsed_time/60))
 
                 train(configer)
-
                 data_acc[i, j], data_loss[i, j] = test(configer)
         
         ## 保存数据
@@ -163,9 +162,83 @@ def main_3_1(make_table_figure=False):
 
         np.savetxt("images/3_1_<data>_[{}].txt".format(datatype), table_data)
 
-def main_3_2():
+def main_3_2(get_table_figure=False):
 
-    pass
+    datatypes   = ["Multi", "RGB"]
+    splitratio = [0.6, 0.2, 0.2]
+    splitcounts = [i for i in range(1, 6)]
+    H, W = len(splitcounts), 25
+
+    if get_table_figure:
+
+        for datatype in datatypes:
+
+            print("Generating tables and figures [{}]...".format(datatype))
+
+            table_data = np.loadtxt("images/3_2_<data>_[{}].txt".format(datatype))
+            table_data_acc, table_data_loss = np.vsplit(table_data, 2)      # 按竖直方向划分为两块，即上下
+
+            ## 做表格
+            head_name = "count/波段索引"
+            rows_name = [str(i) for i in splitcounts] + ['average']
+            cols_name = ["{:.2f}: {:.2f}: 0.2".format(i, 0.8 - i) for i in trains]
+            
+            table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
+            table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
+        
+            with open("images/3_2_<table>_[{}].txt".format(datatype), 'w') as f:
+                f.write("\n\nacc\n")
+                f.write(table_acc)
+                f.write("\n\nloss\n")
+                f.write(table_loss)
+            
+            ## 作图
+            plt.figure()
+            plt.subplot(121); plt.title("acc");  plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
+            plt.subplot(122); plt.title("loss"); plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
+            plt.savefig("images/3_2_<figure>_[{}].png".format(datatype))
+
+            ## 输出最优波段排序，依据准确率
+            avg_acc = table_data_acc[-1]
+            order = np.argsort(avg_acc)[::-1] + 1
+            print("Best: ", order)
+
+        return
+
+    start_time = time.time(); elapsed_time = 0
+
+    for datatype in datatypes:
+
+        data_acc  = np.zeros(shape=(H, W))
+        data_loss = np.zeros(shape=(H, W))
+        
+        usedChannels_list = [i for i in range(1, 26)] if datatype == "Multi" else ["R", "G", "B"]
+
+        for splitcount in splitcounts:
+            for usedChannels in usedChannels_list:
+
+                configer = get_configer(datatype=datatype, splitcount=splitcount, usedChannels=usedChannels)
+
+                modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
+                if os.path.exists(modelpath): continue
+
+                elapsed_time += time.time() - start_time
+                start_time    = time.time()
+                print("Main 3.2 [{}] [{}] {}... Elaped >>> {} min".\
+                            format(configer.datatype, configer.splitmode, usedChannels, elapsed_time/60))
+
+                train(configer)
+                data_acc[i, j], data_loss[i, j] = test(configer)
+        
+        ## 保存数据
+        avg_acc  = np.mean(data_acc,  axis=0)
+        avg_loss = np.mean(data_loss, axis=0)
+
+        table_data_acc  = np.r_[data_acc,  avg_acc.reshape(1, -1) ]
+        table_data_loss = np.r_[data_loss, avg_loss.reshape(1, -1)]
+        table_data      = np.r_[table_data_acc, table_data_loss]
+
+        np.savetxt("images/3_2_<data>_[{}].txt".format(datatype), table_data)
 
 def main_3_3():
 

@@ -22,6 +22,11 @@
 
 # 2. 实验
 
+首先进行试验，确定合适的`configer`参数，在此基础上进行实验，在配置文件`config.py`中保存的参数下，获得良好的实验结果
+
+![accuracy](/images/accuracy.svg)
+![logloss](/images/logloss.svg)
+
 ## 3.1 划分比例的确定
 
 > 确定在何种划分下进行实验，后续实验均以此结果为标准。

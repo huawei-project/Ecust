@@ -3,8 +3,8 @@ from easydict import EasyDict
 configer = EasyDict()
 
 ## -------------------------- 训练相关 --------------------------
-configer.n_epoch  = 100
-configer.stepsize = 70
+configer.n_epoch  = 70
+configer.stepsize = 50
 configer.batchsize = 2**7
 configer.lrbase = 5e-4
 configer.gamma = 0.2
