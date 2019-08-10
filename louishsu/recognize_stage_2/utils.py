@@ -1,3 +1,12 @@
+'''
+@Description: 
+@Version: 1.0.0
+@Auther: louishsu
+@E-mail: is.louishsu@foxmail.com
+@Date: 2019-08-10 10:36:18
+@LastEditTime: 2019-08-10 10:40:27
+@Update: 
+'''
 import os
 import time
 import torch
@@ -242,7 +251,22 @@ def gen_markdown_table_2d(head_name, rows_name, cols_name, data):
 
     return table
 
+def parse_log(log):
+    """
+    Params:
+        log: {str} e.g. "2019-08-10 07:17:03 || test | acc: 96.25%, loss: 0.2208"
+    Returns:
+        acc, loss: {float}
+    """
+    log = log.strip().split(' ')
+    acc = float(log[-3].split('%')[0]) / 100
+    loss = float(log[-1])
+    
+    return acc, loss
+
 if __name__ == '__main__':
+
+    # parse_log("2019-08-10 07:17:03 || test | acc: 96.25%, loss: 0.2208")
 
     H = 5; W = 6
     data = np.arange(H*W).reshape(H, W)

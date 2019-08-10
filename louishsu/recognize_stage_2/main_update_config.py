@@ -1,3 +1,12 @@
+'''
+@Description: 
+@Version: 1.0.0
+@Auther: louishsu
+@E-mail: is.louishsu@foxmail.com
+@Date: 2019-08-10 10:30:40
+@LastEditTime: 2019-08-10 10:47:35
+@Update: 
+'''
 import os
 import time
 import numpy as np
@@ -15,14 +24,14 @@ from tensorboardX import SummaryWriter
 
 from datasets import RecognizeDataset
 from models import modeldict
-from utils import accuracy, gen_markdown_table_2d
+from utils import accuracy, gen_markdown_table_2d, parse_log
 
 from train import train
 from test  import test
 
 def get_configer(n_epoch=70, stepsize=50, batchsize=2**7, lrbase=5e-4, gamma=0.2, cuda=True, 
                 dsize=(112, 96), n_channel=25, n_class=92, datatype='Multi', 
-                usedChannels=[i+1 for i in range(25)], splitratio=[0.6, 0.2, 0.2], 
+                usedChannels=[i+1 for i in range(25)], splitratio=[0.5, 0.3, 0.2], 
                 splitcount=1, modelbase='recognize_vgg11_bn',
                 datapath = "/datasets/ECUSTDETECT",
                 savepath = 'checkpoints'):
@@ -157,13 +166,15 @@ def main_3_1(make_table_figure=False):
                 print("Main 3.1 [{}] [{}]... Elaped >>> {} min".\
                             format(configer.datatype, configer.splitmode, elapsed_time/60))
 
-                modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
-                if os.path.exists(modelpath):
-                    print("Skip!")
-                    continue
-
-                train(configer)
-                data_acc[i, j], data_loss[i, j] = test(configer)
+                logpath = os.path.join(configer.logspath, configer.modelname)
+                if os.path.exists(logpath):
+                    with open(os.path.join(logpath, 'test_log.txt'), 'r') as f:
+                        test_log = f.readlines()
+                        data_acc[i, j], data_loss[i, j] = parse_log(test_log)
+                        print(test_log)
+                else:
+                    train(configer)
+                    data_acc[i, j], data_loss[i, j] = test(configer)
         
         ## 保存数据
         avg_acc  = np.mean(data_acc,  axis=0)
@@ -178,7 +189,6 @@ def main_3_1(make_table_figure=False):
 def main_3_2(make_table_figure=False):
 
     datatypes   = ["Multi", "RGB"]
-    splitratio = [0.6, 0.2, 0.2]
     splitcounts = [i for i in range(1, 6)]
     H, W = len(splitcounts), 25
 
@@ -237,21 +247,23 @@ def main_3_2(make_table_figure=False):
         for splitcount in splitcounts:
             for usedChannels in usedChannels_list:
 
-                configer = get_configer(datatype=datatype, splitcount=splitcount, 
-                                usedChannels=usedChannels, splitratio=splitratio)
+                configer = get_configer(datatype=datatype, 
+                            splitcount=splitcount, usedChannels=usedChannels)
 
                 elapsed_time += time.time() - start_time
                 start_time    = time.time()
                 print("Main 3.2 [{}] [{}] {}... Elaped >>> {} min".\
                             format(configer.datatype, configer.splitmode, usedChannels, elapsed_time/60))
 
-                modelpath = os.path.join(configer.mdlspath, configer.modelname) + '.pkl'
-                if os.path.exists(modelpath):
-                    print("Skip!")
-                    continue
-
-                train(configer)
-                data_acc[i, j], data_loss[i, j] = test(configer)
+                logpath = os.path.join(configer.logspath, configer.modelname)
+                if os.path.exists(logpath):
+                    with open(os.path.join(logpath, 'test_log.txt'), 'r') as f:
+                        test_log = f.readlines()
+                        data_acc[i, j], data_loss[i, j] = parse_log(test_log)
+                        print(test_log)
+                else:
+                    train(configer)
+                    data_acc[i, j], data_loss[i, j] = test(configer)
         
         ## 保存数据
         avg_acc  = np.mean(data_acc,  axis=0)
@@ -277,6 +289,6 @@ def main_3_5():
 
 if __name__ == "__main__":
     
-    main_3_1()
+    # main_3_1()
 
     main_3_2()
