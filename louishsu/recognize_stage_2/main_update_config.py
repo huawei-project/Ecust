@@ -28,22 +28,22 @@ def get_configer(n_epoch=70, stepsize=50, batchsize=2**7, lrbase=5e-4, gamma=0.2
                 savepath = 'checkpoints'):
     """
     Params:
-    n_epoch:        {int}                   总计迭代周期数
-    stepsize:       {int}                   学习率衰减周期
-    batchsize:      {int}                   批次大小
-    lrbase:         {float}                 初始学习率
-    gamma:          {float}                 学习率衰减倍率
-    cuda:           {bool}                  是否使用cuda加速
-    dsize:          {tuple(int, int)}       数据空间尺寸
-    n_channel:      {int}                   数据通道数
-    n_class:        {int}                   数据类别数
-    datatype:       {str}                   多光谱或可见光
-    usedChannels:   {list[int] or str}      使用的通道索引
-    splitratio:     {list[float(3)]}        划分比例
-    splitcount:     {int}                   当前划分比例下，当前次随机划分
-    modelbase:      {str}                   使用模型
-    datapath:       {str}                   数据根目录
-    savepath:       {str}                   程序输出目录
+        n_epoch:        {int}                   总计迭代周期数
+        stepsize:       {int}                   学习率衰减周期
+        batchsize:      {int}                   批次大小
+        lrbase:         {float}                 初始学习率
+        gamma:          {float}                 学习率衰减倍率
+        cuda:           {bool}                  是否使用cuda加速
+        dsize:          {tuple(int, int)}       数据空间尺寸
+        n_channel:      {int}                   数据通道数
+        n_class:        {int}                   数据类别数
+        datatype:       {str}                   多光谱或可见光
+        usedChannels:   {list[int] or str}      使用的通道索引
+        splitratio:     {list[float(3)]}        划分比例
+        splitcount:     {int}                   当前划分比例下，当前次随机划分
+        modelbase:      {str}                   使用模型
+        datapath:       {str}                   数据根目录
+        savepath:       {str}                   程序输出目录
     """
     configer = EasyDict()
 
@@ -237,7 +237,8 @@ def main_3_2(make_table_figure=False):
         for splitcount in splitcounts:
             for usedChannels in usedChannels_list:
 
-                configer = get_configer(datatype=datatype, splitcount=splitcount, usedChannels=usedChannels)
+                configer = get_configer(datatype=datatype, splitcount=splitcount, 
+                                usedChannels=usedChannels, splitratio=splitratio)
 
                 elapsed_time += time.time() - start_time
                 start_time    = time.time()
