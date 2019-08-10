@@ -237,17 +237,18 @@ def main_3_2(make_table_figure=False):
 
     start_time = time.time(); elapsed_time = 0
 
-    for i in range(len(datatypes)):
+    for datatype in datatypes:
 
-        datatype = datatypes[i]
-        
         data_acc  = np.zeros(shape=(H, W))
         data_loss = np.zeros(shape=(H, W))
         
         usedChannels_list = [[i] for i in range(1, 26)] if datatype == "Multi" else ["R", "G", "B"]
 
-        for splitcount in splitcounts:
-            for usedChannels in usedChannels_list:
+        for i in range(len(splitcounts)):
+            splitcount = splitcounts[i]
+
+            for j in range(len(usedChannels_list)):
+                usedChannels = usedChannels_list[i]
 
                 configer = get_configer(datatype=datatype, 
                             splitcount=splitcount, usedChannels=usedChannels)
