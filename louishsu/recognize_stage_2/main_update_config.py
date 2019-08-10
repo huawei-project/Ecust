@@ -169,7 +169,7 @@ def main_3_1(make_table_figure=False):
                 logpath = os.path.join(configer.logspath, configer.modelname)
                 if os.path.exists(logpath):
                     with open(os.path.join(logpath, 'test_log.txt'), 'r') as f:
-                        test_log = f.readlines()
+                        test_log = f.readlines()[0]
                         data_acc[i, j], data_loss[i, j] = parse_log(test_log)
                         print(test_log)
                 else:
@@ -248,7 +248,7 @@ def main_3_2(make_table_figure=False):
             splitcount = splitcounts[i]
 
             for j in range(len(usedChannels_list)):
-                usedChannels = usedChannels_list[i]
+                usedChannels = usedChannels_list[j]
 
                 configer = get_configer(datatype=datatype, 
                             splitcount=splitcount, usedChannels=usedChannels)
@@ -261,7 +261,7 @@ def main_3_2(make_table_figure=False):
                 logpath = os.path.join(configer.logspath, configer.modelname)
                 if os.path.exists(logpath):
                     with open(os.path.join(logpath, 'test_log.txt'), 'r') as f:
-                        test_log = f.readlines()
+                        test_log = f.readlines()[0]
                         data_acc[i, j], data_loss[i, j] = parse_log(test_log)
                         print(test_log)
                 else:
@@ -342,7 +342,7 @@ def main_3_3(make_table_figure=False):
             logpath = os.path.join(configer.logspath, configer.modelname)
             if os.path.exists(logpath):
                 with open(os.path.join(logpath, 'test_log.txt'), 'r') as f:
-                    test_log = f.readlines()
+                    test_log = f.readlines()[0]
                     data_acc[i, j], data_loss[i, j] = parse_log(test_log)
                     print(test_log)
             else:
@@ -423,7 +423,7 @@ def main_3_4():
             logpath = os.path.join(configer.logspath, configer.modelname)
             if os.path.exists(logpath):
                 with open(os.path.join(logpath, 'test_log.txt'), 'r') as f:
-                    test_log = f.readlines()
+                    test_log = f.readlines()[0]
                     data_acc[i, j], data_loss[i, j] = parse_log(test_log)
                     print(test_log)
             else:
