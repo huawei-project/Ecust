@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-10 11:16:55
+@LastEditTime: 2019-08-11 09:30:44
 @Update: 
 '''
 import os
@@ -190,11 +190,14 @@ def main_3_2(make_table_figure=False):
 
     datatypes   = ["Multi", "RGB"]
     splitcounts = [i for i in range(1, 6)]
-    H, W = len(splitcounts), 25
+    H = len(splitcounts)
 
     if make_table_figure:
 
         for datatype in datatypes:
+
+            usedChannels_list = [[i] for i in range(1, 26)] if datatype == "Multi" else ["R", "G", "B"]
+            W = len(usedChannels_list)
 
             print("Generating tables and figures [{}]...".format(datatype))
 
@@ -204,7 +207,7 @@ def main_3_2(make_table_figure=False):
             ## 做表格
             head_name = "count/波段索引"
             rows_name = [str(i) for i in splitcounts] + ['average']
-            cols_name = [str(i+1) for i in range(W)] if datatype == "Multi" else ["R", "G", "B"]
+            cols_name = usedChannels_list
             
             table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
             table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
@@ -238,12 +241,13 @@ def main_3_2(make_table_figure=False):
     start_time = time.time(); elapsed_time = 0
 
     for datatype in datatypes:
+        
+        usedChannels_list = [[i] for i in range(1, 26)] if datatype == "Multi" else ["R", "G", "B"]
+        W = len(usedChannels_list)
 
         data_acc  = np.zeros(shape=(H, W))
         data_loss = np.zeros(shape=(H, W))
         
-        usedChannels_list = [[i] for i in range(1, 26)] if datatype == "Multi" else ["R", "G", "B"]
-
         for i in range(len(splitcounts)):
             splitcount = splitcounts[i]
 
