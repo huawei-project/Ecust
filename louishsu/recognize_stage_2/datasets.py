@@ -2,7 +2,7 @@
 @Description: In User Settings Edit
 @Author: your name
 @Date: 2019-08-11 09:43:41
-@LastEditTime: 2019-08-11 09:49:20
+@LastEditTime: 2019-08-11 09:50:55
 @LastEditors: Please set LastEditors
 '''
 import os
@@ -144,7 +144,7 @@ class RecognizeDataset(Dataset):
         
         image = ToTensor()(image)
         
-        X = image[0].numpy(); cv2.imshow("", X); cv2.waitKey(0)   # for DEBUG
+        # X = image[0].numpy(); cv2.imshow("", X); cv2.waitKey(0)   # for DEBUG
 
         return image
 
