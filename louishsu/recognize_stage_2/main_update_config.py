@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-11 09:30:44
+@LastEditTime: 2019-08-11 09:42:29
 @Update: 
 '''
 import os
@@ -167,6 +167,7 @@ def main_3_1(make_table_figure=False):
                             format(configer.datatype, configer.splitmode, elapsed_time/60))
 
                 logpath = os.path.join(configer.logspath, configer.modelname)
+                print(logpath)
                 if os.path.exists(logpath):
                     with open(os.path.join(logpath, 'test_log.txt'), 'r') as f:
                         test_log = f.readlines()[0]
@@ -175,6 +176,7 @@ def main_3_1(make_table_figure=False):
                 else:
                     train(configer)
                     data_acc[i, j], data_loss[i, j] = test(configer)
+                print("-------------------------------------------------")
         
         ## 保存数据
         avg_acc  = np.mean(data_acc,  axis=0)
@@ -196,7 +198,8 @@ def main_3_2(make_table_figure=False):
 
         for datatype in datatypes:
 
-            usedChannels_list = [[i] for i in range(1, 26)] if datatype == "Multi" else ["R", "G", "B"]
+            usedChannels_list = [[i] for i in range(1, 26)] \
+                        if datatype == "Multi" else ["R", "G", "B"]
             W = len(usedChannels_list)
 
             print("Generating tables and figures [{}]...".format(datatype))
@@ -207,7 +210,7 @@ def main_3_2(make_table_figure=False):
             ## 做表格
             head_name = "count/波段索引"
             rows_name = [str(i) for i in splitcounts] + ['average']
-            cols_name = usedChannels_list
+            cols_name = [str(i[0]) for i in usedChannels_list]
             
             table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
             table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
@@ -242,7 +245,8 @@ def main_3_2(make_table_figure=False):
 
     for datatype in datatypes:
         
-        usedChannels_list = [[i] for i in range(1, 26)] if datatype == "Multi" else ["R", "G", "B"]
+        usedChannels_list = [[i] for i in range(1, 26)] \
+                    if datatype == "Multi" else ["R", "G", "B"]
         W = len(usedChannels_list)
 
         data_acc  = np.zeros(shape=(H, W))
@@ -263,6 +267,7 @@ def main_3_2(make_table_figure=False):
                             format(configer.datatype, configer.splitmode, usedChannels, elapsed_time/60))
 
                 logpath = os.path.join(configer.logspath, configer.modelname)
+                print(logpath)
                 if os.path.exists(logpath):
                     with open(os.path.join(logpath, 'test_log.txt'), 'r') as f:
                         test_log = f.readlines()[0]
@@ -271,6 +276,7 @@ def main_3_2(make_table_figure=False):
                 else:
                     train(configer)
                     data_acc[i, j], data_loss[i, j] = test(configer)
+                print("-------------------------------------------------")
         
         ## 保存数据
         avg_acc  = np.mean(data_acc,  axis=0)
@@ -284,7 +290,13 @@ def main_3_2(make_table_figure=False):
 
 def main_3_3(make_table_figure=False):
 
-    ORDER = [i+1 for i in range(25)]  # TODO
+    ORDER = [
+        23, 19, 24, 16,  7,
+         8, 21, 13, 17,  3,
+         1, 14, 22, 11,  9, 
+        20, 15, 12,  5,  6,
+         4, 25, 18,  2, 10
+        ]
     usedChannels_list = [ORDER[: i+1] for i in range(len(ORDER))]
     splitcounts = [i for i in range(1, 6)]
     H, W = len(splitcounts), len(usedChannels_list)
@@ -344,6 +356,7 @@ def main_3_3(make_table_figure=False):
                         format(configer.splitmode, usedChannels, elapsed_time/60))
 
             logpath = os.path.join(configer.logspath, configer.modelname)
+            print(logpath)
             if os.path.exists(logpath):
                 with open(os.path.join(logpath, 'test_log.txt'), 'r') as f:
                     test_log = f.readlines()[0]
@@ -352,6 +365,7 @@ def main_3_3(make_table_figure=False):
             else:
                 train(configer)
                 data_acc[i, j], data_loss[i, j] = test(configer)
+            print("-------------------------------------------------")
     
     ## 保存数据
     avg_acc  = np.mean(data_acc,  axis=0)
@@ -365,7 +379,13 @@ def main_3_3(make_table_figure=False):
 
 def main_3_4():
 
-    ORDER = [i+1 for i in range(25)]  # TODO
+    ORDER = [
+        23, 19, 24, 16,  7,
+         8, 21, 13, 17,  3,
+         1, 14, 22, 11,  9, 
+        20, 15, 12,  5,  6,
+         4, 25, 18,  2, 10
+        ]
     usedChannels_list = [ORDER[: : i+1] for i in range(len(ORDER))]
     splitcounts = [i for i in range(1, 6)]
     H, W = len(splitcounts), len(usedChannels_list)
@@ -425,6 +445,7 @@ def main_3_4():
                         format(configer.splitmode, usedChannels, elapsed_time/60))
 
             logpath = os.path.join(configer.logspath, configer.modelname)
+            print(logpath)
             if os.path.exists(logpath):
                 with open(os.path.join(logpath, 'test_log.txt'), 'r') as f:
                     test_log = f.readlines()[0]
@@ -433,6 +454,7 @@ def main_3_4():
             else:
                 train(configer)
                 data_acc[i, j], data_loss[i, j] = test(configer)
+            print("-------------------------------------------------")
     
     ## 保存数据
     avg_acc  = np.mean(data_acc,  axis=0)
@@ -450,8 +472,10 @@ def main_3_5():
 
 if __name__ == "__main__":
     
-    # main_3_1()
+    # main_3_1(True)
 
-    # main_3_2()
+    # main_3_2(True)
 
-    main_3_3()
+    main_3_3(True)
+
+    main_3_4(True)

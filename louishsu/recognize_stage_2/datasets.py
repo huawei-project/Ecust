@@ -1,3 +1,10 @@
+'''
+@Description: In User Settings Edit
+@Author: your name
+@Date: 2019-08-11 09:43:41
+@LastEditTime: 2019-08-11 09:49:20
+@LastEditors: Please set LastEditors
+'''
 import os
 import cv2
 import numpy as np
@@ -31,7 +38,8 @@ class RecognizeDataset(Dataset):
     labels = [i+1 for i in range(92)]
     
     def __init__(self, datapath, type, splitmode, mode, 
-                    usedChannels=None, condition=None, hist=True, load_in_memory=True):
+                    usedChannels=None, condition=None, hist=True, 
+                    dsize=None, load_in_memory=True):
         """
         Params:
             datapath    {str} '/datasets/ECUSTDETECT/'
@@ -44,6 +52,8 @@ class RecognizeDataset(Dataset):
             condition:  {callablc functions} 自定义筛选函数
                     e.g. utils.is_with_no_sun_glasses
             hist:       {bool} 是否直方图均衡化
+            dsize:      {tuple(H, W)}
+            load_in_memory: {bool}
         """
         txtfile = './split/{}/{}_{}.txt'.format(splitmode, mode, type)
         with open(txtfile, 'r') as f:
@@ -57,19 +67,23 @@ class RecognizeDataset(Dataset):
         self.type = type
         self.usedChannels = usedChannels
         self.hist = hist
+        self.dsize = dsize
         self.load_in_memory = load_in_memory
         
         if load_in_memory:
             self.samplelist = list(map(lambda  x: \
-                                        [
-                                            self.load_image(self.datapath, x, self.type, self.usedChannels, self.hist), 
-                                            self._get_label(x)
-                                        ], self.filelist))
+                [
+                    self.load_image(self.datapath, x, 
+                        self.type, self.usedChannels, 
+                        self.hist, self.dsize), 
+                    self._get_label(x)
+                ], self.filelist))
         
         print("{} total: {}".format(mode, len(self)))
 
     @staticmethod
-    def load_image(datapath, path, type, usedChannels=None, hist=True):
+    def load_image(datapath, path, type, 
+                usedChannels=None, hist=True, dsize=None):
         """
         Params:
             path:   {str}
@@ -82,6 +96,7 @@ class RecognizeDataset(Dataset):
             type:           {str} 'Multi', 'RGB'
             usedChannels:   {list[int] / str} 1 ~ 25
             hist:           {bool} 是否直方图均衡化
+            dsize:   {tuple(H, W)}
 
         Returns:
             image:  {tensor(C, H, W)}
@@ -92,16 +107,24 @@ class RecognizeDataset(Dataset):
             image = []
             for ch in usedChannels:
                 imgpath = "{}/{}/{}.jpg".format(datapath, path, ch)
+
                 img = cv2.imread(imgpath, cv2.IMREAD_GRAYSCALE)
+                if dsize is not None:
+                    img = cv2.resize(img, dsize[::-1])
+
                 if hist:
                     img = clahe.apply(img)
+
                 image += [img[:, :, np.newaxis]]
             image = np.concatenate(image, axis=2)
 
         elif type == 'RGB':
             imgpath = os.path.join(datapath, path)
+
             image = cv2.imread(imgpath, cv2.IMREAD_ANYCOLOR)   # BGR
-            
+            if dsize is not None:
+                image = cv2.resize(image, dsize[::-1])
+
             b, g, r = cv2.split(image)
             if hist:
                 b = clahe.apply(b)
@@ -121,7 +144,7 @@ class RecognizeDataset(Dataset):
         
         image = ToTensor()(image)
         
-        # X = image[0].numpy(); cv2.imshow("", X); cv2.waitKey(0)   # for DEBUG
+        X = image[0].numpy(); cv2.imshow("", X); cv2.waitKey(0)   # for DEBUG
 
         return image
 
@@ -152,7 +175,8 @@ class RecognizeDataset(Dataset):
 
         else:
             path = self.filelist[index]
-            image = self.load_image(self.datapath, path, self.type, self.usedChannels, self.hist)
+            image = self.load_image(self.datapath, path, 
+                self.type, self.usedChannels, self.hist, self.dsize)
             label = self._get_label(path)
 
         return image, label
@@ -171,7 +195,11 @@ if __name__ == "__main__":
     #             'split_112x96_[0.10:0.70:0.20]_[1]', 'train', [1, 4, 6], load_in_memory=True)
     # trainset = RecognizeDataset('/datasets/ECUSTDETECT', 'RGB', 
     #             'split_112x96_[0.10:0.70:0.20]_[1]', 'train', "RGB", load_in_memory=False)
+    # trainset = RecognizeDataset('/datasets/ECUSTDETECT', 'RGB', 
+                # 'split_112x96_[0.10:0.70:0.20]_[1]', 'train', "RGB", 
+                # condition=utils.is_with_no_sun_glasses, load_in_memory=False)
     trainset = RecognizeDataset('/datasets/ECUSTDETECT', 'RGB', 
-                'split_112x96_[0.10:0.70:0.20]_[1]', 'train', "RGB", condition=utils.is_with_no_sun_glasses, load_in_memory=False)
+                'split_112x96_[0.10:0.70:0.20]_[1]', 'train', "RGB", 
+                dsize=(112//2, 96//2), load_in_memory=False)
     for i in range(10):
         X, y = trainset[i]
