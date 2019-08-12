@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-11 09:42:29
+@LastEditTime: 2019-08-12 09:47:07
 @Update: 
 '''
 import os
@@ -377,7 +377,7 @@ def main_3_3(make_table_figure=False):
 
     np.savetxt("images/3_3_<data>_[Multi].txt", table_data)
 
-def main_3_4():
+def main_3_4(make_table_figure=False):
 
     ORDER = [
         23, 19, 24, 16,  7,
