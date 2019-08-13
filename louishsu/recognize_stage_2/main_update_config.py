@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-13 18:33:54
+@LastEditTime: 2019-08-13 18:39:03
 @Update: 
 '''
 import os
@@ -80,8 +80,8 @@ def get_configer(n_epoch=90, stepsize=70, batchsize=2**7, lrbase=1e-4, gamma=0.2
     configer.modelbase = modelbase
 
     ## ========================== 无需修改 ==========================
-    configer.splitmode = 'split_{}x{}_[{:.2f}:{:.2f}:{:.2f}]_[{:d}]'.\
-                format(112, 96, 
+    configer.splitmode = 'split_112x96_[{:.2f}:{:.2f}:{:.2f}]_[{:d}]'.\
+                format(
                 configer.splitratio[0], configer.splitratio[1], configer.splitratio[2], 
                 configer.splitcount)
     configer.n_usedChannels = len(configer.usedChannels)

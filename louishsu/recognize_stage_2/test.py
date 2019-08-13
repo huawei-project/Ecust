@@ -5,7 +5,7 @@
 @Author: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-13 10:29:12
-@LastEditTime: 2019-08-13 10:29:50
+@LastEditTime: 2019-08-13 18:37:29
 @Update: 
 '''
 import os
@@ -24,7 +24,7 @@ def test(configer):
 
     ## datasets
     testset = RecognizeDataset(configer.datapath, configer.datatype, 
-                    configer.splitmode, 'test', configer.usedChannels)
+                    configer.splitmode, 'test', configer.usedChannels, dsize=configer.dsize)
     testloader = DataLoader(testset, configer.batchsize, shuffle=False)
 
     ## model

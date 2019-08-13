@@ -22,8 +22,8 @@ def train(configer):
     """
 
     ## datasets
-    trainset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'train', configer.usedChannels)
-    validset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'valid', configer.usedChannels)
+    trainset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'train', configer.usedChannels, dsize=configer.dsize)
+    validset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'valid', configer.usedChannels, dsize=configer.dsize)
     trainloader = DataLoader(trainset, configer.batchsize, shuffle=True)
     validloader = DataLoader(validset, configer.batchsize, shuffle=False)
 
