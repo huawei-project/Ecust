@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+'''
+@Description: 
+@Version: 1.0.0
+@Author: louishsu
+@E-mail: is.louishsu@foxmail.com
+@Date: 2019-08-13 10:29:12
+@LastEditTime: 2019-08-13 10:29:50
+@Update: 
+'''
 import os
 import numpy as np
 
@@ -13,7 +23,8 @@ from utils import accuracy, getTime
 def test(configer):
 
     ## datasets
-    testset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'test', configer.usedChannels)
+    testset = RecognizeDataset(configer.datapath, configer.datatype, 
+                    configer.splitmode, 'test', configer.usedChannels)
     testloader = DataLoader(testset, configer.batchsize, shuffle=False)
 
     ## model
@@ -59,7 +70,8 @@ def test(configer):
         if output is None:
             output = y_pred_prob.detach().cpu().numpy()
         else:
-            output = np.concatenate([output, y_pred_prob.detach().cpu().numpy()], axis=0)
+            output = np.concatenate([output, 
+                        y_pred_prob.detach().cpu().numpy()], axis=0)
 
     # print('------------------------------------------------------------------------------------------------------------------')
 
