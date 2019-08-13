@@ -1,16 +1,27 @@
+# -*- coding: utf-8 -*-
+'''
+@Description: 
+@Version: 1.0.0
+@Author: louishsu
+@E-mail: is.louishsu@foxmail.com
+@Date: 2019-08-13 13:09:10
+@LastEditTime: 2019-08-13 13:16:12
+@Update: 
+'''
 import os
 from os.path import exists, join
 import random
 
 from utils import get_path_by_attr
 
-def gen_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2):
+def gen_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2, with_2_3_4=True):
     """ Multi-spectral
     
     Params:
         datapath: {str} e.g. "[prefix]/ECUSTDETECT"
         splitmode: {str} e.g. "split_64x64_[index]"
         train, valid, test: {float} train + valid + test = 1.0
+        with_2_3_4: {bool}
     Notes:
     -   保存`datapath`以下的路径；
     -   多光谱划分至最后一级目录，下面包括25张图片；
@@ -23,13 +34,13 @@ def gen_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2):
     n_train, n_valid, n_test = 0, 0, 0
 
     ## 候选属性初始化
-    labels = [i + 1 for i in range(92)]         # 共92人，编号 1 ~ 92
+    labels = [i + 1 for i in range(92)]                                 # 共92人，编号 1 ~ 92
     image_types = ["Multi", "RGB"]
     illum_types = ["illum1", "illum2", "illum3", "normal"]
-    positions = [i + 1 for i in range(7)]        # 共7个拍摄角度，编号 1 ~ 7
-    glass_types = [1, 5, 6]                      # `1`表示无眼镜，`5`表示戴眼镜，`6`表示太阳镜
-    image_indexes = [i + 1 for i in range(4)]     # 某些角度拍摄4次，编号 1 ~ 4
-    channel_indexes = [i + 1 for i in range(25)]  # 多光谱图像索引，编号 1 ~ 4
+    positions = [i + 1 for i in range(7)]                               # 共7个拍摄角度，编号 1 ~ 7
+    glass_types = [1, 5, 6]                                             # `1`表示无眼镜，`5`表示戴眼镜，`6`表示太阳镜
+    image_indexes = [i + 1 for i in range(4)] if with_2_3_4 else [1]    # 某些角度拍摄4次，编号 1 ~ 4
+    channel_indexes = [i + 1 for i in range(25)]                        # 多光谱图像索引，编号 1 ~ 4
 
     ## 创建文件目录与`.txt`文件
     splitdir = "./split/{}".format(splitmode)
@@ -120,6 +131,7 @@ if __name__ == "__main__":
     REPEAT = 5
     test = 0.2
     TRAIN = [0.1*(i+1) for i in range(7)]    # 0.1, ..., 0. 7
+    WITH_2_3_4 = False
 
     for train in TRAIN:
         valid = 1 - test - train
@@ -127,4 +139,4 @@ if __name__ == "__main__":
         for i in range(REPEAT):
 
             gen_split("/datasets/ECUSTDETECT", "split_112x96_[{:.2f}:{:.2f}:{:.2f}]_[{}]".format(
-                            train, valid, test, i + 1), train, valid, test)
+                            train, valid, test, i + 1), train, valid, test, with_2_3_4=WITH_2_3_4)
