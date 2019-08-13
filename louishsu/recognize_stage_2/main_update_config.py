@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-13 18:28:13
+@LastEditTime: 2019-08-13 18:31:13
 @Update: 
 '''
 import os
@@ -31,7 +31,7 @@ from test  import test
 
 def get_configer(n_epoch=90, stepsize=70, batchsize=2**7, lrbase=1e-4, gamma=0.2, cuda=True, 
                 dsize=(112//2, 96//2), n_channel=25, n_class=92, datatype='Multi', 
-                usedChannels=[i+1 for i in range(25)], splitratio=[0.5, 0.3, 0.2], 
+                usedChanne_ls=[i+1 for i in range(25)], splitratio=[0.5, 0.3, 0.2], 
                 splitcount=1, modelbase='recognize_vgg11_bn',
                 datapath = "/datasets/ECUSTDETECT",
                 savepath = 'checkpoints'):
@@ -67,9 +67,9 @@ def get_configer(n_epoch=90, stepsize=70, batchsize=2**7, lrbase=1e-4, gamma=0.2
 
     ## ------------------------- 数据集相关 -------------------------
     configer.datapath = datapath
-    configer.dsize = (112, 96)
-    configer.n_channel = 25                 # 一份多光谱数据，包含25通道
-    configer.n_class = 92                   # 人员数目共92人
+    configer.dsize = dsize
+    configer.n_channel = n_channel          # 一份多光谱数据，包含25通道
+    configer.n_class = n_class              # 人员数目共92人
 
     configer.datatype = datatype            # "Multi", "RGB"
     configer.usedChannels = usedChannels    # 多光谱: 列表，包含所用通道索引(1~25)； 可见光: 字符串，"RGB"或"R", "G", "B"
