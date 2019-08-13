@@ -38,41 +38,41 @@
 ``` python
 python gen_split.py
 
-[split_112x96_[0.10:0.70:0.20]_[1]] n_items: 12227, n_train: 1160, n_valid: 8516, n_test: 2551, ratio: 0.095: 0.696: 0.209
-[split_112x96_[0.10:0.70:0.20]_[2]] n_items: 12227, n_train: 1160, n_valid: 8516, n_test: 2551, ratio: 0.095: 0.696: 0.209
-[split_112x96_[0.10:0.70:0.20]_[3]] n_items: 12227, n_train: 1160, n_valid: 8516, n_test: 2551, ratio: 0.095: 0.696: 0.209
-[split_112x96_[0.10:0.70:0.20]_[4]] n_items: 12227, n_train: 1160, n_valid: 8516, n_test: 2551, ratio: 0.095: 0.696: 0.209
-[split_112x96_[0.10:0.70:0.20]_[5]] n_items: 12227, n_train: 1160, n_valid: 8516, n_test: 2551, ratio: 0.095: 0.696: 0.209
-[split_112x96_[0.20:0.60:0.20]_[1]] n_items: 12227, n_train: 2407, n_valid: 7280, n_test: 2540, ratio: 0.197: 0.595: 0.208
-[split_112x96_[0.20:0.60:0.20]_[2]] n_items: 12227, n_train: 2407, n_valid: 7280, n_test: 2540, ratio: 0.197: 0.595: 0.208
-[split_112x96_[0.20:0.60:0.20]_[3]] n_items: 12227, n_train: 2407, n_valid: 7280, n_test: 2540, ratio: 0.197: 0.595: 0.208
-[split_112x96_[0.20:0.60:0.20]_[4]] n_items: 12227, n_train: 2407, n_valid: 7280, n_test: 2540, ratio: 0.197: 0.595: 0.208
-[split_112x96_[0.20:0.60:0.20]_[5]] n_items: 12227, n_train: 2407, n_valid: 7280, n_test: 2540, ratio: 0.197: 0.595: 0.208
-[split_112x96_[0.30:0.50:0.20]_[1]] n_items: 12227, n_train: 3621, n_valid: 6106, n_test: 2500, ratio: 0.296: 0.499: 0.204
-[split_112x96_[0.30:0.50:0.20]_[2]] n_items: 12227, n_train: 3621, n_valid: 6106, n_test: 2500, ratio: 0.296: 0.499: 0.204
-[split_112x96_[0.30:0.50:0.20]_[3]] n_items: 12227, n_train: 3621, n_valid: 6106, n_test: 2500, ratio: 0.296: 0.499: 0.204
-[split_112x96_[0.30:0.50:0.20]_[4]] n_items: 12227, n_train: 3621, n_valid: 6106, n_test: 2500, ratio: 0.296: 0.499: 0.204
-[split_112x96_[0.30:0.50:0.20]_[5]] n_items: 12227, n_train: 3621, n_valid: 6106, n_test: 2500, ratio: 0.296: 0.499: 0.204
-[split_112x96_[0.40:0.40:0.20]_[1]] n_items: 12227, n_train: 4860, n_valid: 4860, n_test: 2507, ratio: 0.397: 0.397: 0.205
-[split_112x96_[0.40:0.40:0.20]_[2]] n_items: 12227, n_train: 4860, n_valid: 4860, n_test: 2507, ratio: 0.397: 0.397: 0.205
-[split_112x96_[0.40:0.40:0.20]_[3]] n_items: 12227, n_train: 4860, n_valid: 4860, n_test: 2507, ratio: 0.397: 0.397: 0.205
-[split_112x96_[0.40:0.40:0.20]_[4]] n_items: 12227, n_train: 4860, n_valid: 4860, n_test: 2507, ratio: 0.397: 0.397: 0.205
-[split_112x96_[0.40:0.40:0.20]_[5]] n_items: 12227, n_train: 4860, n_valid: 4860, n_test: 2507, ratio: 0.397: 0.397: 0.205
-[split_112x96_[0.50:0.30:0.20]_[1]] n_items: 12227, n_train: 6106, n_valid: 3621, n_test: 2500, ratio: 0.499: 0.296: 0.204
-[split_112x96_[0.50:0.30:0.20]_[2]] n_items: 12227, n_train: 6106, n_valid: 3621, n_test: 2500, ratio: 0.499: 0.296: 0.204
-[split_112x96_[0.50:0.30:0.20]_[3]] n_items: 12227, n_train: 6106, n_valid: 3621, n_test: 2500, ratio: 0.499: 0.296: 0.204
-[split_112x96_[0.50:0.30:0.20]_[4]] n_items: 12227, n_train: 6106, n_valid: 3621, n_test: 2500, ratio: 0.499: 0.296: 0.204
-[split_112x96_[0.50:0.30:0.20]_[5]] n_items: 12227, n_train: 6106, n_valid: 3621, n_test: 2500, ratio: 0.499: 0.296: 0.204
-[split_112x96_[0.60:0.20:0.20]_[1]] n_items: 12227, n_train: 7280, n_valid: 2404, n_test: 2543, ratio: 0.595: 0.197: 0.208
-[split_112x96_[0.60:0.20:0.20]_[2]] n_items: 12227, n_train: 7280, n_valid: 2404, n_test: 2543, ratio: 0.595: 0.197: 0.208
-[split_112x96_[0.60:0.20:0.20]_[3]] n_items: 12227, n_train: 7280, n_valid: 2404, n_test: 2543, ratio: 0.595: 0.197: 0.208
-[split_112x96_[0.60:0.20:0.20]_[4]] n_items: 12227, n_train: 7280, n_valid: 2404, n_test: 2543, ratio: 0.595: 0.197: 0.208
-[split_112x96_[0.60:0.20:0.20]_[5]] n_items: 12227, n_train: 7280, n_valid: 2404, n_test: 2543, ratio: 0.595: 0.197: 0.208
-[split_112x96_[0.70:0.10:0.20]_[1]] n_items: 12227, n_train: 8516, n_valid: 1160, n_test: 2551, ratio: 0.696: 0.095: 0.209
-[split_112x96_[0.70:0.10:0.20]_[2]] n_items: 12227, n_train: 8516, n_valid: 1160, n_test: 2551, ratio: 0.696: 0.095: 0.209
-[split_112x96_[0.70:0.10:0.20]_[3]] n_items: 12227, n_train: 8516, n_valid: 1160, n_test: 2551, ratio: 0.696: 0.095: 0.209
-[split_112x96_[0.70:0.10:0.20]_[4]] n_items: 12227, n_train: 8516, n_valid: 1160, n_test: 2551, ratio: 0.696: 0.095: 0.209
-[split_112x96_[0.70:0.10:0.20]_[5]] n_items: 12227, n_train: 8516, n_valid: 1160, n_test: 2551, ratio: 0.696: 0.095: 0.209
+[split_112x96_[0.10:0.70:0.20]_[1]] n_items: 3796, n_train: 365, n_valid: 2633, n_test: 798, ratio: 0.096: 0.694: 0.210
+[split_112x96_[0.10:0.70:0.20]_[2]] n_items: 3796, n_train: 365, n_valid: 2633, n_test: 798, ratio: 0.096: 0.694: 0.210
+[split_112x96_[0.10:0.70:0.20]_[3]] n_items: 3796, n_train: 365, n_valid: 2633, n_test: 798, ratio: 0.096: 0.694: 0.210
+[split_112x96_[0.10:0.70:0.20]_[4]] n_items: 3796, n_train: 365, n_valid: 2633, n_test: 798, ratio: 0.096: 0.694: 0.210
+[split_112x96_[0.10:0.70:0.20]_[5]] n_items: 3796, n_train: 365, n_valid: 2633, n_test: 798, ratio: 0.096: 0.694: 0.210
+[split_112x96_[0.20:0.60:0.20]_[1]] n_items: 3796, n_train: 735, n_valid: 2263, n_test: 798, ratio: 0.194: 0.596: 0.210
+[split_112x96_[0.20:0.60:0.20]_[2]] n_items: 3796, n_train: 735, n_valid: 2263, n_test: 798, ratio: 0.194: 0.596: 0.210
+[split_112x96_[0.20:0.60:0.20]_[3]] n_items: 3796, n_train: 735, n_valid: 2263, n_test: 798, ratio: 0.194: 0.596: 0.210
+[split_112x96_[0.20:0.60:0.20]_[4]] n_items: 3796, n_train: 735, n_valid: 2263, n_test: 798, ratio: 0.194: 0.596: 0.210
+[split_112x96_[0.20:0.60:0.20]_[5]] n_items: 3796, n_train: 735, n_valid: 2263, n_test: 798, ratio: 0.194: 0.596: 0.210
+[split_112x96_[0.30:0.50:0.20]_[1]] n_items: 3796, n_train: 1104, n_valid: 1895, n_test: 797, ratio: 0.291: 0.499: 0.210
+[split_112x96_[0.30:0.50:0.20]_[2]] n_items: 3796, n_train: 1104, n_valid: 1895, n_test: 797, ratio: 0.291: 0.499: 0.210
+[split_112x96_[0.30:0.50:0.20]_[3]] n_items: 3796, n_train: 1104, n_valid: 1895, n_test: 797, ratio: 0.291: 0.499: 0.210
+[split_112x96_[0.30:0.50:0.20]_[4]] n_items: 3796, n_train: 1104, n_valid: 1895, n_test: 797, ratio: 0.291: 0.499: 0.210
+[split_112x96_[0.30:0.50:0.20]_[5]] n_items: 3796, n_train: 1104, n_valid: 1895, n_test: 797, ratio: 0.291: 0.499: 0.210
+[split_112x96_[0.40:0.40:0.20]_[1]] n_items: 3796, n_train: 1474, n_valid: 1474, n_test: 848, ratio: 0.388: 0.388: 0.223
+[split_112x96_[0.40:0.40:0.20]_[2]] n_items: 3796, n_train: 1474, n_valid: 1474, n_test: 848, ratio: 0.388: 0.388: 0.223
+[split_112x96_[0.40:0.40:0.20]_[3]] n_items: 3796, n_train: 1474, n_valid: 1474, n_test: 848, ratio: 0.388: 0.388: 0.223
+[split_112x96_[0.40:0.40:0.20]_[4]] n_items: 3796, n_train: 1474, n_valid: 1474, n_test: 848, ratio: 0.388: 0.388: 0.223
+[split_112x96_[0.40:0.40:0.20]_[5]] n_items: 3796, n_train: 1474, n_valid: 1474, n_test: 848, ratio: 0.388: 0.388: 0.223
+[split_112x96_[0.50:0.30:0.20]_[1]] n_items: 3796, n_train: 1895, n_valid: 1104, n_test: 797, ratio: 0.499: 0.291: 0.210
+[split_112x96_[0.50:0.30:0.20]_[2]] n_items: 3796, n_train: 1895, n_valid: 1104, n_test: 797, ratio: 0.499: 0.291: 0.210
+[split_112x96_[0.50:0.30:0.20]_[3]] n_items: 3796, n_train: 1895, n_valid: 1104, n_test: 797, ratio: 0.499: 0.291: 0.210
+[split_112x96_[0.50:0.30:0.20]_[4]] n_items: 3796, n_train: 1895, n_valid: 1104, n_test: 797, ratio: 0.499: 0.291: 0.210
+[split_112x96_[0.50:0.30:0.20]_[5]] n_items: 3796, n_train: 1895, n_valid: 1104, n_test: 797, ratio: 0.499: 0.291: 0.210
+[split_112x96_[0.60:0.20:0.20]_[1]] n_items: 3796, n_train: 2263, n_valid: 704, n_test: 829, ratio: 0.596: 0.185: 0.218
+[split_112x96_[0.60:0.20:0.20]_[2]] n_items: 3796, n_train: 2263, n_valid: 704, n_test: 829, ratio: 0.596: 0.185: 0.218
+[split_112x96_[0.60:0.20:0.20]_[3]] n_items: 3796, n_train: 2263, n_valid: 704, n_test: 829, ratio: 0.596: 0.185: 0.218
+[split_112x96_[0.60:0.20:0.20]_[4]] n_items: 3796, n_train: 2263, n_valid: 704, n_test: 829, ratio: 0.596: 0.185: 0.218
+[split_112x96_[0.60:0.20:0.20]_[5]] n_items: 3796, n_train: 2263, n_valid: 704, n_test: 829, ratio: 0.596: 0.185: 0.218
+[split_112x96_[0.70:0.10:0.20]_[1]] n_items: 3796, n_train: 2633, n_valid: 334, n_test: 829, ratio: 0.694: 0.088: 0.218
+[split_112x96_[0.70:0.10:0.20]_[2]] n_items: 3796, n_train: 2633, n_valid: 334, n_test: 829, ratio: 0.694: 0.088: 0.218
+[split_112x96_[0.70:0.10:0.20]_[3]] n_items: 3796, n_train: 2633, n_valid: 334, n_test: 829, ratio: 0.694: 0.088: 0.218
+[split_112x96_[0.70:0.10:0.20]_[4]] n_items: 3796, n_train: 2633, n_valid: 334, n_test: 829, ratio: 0.694: 0.088: 0.218
+[split_112x96_[0.70:0.10:0.20]_[5]] n_items: 3796, n_train: 2633, n_valid: 334, n_test: 829, ratio: 0.694: 0.088: 0.218
 ```
 
 在当前目录下，生成文件夹`split`，其目录结构如下

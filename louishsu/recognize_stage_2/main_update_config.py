@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-13 12:12:01
+@LastEditTime: 2019-08-13 18:28:13
 @Update: 
 '''
 import os
@@ -29,8 +29,8 @@ from utils import accuracy, gen_markdown_table_2d, parse_log, ImageAttributes
 from train import train
 from test  import test
 
-def get_configer(n_epoch=70, stepsize=50, batchsize=2**7, lrbase=5e-4, gamma=0.2, cuda=True, 
-                dsize=(112, 96), n_channel=25, n_class=92, datatype='Multi', 
+def get_configer(n_epoch=90, stepsize=70, batchsize=2**7, lrbase=1e-4, gamma=0.2, cuda=True, 
+                dsize=(112//2, 96//2), n_channel=25, n_class=92, datatype='Multi', 
                 usedChannels=[i+1 for i in range(25)], splitratio=[0.5, 0.3, 0.2], 
                 splitcount=1, modelbase='recognize_vgg11_bn',
                 datapath = "/datasets/ECUSTDETECT",
