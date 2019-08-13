@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-13 12:00:58
+@LastEditTime: 2019-08-13 12:02:07
 @Update: 
 '''
 import os
@@ -379,14 +379,15 @@ def main_3_3(make_table_figure=False):
 
 def main_3_4(make_table_figure=False):
 
-    # ORDER = [
-    #     23, 19, 24, 16,  7,
-    #      8, 21, 13, 17,  3,
-    #      1, 14, 22, 11,  9, 
-    #     20, 15, 12,  5,  6,
-    #      4, 25, 18,  2, 10
-    #     ]
-    ORDER = [i+1 for i in range(25)]
+    # FIXME:
+    ORDER = [
+        23, 19, 24, 16,  7,
+         8, 21, 13, 17,  3,
+         1, 14, 22, 11,  9, 
+        20, 15, 12,  5,  6,
+         4, 25, 18,  2, 10
+        ]
+    # ORDER = [i+1 for i in range(25)]
     usedChannels_list = [ORDER[: : i+1] for i in range(len(ORDER))]
     splitcounts = [i for i in range(1, 6)]
     H, W = len(splitcounts), len(usedChannels_list)
