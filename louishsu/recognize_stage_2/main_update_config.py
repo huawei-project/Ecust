@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-13 18:31:13
+@LastEditTime: 2019-08-13 18:32:37
 @Update: 
 '''
 import os
@@ -31,7 +31,7 @@ from test  import test
 
 def get_configer(n_epoch=90, stepsize=70, batchsize=2**7, lrbase=1e-4, gamma=0.2, cuda=True, 
                 dsize=(112//2, 96//2), n_channel=25, n_class=92, datatype='Multi', 
-                usedChanne_ls=[i+1 for i in range(25)], splitratio=[0.5, 0.3, 0.2], 
+                usedChannels=[i+1 for i in range(25)], splitratio=[0.5, 0.3, 0.2], 
                 splitcount=1, modelbase='recognize_vgg11_bn',
                 datapath = "/datasets/ECUSTDETECT",
                 savepath = 'checkpoints'):
