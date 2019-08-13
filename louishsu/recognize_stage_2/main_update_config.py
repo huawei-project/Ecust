@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-13 11:49:30
+@LastEditTime: 2019-08-13 11:52:37
 @Update: 
 '''
 import os
@@ -513,6 +513,7 @@ def main_3_5(make_table_figure=False):
                 y_true = np.array(list(map(lambda x: x[1], testset.samplelist)))
                 test_list  = testset.filelist
                 test_attr_list = list(map(lambda  x: ImageAttributes(x), test_list))
+                del testset
 
                 ## 分析光照
                 for j in range(len(illum_types)):
