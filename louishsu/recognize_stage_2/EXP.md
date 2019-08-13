@@ -27,6 +27,10 @@
 ![accuracy](images/accuracy.svg)
 ![logloss](images/logloss.svg)
 
+```
+dsize = (112//2, 96//2)
+```
+
 ## 3.1 划分比例的确定
 
 > 确定在何种划分下进行实验，后续实验均以此结果为标准。
