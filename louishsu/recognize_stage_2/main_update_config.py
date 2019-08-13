@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-13 11:52:37
+@LastEditTime: 2019-08-13 12:00:58
 @Update: 
 '''
 import os
@@ -563,7 +563,7 @@ def main_3_5(make_table_figure=False):
             # -----------------------------------------------------------------------------------------------------
             table_acc_illum_types  = gen_markdown_table_2d(head_name, rows_name, cols_name, data_acc_illum_types )
             table_loss_illum_types = gen_markdown_table_2d(head_name, rows_name, cols_name, data_loss_illum_types)
-            with open("images/3_4_<table>_[{}]_[illum_types].txt".format(datatype), 'w') as f:
+            with open("images/3_5_<table>_[{}]_[illum_types].txt".format(datatype), 'w') as f:
                 f.write("\n\nacc\n")
                 f.write(table_acc_illum_types)
                 f.write("\n\nloss\n")
@@ -576,7 +576,7 @@ def main_3_5(make_table_figure=False):
             plt.subplot(122); plt.title("loss")
             avg_loss = data_loss_illum_types[-1]
             plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
-            plt.savefig("images/3_4_<figure>_[{}]_[illum_types].png".format(datatype))
+            plt.savefig("images/3_5_<figure>_[{}]_[illum_types].png".format(datatype))
 
             # =====================================================================================================
             head_name = "count/位置"
@@ -587,7 +587,7 @@ def main_3_5(make_table_figure=False):
             # -----------------------------------------------------------------------------------------------------
             table_acc_positions  = gen_markdown_table_2d(head_name, rows_name, cols_name, data_acc_positions )
             table_loss_positions = gen_markdown_table_2d(head_name, rows_name, cols_name, data_loss_positions)
-            with open("images/3_4_<table>_[{}]_[positions].txt".format(datatype), 'w') as f:
+            with open("images/3_5_<table>_[{}]_[positions].txt".format(datatype), 'w') as f:
                 f.write("\n\nacc\n")
                 f.write(table_acc_positions)
                 f.write("\n\nloss\n")
@@ -600,7 +600,7 @@ def main_3_5(make_table_figure=False):
             plt.subplot(122); plt.title("loss")
             avg_loss = data_loss_positions[-1]
             plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
-            plt.savefig("images/3_4_<figure>_[{}]_[positions].png".format(datatype))
+            plt.savefig("images/3_5_<figure>_[{}]_[positions].png".format(datatype))
 
             # =====================================================================================================
             head_name = "count/眼镜"
@@ -611,7 +611,7 @@ def main_3_5(make_table_figure=False):
             # -----------------------------------------------------------------------------------------------------
             table_acc_glass_types  = gen_markdown_table_2d(head_name, rows_name, cols_name, data_acc_glass_types )
             table_loss_glass_types = gen_markdown_table_2d(head_name, rows_name, cols_name, data_loss_glass_types)
-            with open("images/3_4_<table>_[{}]_[glass_types].txt".format(datatype), 'w') as f:
+            with open("images/3_5_<table>_[{}]_[glass_types].txt".format(datatype), 'w') as f:
                 f.write("\n\nacc\n")
                 f.write(table_acc_glass_types)
                 f.write("\n\nloss\n")
@@ -624,7 +624,7 @@ def main_3_5(make_table_figure=False):
             plt.subplot(122); plt.title("loss")
             avg_loss = data_loss_glass_types[-1]
             plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
-            plt.savefig("images/3_4_<figure>_[{}]_[glass_types].png".format(datatype))
+            plt.savefig("images/3_5_<figure>_[{}]_[glass_types].png".format(datatype))
 
         return
 
@@ -674,12 +674,17 @@ def main_3_5(make_table_figure=False):
 
 if __name__ == "__main__":
     
-    # main_3_1(True)
+    main_3_1()
+    main_3_1(True)
 
-    # main_3_2(True)
+    main_3_2()
+    main_3_2(True)
 
-    # main_3_3(True)
+    main_3_3()
+    main_3_3(True)
 
-    # main_3_4(True)
+    main_3_4()
+    main_3_4(True)
 
+    main_3_5()
     main_3_5(True)
