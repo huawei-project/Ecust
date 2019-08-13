@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-13 11:37:35
+@LastEditTime: 2019-08-13 11:49:30
 @Update: 
 '''
 import os
@@ -570,10 +570,10 @@ def main_3_5(make_table_figure=False):
             # -----------------------------------------------------------------------------------------------------
             plt.figure()
             plt.subplot(121); plt.title("acc")
-            avg_acc = table_acc_illum_types[-1]
+            avg_acc  = data_acc_illum_types[-1]
             plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
             plt.subplot(122); plt.title("loss")
-            avg_loss = table_loss_illum_types[-1]
+            avg_loss = data_loss_illum_types[-1]
             plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
             plt.savefig("images/3_4_<figure>_[{}]_[illum_types].png".format(datatype))
 
@@ -594,10 +594,10 @@ def main_3_5(make_table_figure=False):
             # -----------------------------------------------------------------------------------------------------
             plt.figure()
             plt.subplot(121); plt.title("acc")
-            avg_acc = table_acc_positions[-1]
+            avg_acc  = data_acc_positions[-1]
             plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
             plt.subplot(122); plt.title("loss")
-            avg_loss = table_loss_positions[-1]
+            avg_loss = data_loss_positions[-1]
             plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
             plt.savefig("images/3_4_<figure>_[{}]_[positions].png".format(datatype))
 
@@ -618,10 +618,10 @@ def main_3_5(make_table_figure=False):
             # -----------------------------------------------------------------------------------------------------
             plt.figure()
             plt.subplot(121); plt.title("acc")
-            avg_acc = table_acc_glass_types[-1]
+            avg_acc  = data_acc_glass_types[-1]
             plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
             plt.subplot(122); plt.title("loss")
-            avg_loss = table_loss_glass_types[-1]
+            avg_loss = data_loss_glass_types[-1]
             plt.bar(np.arange(avg_loss.shape[0]), avg_loss)
             plt.savefig("images/3_4_<figure>_[{}]_[glass_types].png".format(datatype))
 
