@@ -168,7 +168,9 @@ def train(configer):
             # print(print_log)
 
         # print('==================================================================================================================')
+    logger.close()
 
+    
 if __name__ == "__main__":
     
     from config import configer

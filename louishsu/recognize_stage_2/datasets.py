@@ -2,7 +2,7 @@
 @Description: In User Settings Edit
 @Author: your name
 @Date: 2019-08-11 09:43:41
-@LastEditTime: 2019-08-13 18:40:41
+@LastEditTime: 2019-08-14 20:22:46
 @LastEditors: Please set LastEditors
 '''
 import os
@@ -67,7 +67,7 @@ class RecognizeDataset(Dataset):
         self.type = type
         self.usedChannels = usedChannels
         self.hist = hist
-        self.dsize = tuple(dsize)
+        self.dsize = tuple(dsize) if dsize is not None else None
         self.load_in_memory = load_in_memory
         
         if load_in_memory:
