@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-13 21:32:38
+@LastEditTime: 2019-08-14 20:42:56
 @Update: 
 '''
 import os
@@ -552,7 +552,7 @@ def main_3_5(make_table_figure=False):
             cols_name = illum_types
             # -----------------------------------------------------------------------------------------------------
             data_acc_illum_types  = np.r_[data_acc_illum_types,  np.mean(data_acc_illum_types, axis=0).reshape(1, -1)]
-            data_loss_illum_types = np.r_[data_loss_illum_types, np.mean(data_acc_illum_types, axis=0).reshape(1, -1)]
+            data_loss_illum_types = np.r_[data_loss_illum_types, np.mean(data_loss_illum_types, axis=0).reshape(1, -1)]
             # -----------------------------------------------------------------------------------------------------
             table_acc_illum_types  = gen_markdown_table_2d(head_name, rows_name, cols_name, data_acc_illum_types )
             table_loss_illum_types = gen_markdown_table_2d(head_name, rows_name, cols_name, data_loss_illum_types)
@@ -576,7 +576,7 @@ def main_3_5(make_table_figure=False):
             cols_name = list(map(str, positions))
             # -----------------------------------------------------------------------------------------------------
             data_acc_positions  = np.r_[data_acc_positions,  np.mean(data_acc_positions, axis=0).reshape(1, -1)]
-            data_loss_positions = np.r_[data_loss_positions, np.mean(data_acc_positions, axis=0).reshape(1, -1)]
+            data_loss_positions = np.r_[data_loss_positions, np.mean(data_loss_positions, axis=0).reshape(1, -1)]
             # -----------------------------------------------------------------------------------------------------
             table_acc_positions  = gen_markdown_table_2d(head_name, rows_name, cols_name, data_acc_positions )
             table_loss_positions = gen_markdown_table_2d(head_name, rows_name, cols_name, data_loss_positions)
@@ -600,7 +600,7 @@ def main_3_5(make_table_figure=False):
             cols_name = list(map(str, glass_types))
             # -----------------------------------------------------------------------------------------------------
             data_acc_glass_types  = np.r_[data_acc_glass_types,  np.mean(data_acc_glass_types, axis=0).reshape(1, -1)]
-            data_loss_glass_types = np.r_[data_loss_glass_types, np.mean(data_acc_glass_types, axis=0).reshape(1, -1)]
+            data_loss_glass_types = np.r_[data_loss_glass_types, np.mean(data_loss_glass_types, axis=0).reshape(1, -1)]
             # -----------------------------------------------------------------------------------------------------
             table_acc_glass_types  = gen_markdown_table_2d(head_name, rows_name, cols_name, data_acc_glass_types )
             table_loss_glass_types = gen_markdown_table_2d(head_name, rows_name, cols_name, data_loss_glass_types)
