@@ -25,6 +25,7 @@
 - 56 x 48;
 - no hist;
 - no sum_glass in training data set;
+- no 2,3,4
 
 首先进行试验，确定合适的`configer`参数，在此基础上进行实验，在配置文件`config.py`中保存的参数下，获得良好的实验结果
 
@@ -47,40 +48,25 @@ dsize = (112//2, 96//2)
 python gen_split.py
 
 [split_112x96_[0.10:0.70:0.20]_[1]] n_items: 3796, n_train: 365, n_valid: 2633, n_test: 798, ratio: 0.096: 0.694: 0.210
-[split_112x96_[0.10:0.70:0.20]_[2]] n_items: 3796, n_train: 365, n_valid: 2633, n_test: 798, ratio: 0.096: 0.694: 0.210
-[split_112x96_[0.10:0.70:0.20]_[3]] n_items: 3796, n_train: 365, n_valid: 2633, n_test: 798, ratio: 0.096: 0.694: 0.210
-[split_112x96_[0.10:0.70:0.20]_[4]] n_items: 3796, n_train: 365, n_valid: 2633, n_test: 798, ratio: 0.096: 0.694: 0.210
-[split_112x96_[0.10:0.70:0.20]_[5]] n_items: 3796, n_train: 365, n_valid: 2633, n_test: 798, ratio: 0.096: 0.694: 0.210
-[split_112x96_[0.20:0.60:0.20]_[1]] n_items: 3796, n_train: 735, n_valid: 2263, n_test: 798, ratio: 0.194: 0.596: 0.210
-[split_112x96_[0.20:0.60:0.20]_[2]] n_items: 3796, n_train: 735, n_valid: 2263, n_test: 798, ratio: 0.194: 0.596: 0.210
-[split_112x96_[0.20:0.60:0.20]_[3]] n_items: 3796, n_train: 735, n_valid: 2263, n_test: 798, ratio: 0.194: 0.596: 0.210
-[split_112x96_[0.20:0.60:0.20]_[4]] n_items: 3796, n_train: 735, n_valid: 2263, n_test: 798, ratio: 0.194: 0.596: 0.210
-[split_112x96_[0.20:0.60:0.20]_[5]] n_items: 3796, n_train: 735, n_valid: 2263, n_test: 798, ratio: 0.194: 0.596: 0.210
+...
+
+[split_112x96_[0.20:0.60:0.20]_[1]] n_items: 3796, n_train: 735, 
+...
+
 [split_112x96_[0.30:0.50:0.20]_[1]] n_items: 3796, n_train: 1104, n_valid: 1895, n_test: 797, ratio: 0.291: 0.499: 0.210
-[split_112x96_[0.30:0.50:0.20]_[2]] n_items: 3796, n_train: 1104, n_valid: 1895, n_test: 797, ratio: 0.291: 0.499: 0.210
-[split_112x96_[0.30:0.50:0.20]_[3]] n_items: 3796, n_train: 1104, n_valid: 1895, n_test: 797, ratio: 0.291: 0.499: 0.210
-[split_112x96_[0.30:0.50:0.20]_[4]] n_items: 3796, n_train: 1104, n_valid: 1895, n_test: 797, ratio: 0.291: 0.499: 0.210
-[split_112x96_[0.30:0.50:0.20]_[5]] n_items: 3796, n_train: 1104, n_valid: 1895, n_test: 797, ratio: 0.291: 0.499: 0.210
+...
+
 [split_112x96_[0.40:0.40:0.20]_[1]] n_items: 3796, n_train: 1474, n_valid: 1474, n_test: 848, ratio: 0.388: 0.388: 0.223
-[split_112x96_[0.40:0.40:0.20]_[2]] n_items: 3796, n_train: 1474, n_valid: 1474, n_test: 848, ratio: 0.388: 0.388: 0.223
-[split_112x96_[0.40:0.40:0.20]_[3]] n_items: 3796, n_train: 1474, n_valid: 1474, n_test: 848, ratio: 0.388: 0.388: 0.223
-[split_112x96_[0.40:0.40:0.20]_[4]] n_items: 3796, n_train: 1474, n_valid: 1474, n_test: 848, ratio: 0.388: 0.388: 0.223
-[split_112x96_[0.40:0.40:0.20]_[5]] n_items: 3796, n_train: 1474, n_valid: 1474, n_test: 848, ratio: 0.388: 0.388: 0.223
+...
+
 [split_112x96_[0.50:0.30:0.20]_[1]] n_items: 3796, n_train: 1895, n_valid: 1104, n_test: 797, ratio: 0.499: 0.291: 0.210
-[split_112x96_[0.50:0.30:0.20]_[2]] n_items: 3796, n_train: 1895, n_valid: 1104, n_test: 797, ratio: 0.499: 0.291: 0.210
-[split_112x96_[0.50:0.30:0.20]_[3]] n_items: 3796, n_train: 1895, n_valid: 1104, n_test: 797, ratio: 0.499: 0.291: 0.210
-[split_112x96_[0.50:0.30:0.20]_[4]] n_items: 3796, n_train: 1895, n_valid: 1104, n_test: 797, ratio: 0.499: 0.291: 0.210
-[split_112x96_[0.50:0.30:0.20]_[5]] n_items: 3796, n_train: 1895, n_valid: 1104, n_test: 797, ratio: 0.499: 0.291: 0.210
+...
+
 [split_112x96_[0.60:0.20:0.20]_[1]] n_items: 3796, n_train: 2263, n_valid: 704, n_test: 829, ratio: 0.596: 0.185: 0.218
-[split_112x96_[0.60:0.20:0.20]_[2]] n_items: 3796, n_train: 2263, n_valid: 704, n_test: 829, ratio: 0.596: 0.185: 0.218
-[split_112x96_[0.60:0.20:0.20]_[3]] n_items: 3796, n_train: 2263, n_valid: 704, n_test: 829, ratio: 0.596: 0.185: 0.218
-[split_112x96_[0.60:0.20:0.20]_[4]] n_items: 3796, n_train: 2263, n_valid: 704, n_test: 829, ratio: 0.596: 0.185: 0.218
-[split_112x96_[0.60:0.20:0.20]_[5]] n_items: 3796, n_train: 2263, n_valid: 704, n_test: 829, ratio: 0.596: 0.185: 0.218
+...
+
 [split_112x96_[0.70:0.10:0.20]_[1]] n_items: 3796, n_train: 2633, n_valid: 334, n_test: 829, ratio: 0.694: 0.088: 0.218
-[split_112x96_[0.70:0.10:0.20]_[2]] n_items: 3796, n_train: 2633, n_valid: 334, n_test: 829, ratio: 0.694: 0.088: 0.218
-[split_112x96_[0.70:0.10:0.20]_[3]] n_items: 3796, n_train: 2633, n_valid: 334, n_test: 829, ratio: 0.694: 0.088: 0.218
-[split_112x96_[0.70:0.10:0.20]_[4]] n_items: 3796, n_train: 2633, n_valid: 334, n_test: 829, ratio: 0.694: 0.088: 0.218
-[split_112x96_[0.70:0.10:0.20]_[5]] n_items: 3796, n_train: 2633, n_valid: 334, n_test: 829, ratio: 0.694: 0.088: 0.218
+...
 ```
 
 在当前目录下，生成文件夹`split`，其目录结构如下

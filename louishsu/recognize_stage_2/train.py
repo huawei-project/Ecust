@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-16 16:03:14
-@LastEditTime: 2019-08-16 16:05:24
+@LastEditTime: 2019-08-16 16:10:23
 @Update: 
 '''
 import os
@@ -31,7 +31,7 @@ def train(configer):
     Update:
         2019.04.24: 固定权值
     """
-    condition = False
+    condition = None
     if configer.training_no_glass:
         condition = is_with_no_glasses
 

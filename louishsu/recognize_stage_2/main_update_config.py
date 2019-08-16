@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-16 16:01:28
+@LastEditTime: 2019-08-16 16:10:37
 @Update: 
 '''
 import os
@@ -36,7 +36,7 @@ def get_configer(n_epoch=70, stepsize=50, batchsize=2**5, lrbase=5e-4, gamma=0.2
                 datapath = "/datasets/ECUSTDETECT",
                 savepath = 'checkpoints', 
                 hist=True,
-                training_no_glass=False):
+                training_no_glass=True):
     """
     Params:
         n_epoch:        {int}                   总计迭代周期数
