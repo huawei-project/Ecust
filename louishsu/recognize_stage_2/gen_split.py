@@ -5,7 +5,7 @@
 @Author: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-13 13:09:10
-@LastEditTime: 2019-08-13 18:38:51
+@LastEditTime: 2019-08-16 15:50:51
 @Update: 
 '''
 import os
@@ -128,7 +128,7 @@ def gen_split(datapath, splitmode, train=0.6, valid=0.2, test=0.2, with_2_3_4=Tr
 
 if __name__ == "__main__":
 
-    REPEAT = 5
+    REPEAT = 10
     test = 0.2
     TRAIN = [0.1*(i+1) for i in range(7)]    # 0.1, ..., 0. 7
     WITH_2_3_4 = False

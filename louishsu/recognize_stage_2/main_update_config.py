@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-14 20:42:56
+@LastEditTime: 2019-08-16 16:01:28
 @Update: 
 '''
 import os
@@ -34,7 +34,9 @@ def get_configer(n_epoch=70, stepsize=50, batchsize=2**5, lrbase=5e-4, gamma=0.2
                 usedChannels=[i+1 for i in range(25)], splitratio=[0.6, 0.2, 0.2], 
                 splitcount=1, modelbase='recognize_vgg11_bn',
                 datapath = "/datasets/ECUSTDETECT",
-                savepath = 'checkpoints'):
+                savepath = 'checkpoints', 
+                hist=True,
+                training_no_glass=False):
     """
     Params:
         n_epoch:        {int}                   总计迭代周期数
@@ -55,6 +57,10 @@ def get_configer(n_epoch=70, stepsize=50, batchsize=2**5, lrbase=5e-4, gamma=0.2
         savepath:       {str}                   程序输出目录
     """
     configer = EasyDict()
+
+    ## -------------------------------------------------------------
+    configer.hist = hist
+    configer.training_no_glass = training_no_glass
 
     ## -------------------------- 训练相关 --------------------------
     configer.n_epoch  = n_epoch
@@ -99,7 +105,7 @@ def get_configer(n_epoch=70, stepsize=50, batchsize=2**5, lrbase=5e-4, gamma=0.2
 def main_3_1(make_table_figure=False):
 
     datatypes   = ["Multi", "RGB"]
-    splitcounts = [i for i in range(1, 6)]
+    splitcounts = [i for i in range(1, 11)]
     trains      = [0.1*(i + 1) for i in range(7)]
     H, W = len(splitcounts), len(trains)
 
@@ -191,7 +197,7 @@ def main_3_1(make_table_figure=False):
 def main_3_2(make_table_figure=False):
 
     datatypes   = ["Multi", "RGB"]
-    splitcounts = [i for i in range(1, 6)]
+    splitcounts = [i for i in range(1, 11)]
     H = len(splitcounts)
 
     if make_table_figure:
@@ -298,7 +304,7 @@ def main_3_3(make_table_figure=False):
          4, 25, 18,  2, 10
         ]
     usedChannels_list = [ORDER[: i+1] for i in range(len(ORDER))]
-    splitcounts = [i for i in range(1, 6)]
+    splitcounts = [i for i in range(1, 11)]
     H, W = len(splitcounts), len(usedChannels_list)
 
     if make_table_figure:
@@ -381,7 +387,7 @@ def main_3_4(make_table_figure=False):
 
     ORDER = [i+1 for i in range(25)]
     usedChannels_list = [ORDER[: : i+1] for i in range(len(ORDER))]
-    splitcounts = [i for i in range(1, 6)]
+    splitcounts = [i for i in range(1, 11)]
     H, W = len(splitcounts), len(usedChannels_list)
 
     if make_table_figure:
@@ -463,7 +469,7 @@ def main_3_4(make_table_figure=False):
 def main_3_5(make_table_figure=False):
 
     datatypes   = ["Multi", "RGB"]
-    splitcounts = [i for i in range(1, 6)]
+    splitcounts = [i for i in range(1, 11)]
     H = len(splitcounts)
 
     loss = nn.CrossEntropyLoss()

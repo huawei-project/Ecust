@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+'''
+@Description: 
+@Version: 1.0.0
+@Author: louishsu
+@Github: https://github.com/isLouisHsu
+@E-mail: is.louishsu@foxmail.com
+@Date: 2019-08-16 16:03:14
+@LastEditTime: 2019-08-16 16:05:24
+@Update: 
+'''
 import os
 import time
 import numpy as np
@@ -13,17 +24,24 @@ from tensorboardX import SummaryWriter
 
 from datasets import RecognizeDataset
 from models import modeldict
-from utils import accuracy, getTime
+from utils import accuracy, getTime, is_with_no_glasses
 
 def train(configer):
     """
     Update:
         2019.04.24: 固定权值
     """
+    condition = False
+    if configer.training_no_glass:
+        condition = is_with_no_glasses
 
     ## datasets
-    trainset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'train', configer.usedChannels, dsize=configer.dsize)
-    validset = RecognizeDataset(configer.datapath, configer.datatype, configer.splitmode, 'valid', configer.usedChannels, dsize=configer.dsize)
+    trainset = RecognizeDataset(configer.datapath, configer.datatype, 
+            configer.splitmode, 'train', configer.usedChannels, 
+            dsize=configer.dsize, hist=configer.hist, condition=condition)
+    validset = RecognizeDataset(configer.datapath, configer.datatype, 
+            configer.splitmode, 'valid', configer.usedChannels, 
+            dsize=configer.dsize, hist=configer.hist, condition=condition)
     trainloader = DataLoader(trainset, configer.batchsize, shuffle=True)
     validloader = DataLoader(validset, configer.batchsize, shuffle=False)
 
