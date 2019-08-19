@@ -254,10 +254,10 @@ loss
 根据图3.2.1.1，按准确率将波段排序，降序排序如下：
 ``` shell
 Generating tables and figures [Multi]...
-Best:  [23 19 24 16  7  8 21 13 17  3  1 14 22 11  9 20 15 12  5  6  4 25 18  2
- 10]
+Best:  [20 11 25 13 16 22 24 18 15  5 14 17  4  6 19  1 23  7  8 21  2  9  3 10
+ 12]
 Generating tables and figures [RGB]...
-Best:  [3 1 2]
+Best:  [1 2 3]
 ```
 
 ## 3.3 波段组合实验
