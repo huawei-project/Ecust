@@ -2,7 +2,7 @@
 @Description: In User Settings Edit
 @Author: your name
 @Date: 2019-08-11 09:43:41
-@LastEditTime: 2019-08-16 16:01:15
+@LastEditTime: 2019-08-20 08:20:01
 @LastEditors: Please set LastEditors
 '''
 import os
@@ -35,7 +35,8 @@ class RecognizeDataset(Dataset):
     
     Update:
     """
-    labels = [i+1 for i in range(92)]
+    # labels = [i+1 for i in range(92)]
+    labels = [i+1 for i in range(80)]
     
     def __init__(self, datapath, type, splitmode, mode, 
                     usedChannels=None, condition=None, hist=True, 

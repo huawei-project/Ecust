@@ -1,6 +1,6 @@
 # 1. 数据目录结构
 ```
-[1-92]                                  # 人员标签
+[1-80]                                  # 人员标签
     ├── multi/                          # 多光谱
     │   └── illum[1-3]/, normal/        # 干扰 `1-3`，无干扰
     │       ├── Multi_[1-7]_W1_1/       # 位置 `1-7`        无眼镜      每个位置目录下包括四个照片目录
@@ -23,17 +23,20 @@
 # 2. 实验
 
 ``` python
-def get_configer(n_epoch=150, stepsize=120, batchsize=2**5,                         lrbase=5e-4, gamma=0.2, cuda=True, 
-                dsize=(112//2, 96//2), n_channel=25, n_class=92, datatype='Multi', 
-                usedChannels=[i+1 for i in range(25)], splitratio=[0.6, 0.2, 0.2], 
-                splitcount=1, modelbase='recognize_vgg11_bn',
-                datapath = "/datasets/ECUSTDETECT",
-                savepath = 'checkpoints', 
-                hist=True,
-                training_no_glass=True):
+def get_configer(n_epoch=150, stepsize=120, batchsize=2**5, lrbase=5e-4, gamma=0.2, cuda=True, 
+                dsize=(112//2, 96//2), n_channel=25, n_class=80, 
+                datatype='Multi', usedChannels=[i+1 for i in range(25)], 
+                splitratio=[0.6, 0.2, 0.2], splitcount=1, 
+                modelbase= 'recognize_vgg11_bn', 
+                datapath = '/datasets/Indoordetect', savepath = 'checkpoints', 
+                hist=False, training_no_glass=True):
 ```
 
-## 3.1 划分比例的确定y
+- 图片尺寸为`(112//2, 96//2)`； 
+- 无直方图均衡化；
+- 训练数据仅包含无眼镜数据；
+
+## 3.1 划分比例的确定
 
 > 确定在何种划分下进行实验，后续实验均以此结果为标准。
 
@@ -382,6 +385,8 @@ python
 
 统计无干扰、干扰1、干扰2、干扰3下，每次实验的准确率、损失
 
+**仅包含无眼镜**
+
 #### Multi
 
 acc
@@ -456,6 +461,8 @@ loss
 ### 3.5.2 偏转角度
 
 统计各角度下，每次实验的准确率、损失
+
+**仅包含无眼镜**
 
 #### Multi
 

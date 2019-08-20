@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-16 18:43:55
+@LastEditTime: 2019-08-20 08:33:25
 @Update: 
 '''
 import os
@@ -30,13 +30,12 @@ from train import train
 from test  import test
 
 def get_configer(n_epoch=150, stepsize=120, batchsize=2**5, lrbase=5e-4, gamma=0.2, cuda=True, 
-                dsize=(112//2, 96//2), n_channel=25, n_class=92, datatype='Multi', 
-                usedChannels=[i+1 for i in range(25)], splitratio=[0.6, 0.2, 0.2], 
-                splitcount=1, modelbase='recognize_vgg11_bn',
-                datapath = "/datasets/ECUSTDETECT",
-                savepath = 'checkpoints', 
-                hist=True,
-                training_no_glass=True):
+                dsize=(112//2, 96//2), n_channel=25, n_class=80, 
+                datatype='Multi', usedChannels=[i+1 for i in range(25)], 
+                splitratio=[0.6, 0.2, 0.2], splitcount=1, 
+                modelbase= 'recognize_vgg11_bn', 
+                datapath = '/datasets/Indoordetect', savepath = 'checkpoints', 
+                hist=False, training_no_glass=True):
     """
     Params:
         n_epoch:        {int}                   总计迭代周期数
@@ -518,7 +517,9 @@ def main_3_5(make_table_figure=False):
                 for j in range(len(illum_types)):
                     illum_type = illum_types[j]
 
-                    index = list(map(lambda x: x.illum_type==illum_type, test_attr_list))
+                    # index = list(map(lambda x: x.illum_type==illum_type, test_attr_list))
+                    index = list(map(lambda x: x.illum_type==illum_type and \
+                                               x.glass_type==1 , test_attr_list))
                     index = np.array(index, dtype=np.bool)
 
                     y_pred_prob_sub = torch.tensor(y_pred_prob[index])
@@ -530,7 +531,9 @@ def main_3_5(make_table_figure=False):
                 for j in range(len(positions)):
                     position = positions[j]
 
-                    index = list(map(lambda x: x.position==position, test_attr_list))
+                    # index = list(map(lambda x: x.position==position, test_attr_list))
+                    index = list(map(lambda x: x.position==position and \
+                                               x.glass_type==1, test_attr_list))
                     index = np.array(index, dtype=np.bool)
 
                     y_pred_prob_sub = torch.tensor(y_pred_prob[index])

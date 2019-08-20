@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+'''
+@Description: 
+@Version: 1.0.0
+@Author: louishsu
+@E-mail: is.louishsu@foxmail.com
+@Date: 2019-08-20 08:17:23
+@LastEditTime: 2019-08-20 08:17:56
+@Update: 
+'''
 from easydict import EasyDict
 
 configer = EasyDict()
@@ -12,7 +22,8 @@ configer.cuda = True
 configer.savepath = 'checkpoints'
 
 ## ------------------------- 数据集相关 -------------------------
-configer.datapath = "/datasets/ECUSTDETECT"
+# configer.datapath = "/datasets/ECUSTDETECT"
+configer.datapath = "/datasets/Indoordetect"
 configer.dsize = (112, 96)
 configer.n_channel = 25                 # 一份多光谱数据，包含25通道
 configer.n_class = 92                   # 人员数目共92人
