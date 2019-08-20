@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-20 08:33:25
+@LastEditTime: 2019-08-20 09:06:36
 @Update: 
 '''
 import os
@@ -134,7 +134,7 @@ def main_3_1(make_table_figure=False):
             ## 作图
             plt.figure()
             
-            plt.subplot(121); plt.title("acc")
+            plt.subplot(121); plt.title("acc"); plt.ylim(0.7, 1.1)
             avg_acc = table_data_acc[-1]
             plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
             
@@ -229,7 +229,7 @@ def main_3_2(make_table_figure=False):
             ## 作图
             plt.figure()
             
-            plt.subplot(121); plt.title("acc")
+            plt.subplot(121); plt.title("acc"); plt.ylim(0.7, 1.1)
             avg_acc = table_data_acc[-1]
             plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
             
@@ -330,7 +330,7 @@ def main_3_3(make_table_figure=False):
         ## 作图
         plt.figure()
         
-        plt.subplot(121); plt.title("acc")
+        plt.subplot(121); plt.title("acc"); plt.ylim(0.7, 1.1)
         avg_acc = table_data_acc[-1]
         plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
         
@@ -413,7 +413,7 @@ def main_3_4(make_table_figure=False):
         ## 作图
         plt.figure()
         
-        plt.subplot(121); plt.title("acc")
+        plt.subplot(121); plt.title("acc"); plt.ylim(0.7, 1.1)
         avg_acc = table_data_acc[-1]
         plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
         
@@ -572,7 +572,7 @@ def main_3_5(make_table_figure=False):
                 f.write(table_loss_illum_types)
             # -----------------------------------------------------------------------------------------------------
             plt.figure()
-            plt.subplot(121); plt.title("acc")
+            plt.subplot(121); plt.title("acc"); plt.ylim(0.7, 1.1)
             avg_acc  = data_acc_illum_types[-1]
             plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
             plt.subplot(122); plt.title("loss")
@@ -596,7 +596,7 @@ def main_3_5(make_table_figure=False):
                 f.write(table_loss_positions)
             # -----------------------------------------------------------------------------------------------------
             plt.figure()
-            plt.subplot(121); plt.title("acc")
+            plt.subplot(121); plt.title("acc"); plt.ylim(0.7, 1.1)
             avg_acc  = data_acc_positions[-1]
             plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
             plt.subplot(122); plt.title("loss")
@@ -620,7 +620,7 @@ def main_3_5(make_table_figure=False):
                 f.write(table_loss_glass_types)
             # -----------------------------------------------------------------------------------------------------
             plt.figure()
-            plt.subplot(121); plt.title("acc")
+            plt.subplot(121); plt.title("acc"); plt.ylim(0.7, 1.1)
             avg_acc  = data_acc_glass_types[-1]
             plt.bar(np.arange(avg_acc.shape[0]),  avg_acc )
             plt.subplot(122); plt.title("loss")
