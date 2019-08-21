@@ -138,5 +138,5 @@ if __name__ == "__main__":
         
         for i in range(REPEAT):
 
-            gen_split("/datasets/ECUSTDETECT", "split_112x96_[{:.2f}:{:.2f}:{:.2f}]_[{}]".format(
+            gen_split("/datasets/Indoordetect", "split_112x96_[{:.2f}:{:.2f}:{:.2f}]_[{}]".format(
                             train, valid, test, i + 1), train, valid, test, with_2_3_4=WITH_2_3_4)
