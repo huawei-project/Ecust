@@ -6,12 +6,13 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-12 19:00:19
+@LastEditTime: 2019-09-12 19:57:48
 @Update: 
 '''
 import os
 import cv2
 import scipy
+import torch
 import numpy as np
 from sklearn.manifold import TSNE
 from tensorboardX import SummaryWriter
@@ -64,6 +65,7 @@ def fetchEmbeddings(matfile, condition=None):
     """
     mat = scipy.io.loadmat(matfile)
     filenames, X = mat['filenameLs'], mat['featureLs']
+    filenames = list(map(lambda x: x.strip(), filenames))
 
     if condition is not None:
         index = list(map(lambda x: condition(x), filenames))
@@ -83,15 +85,25 @@ def plotTsne3dEmbeddings(X, y, filenames=None, savename='tsne3d.npy', logdir='pl
         filenames: {ndarray(n_samples), str}
         logdir: {str}
     """
-    X = TSNE(n_components=3).fit_transform(X)
-    np.save(savename, X)
+    if not os.path.exists(savename):
+        X = TSNE(n_components=3).fit_transform(X)
+        np.save(savename, X)
+    else:
+        X = np.load(savename)
 
-    images = np.array(list(map(lambda x: cv2.imread(
-            x if os.isfile(x) else '{}/{}'.format(x, '1.jpg'), cv2.IMREAD_GRAYSCALE), filenames)))\
-            if filenames is not None else None
-    
+    if filenames is None:
+        images = None
+    else:
+        filenames = list(map(
+            lambda x: x if os.path.isfile(x) else '{}/{}'.format(x, '1.jpg'), filenames))
+        images = np.array(list(map(
+            lambda x: np.transpose(
+                cv2.imread(x, cv2.IMREAD_COLOR), axes=[2, 0, 1]), filenames)))
+        images = torch.ByteTensor(images)
+
     with SummaryWriter(logdir) as writer:
-        writer.add_embedding(mat=X, metadata=y, label_img=images)
+        writer.add_embedding(mat=X, metadata=y, 
+                    label_img=images)
 
 if __name__ == "__main__":
     
