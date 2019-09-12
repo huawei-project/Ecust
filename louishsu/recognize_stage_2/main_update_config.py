@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-08-21 16:10:24
+@LastEditTime: 2019-09-10 14:30:05
 @Update: 
 '''
 import os
@@ -33,7 +33,7 @@ def get_configer(n_epoch=150, stepsize=120, batchsize=2**5, lrbase=5e-4, gamma=0
                 dsize=(112//2, 96//2), n_channel=25, n_class=80, 
                 datatype='Multi', usedChannels=[i+1 for i in range(25)], 
                 splitratio=[0.6, 0.2, 0.2], splitcount=1, 
-                modelbase= 'recognize_vgg11_bn', 
+                modelbase= 'recognize_resnet34', 
                 datapath = '/datasets/Indoordetect', savepath = 'checkpoints', 
                 hist=False, training_no_glass=True):
     """
