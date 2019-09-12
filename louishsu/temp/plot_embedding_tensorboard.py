@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-12 16:15:47
+@LastEditTime: 2019-09-12 19:00:19
 @Update: 
 '''
 import os
@@ -111,8 +111,8 @@ if __name__ == "__main__":
     
         datapath = '/datasets/Indoordetect'
         filenames, X, y = fetchEmbeddings(
-                    '~/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/val_result.mat', None)
+                    '/home/louishsu/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/val_result.mat', None)
         filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
         plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, 
-                    savename='~/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/val_result_tsne3d.npy',
-                    logdir='~/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/plots/')
+                    savename='/home/louishsu/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/val_result_tsne3d.npy',
+                    logdir='/home/louishsu/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/plots/')
