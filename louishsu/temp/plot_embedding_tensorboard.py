@@ -105,7 +105,8 @@ if __name__ == "__main__":
                     'C:/Work/Github/facerecognition/facerecognition/workspace_mi/Casia_HyperECUSTMI/val_result.mat', None)
         filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
         plotTsne3dEmbeddings(X=X, y=y, filenames=None,  # TODO: filenames
-                    savename='C:/Work/Github/facerecognition/facerecognition/workspace_mi/Casia_HyperECUSTMI/val_result_tsne3d.npy')
+                    savename='C:/Work/Github/facerecognition/facerecognition/workspace_mi/Casia_HyperECUSTMI/val_result_tsne3d.npy',
+                    logdir='C:/Work/Github/facerecognition/facerecognition/workspace_mi/Casia_HyperECUSTMI/plots/')
     else:
     
         datapath = '/datasets/Indoordetect'
@@ -113,4 +114,5 @@ if __name__ == "__main__":
                     '~/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/val_result.mat', None)
         filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
         plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, 
-                    savename='~/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/val_result_tsne3d.npy')
+                    savename='~/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/val_result_tsne3d.npy',
+                    logdir='~/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/plots/')
