@@ -126,38 +126,29 @@ def plot3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
 
 if __name__ == "__main__":
     
-    import platform
+    datapath = '/datasets/Indoordetect'
+    featurepath = '/home/louishsu/Work/Workspace/features'
 
-
-    if platform.system() == 'Windows':
+    ## -------------- Casia_HyperECUSTMI tsne(256 -> 3) --------------
+    dirname = 'workspace_mi/Casia_HyperECUSTMI'
+    filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
+    filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
     
-        datapath = '/datasets/Indoordetect' # TODO:
-        filenames, X, y = fetchEmbeddings(
-                    'C:/Work/Github/facerecognition/facerecognition/workspace_mi/Casia_HyperECUSTMI/val_result.mat', None)
-        filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
-        plotTsne3dEmbeddings(X=X, y=y, filenames=None,  # TODO: filenames
-                    logdir='C:/Work/Github/facerecognition/facerecognition/workspace_mi/Casia_HyperECUSTMI/plots/')
-    else:
+    plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
+    plotTsne3dEmbeddings(X=X, y=y,                      logdir='{}/{}/plots/'.format(featurepath, dirname))
+
+    ## -------------- Casia_HyperECUSTMI tsne(256 -> 3) --------------
+    dirname = 'workspace_new/Casia+HyperECUST_HyperECUST'
+    filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
+    filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
     
-        datapath = '/datasets/Indoordetect'
-        featurepath = '/home/louishsu/Work/Workspace/features'
+    plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
+    plotTsne3dEmbeddings(X=X, y=y,                      logdir='{}/{}/plots/'.format(featurepath, dirname))
 
-        dirname = 'workspace_mi/Casia_HyperECUSTMI'
-        filenames, X, y = fetchEmbeddings(
-                    '{}/{}/val_result.mat'.format(featurepath, dirname), None)
-        filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
-        
-        plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, 
-                    logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
-        plotTsne3dEmbeddings(X=X, y=y, 
-                    logdir='{}/{}/plots/'.format(featurepath, dirname))
-
-        dirname = 'workspace_new/Casia_LFW'
-        filenames, X, y = fetchEmbeddings(
-                    '{}/{}/val_result.mat'.format(featurepath, dirname), None)
-        filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
-        
-        plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, 
-                    logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
-        plotTsne3dEmbeddings(X=X, y=y, 
-                    logdir='{}/{}/plots/'.format(featurepath, dirname))
+    ## -------------- Casia_HyperECUSTMI(3) --------------
+    dirname = 'workspace_new_3d/Casia+HyperECUST_HyperECUST'
+    filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
+    filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
+    
+    plot3dEmbeddings(X=X, y=y, filenames=filenames, logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
+    plot3dEmbeddings(X=X, y=y,                      logdir='{}/{}/plots/'.format(featurepath, dirname))
