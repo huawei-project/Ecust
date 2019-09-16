@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-16 11:46:15
+@LastEditTime: 2019-09-16 11:56:38
 @Update: 
 '''
 import os
@@ -88,7 +88,8 @@ def plotTsne3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
     X = TSNE(n_components=3).fit_transform(X)
 
     index = np.random.choice(list(range(X.shape[0])), num, replace=False)
-    filenames = np.array(filenames)[index]; X = X[index]; y = y[index]
+    filenames = np.array(filenames)[index] if filenames is not None else None
+    X = X[index]; y = y[index]
 
     if filenames is None:
         images = None
@@ -100,7 +101,7 @@ def plotTsne3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
     with SummaryWriter(logdir) as writer:
         writer.add_embedding(mat=X, metadata=y, label_img=images)
 
-def plot3dEmbeddings(X, y, filenames=None, logdir='plots'):
+def plot3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
     """ 绘制embedding, tensorboard
     
     Params:
@@ -109,6 +110,10 @@ def plot3dEmbeddings(X, y, filenames=None, logdir='plots'):
         filenames: {ndarray(n_samples), str}
         logdir: {str}
     """
+    index = np.random.choice(list(range(X.shape[0])), num, replace=False)
+    filenames = np.array(filenames)[index] if filenames is not None else None
+    X = X[index]; y = y[index]
+
     if filenames is None:
         images = None
     else:
@@ -135,11 +140,24 @@ if __name__ == "__main__":
     else:
     
         datapath = '/datasets/Indoordetect'
+        featurepath = '/home/louishsu/Work/Workspace/features'
+
+        dirname = 'workspace_mi/Casia_HyperECUSTMI'
         filenames, X, y = fetchEmbeddings(
-                    '/home/louishsu/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/val_result.mat', None)
+                    '{}/{}/val_result.mat'.format(featurepath, dirname), None)
         filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
         
         plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, 
-                    logdir='/home/louishsu/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/plots_with_fig/')
+                    logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
         plotTsne3dEmbeddings(X=X, y=y, 
-                    logdir='/home/louishsu/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/plots/')
+                    logdir='{}/{}/plots/'.format(featurepath, dirname))
+
+        dirname = 'workspace_new/Casia_LFW'
+        filenames, X, y = fetchEmbeddings(
+                    '{}/{}/val_result.mat'.format(featurepath, dirname), None)
+        filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
+        
+        plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, 
+                    logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
+        plotTsne3dEmbeddings(X=X, y=y, 
+                    logdir='{}/{}/plots/'.format(featurepath, dirname))
