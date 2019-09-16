@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-12 19:57:48
+@LastEditTime: 2019-09-16 11:46:15
 @Update: 
 '''
 import os
@@ -76,7 +76,7 @@ def fetchEmbeddings(matfile, condition=None):
 
     return filenames, X, y
 
-def plotTsne3dEmbeddings(X, y, filenames=None, savename='tsne3d.npy', logdir='plots'):
+def plotTsne3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
     """ 绘制embedding, tensorboard
     
     Params:
@@ -85,11 +85,10 @@ def plotTsne3dEmbeddings(X, y, filenames=None, savename='tsne3d.npy', logdir='pl
         filenames: {ndarray(n_samples), str}
         logdir: {str}
     """
-    if not os.path.exists(savename):
-        X = TSNE(n_components=3).fit_transform(X)
-        np.save(savename, X)
-    else:
-        X = np.load(savename)
+    X = TSNE(n_components=3).fit_transform(X)
+
+    index = np.random.choice(list(range(X.shape[0])), num, replace=False)
+    filenames = np.array(filenames)[index]; X = X[index]; y = y[index]
 
     if filenames is None:
         images = None
@@ -132,7 +131,6 @@ if __name__ == "__main__":
                     'C:/Work/Github/facerecognition/facerecognition/workspace_mi/Casia_HyperECUSTMI/val_result.mat', None)
         filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
         plotTsne3dEmbeddings(X=X, y=y, filenames=None,  # TODO: filenames
-                    savename='C:/Work/Github/facerecognition/facerecognition/workspace_mi/Casia_HyperECUSTMI/val_result_tsne3d.npy',
                     logdir='C:/Work/Github/facerecognition/facerecognition/workspace_mi/Casia_HyperECUSTMI/plots/')
     else:
     
@@ -140,6 +138,8 @@ if __name__ == "__main__":
         filenames, X, y = fetchEmbeddings(
                     '/home/louishsu/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/val_result.mat', None)
         filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
+        
         plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, 
-                    savename='/home/louishsu/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/val_result_tsne3d.npy',
+                    logdir='/home/louishsu/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/plots_with_fig/')
+        plotTsne3dEmbeddings(X=X, y=y, 
                     logdir='/home/louishsu/Work/Workspace/features/workspace_mi/Casia_HyperECUSTMI/plots/')
