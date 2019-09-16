@@ -94,16 +94,31 @@ def plotTsne3dEmbeddings(X, y, filenames=None, savename='tsne3d.npy', logdir='pl
     if filenames is None:
         images = None
     else:
-        filenames = list(map(
-            lambda x: x if os.path.isfile(x) else '{}/{}'.format(x, '1.jpg'), filenames))
-        images = np.array(list(map(
-            lambda x: np.transpose(
-                cv2.imread(x, cv2.IMREAD_COLOR), axes=[2, 0, 1]), filenames)))
-        images = torch.ByteTensor(images)
+        filenames = list(map(lambda x: x if os.path.isfile(x) else '{}/{}'.format(x, '1.jpg'), filenames))
+        images = list(map(lambda x: cv2.imread(x, cv2.IMREAD_COLOR), filenames))
+        images = torch.ByteTensor(np.array(list(map(lambda x: np.transpose(x, axes=[2, 0, 1]), images))))
 
     with SummaryWriter(logdir) as writer:
-        writer.add_embedding(mat=X, metadata=y, 
-                    label_img=images)
+        writer.add_embedding(mat=X, metadata=y, label_img=images)
+
+def plot3dEmbeddings(X, y, filenames=None, logdir='plots'):
+    """ 绘制embedding, tensorboard
+    
+    Params:
+        X: {ndarray(n_samples, n_features)}
+        y: {ndarray(n_samples)}
+        filenames: {ndarray(n_samples), str}
+        logdir: {str}
+    """
+    if filenames is None:
+        images = None
+    else:
+        filenames = list(map(lambda x: x if os.path.isfile(x) else '{}/{}'.format(x, '1.jpg'), filenames))
+        images = list(map(lambda x: cv2.imread(x, cv2.IMREAD_COLOR), filenames))
+        images = torch.ByteTensor(np.array(list(map(lambda x: np.transpose(x, axes=[2, 0, 1]), images))))
+
+    with SummaryWriter(logdir) as writer:
+        writer.add_embedding(mat=X, metadata=y, label_img=images)
 
 if __name__ == "__main__":
     
