@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-16 12:46:28
+@LastEditTime: 2019-09-16 13:24:40
 @Update: 
 '''
 import os
@@ -73,10 +73,11 @@ def fetchEmbeddings(matfile, condition=None):
         filenames = filenames[index]
 
     y = np.array(list(map(lambda x: int(x.split('/')[6]), filenames)))
-
+    print("Data fetched! ", X.shape, y.shape)
+    
     return filenames, X, y
 
-def plotTsne3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
+def plotTsne3dEmbeddings(X, y, filenames=None, num=2000, logdir='plots'):
     """ 绘制embedding, tensorboard
     
     Params:
@@ -106,7 +107,7 @@ def plotTsne3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
         writer.add_embedding(mat=X, metadata=y, label_img=images)
     print("------ Done ------")
     
-def plot3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
+def plot3dEmbeddings(X, y, filenames=None, num=2000, logdir='plots'):
     """ 绘制embedding, tensorboard
     
     Params:
@@ -136,27 +137,28 @@ if __name__ == "__main__":
     
     datapath = '/datasets/Indoordetect'
     featurepath = '/home/louishsu/Work/Workspace/features'
+    
+    ## -------------- Casia+HyperECUST_HyperECUST(3) --------------
+    dirname = 'workspace_new_3d/Casia+HyperECUST_HyperECUST'
+    filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
+    filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
+    
+    plot3dEmbeddings(X=X[:, :3], y=y, filenames=filenames, logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+    plot3dEmbeddings(X=X[:, :3], y=y,                      logdir='{}/plots/{}_plots/'.format(featurepath, dirname))
 
     ## -------------- Casia_HyperECUSTMI tsne(256 -> 3) --------------
     dirname = 'workspace_mi/Casia_HyperECUSTMI'
     filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
     filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
     
-    plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
-    plotTsne3dEmbeddings(X=X, y=y,                      logdir='{}/{}/plots/'.format(featurepath, dirname))
+    plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+    plotTsne3dEmbeddings(X=X, y=y,                      logdir='{}/plots/{}_plots/'.format(featurepath, dirname))
 
     ## -------------- Casia+HyperECUST_HyperECUST tsne(256 -> 3) --------------
     dirname = 'workspace_new/Casia+HyperECUST_HyperECUST'
     filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
     filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
     
-    plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
-    plotTsne3dEmbeddings(X=X, y=y,                      logdir='{}/{}/plots/'.format(featurepath, dirname))
+    plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+    plotTsne3dEmbeddings(X=X, y=y,                      logdir='{}/plots/{}_plots/'.format(featurepath, dirname))
 
-    ## -------------- Casia+HyperECUST_HyperECUST(3) --------------
-    dirname = 'workspace_new_3d/Casia+HyperECUST_HyperECUST'
-    filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
-    filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
-    
-    plot3dEmbeddings(X=X[:, :3], y=y, filenames=filenames, logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
-    plot3dEmbeddings(X=X[:, :3], y=y,                      logdir='{}/{}/plots/'.format(featurepath, dirname))
