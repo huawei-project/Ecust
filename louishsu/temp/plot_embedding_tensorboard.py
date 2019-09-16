@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-16 16:03:23
+@LastEditTime: 2019-09-16 16:10:53
 @Update: 
 '''
 import os
@@ -142,7 +142,7 @@ def plotTsneEmbeddings(X, y, filenames=None, dim=3, num=3000, savefile='tsne.npy
         writer.add_embedding(mat=X, metadata=y, label_img=images)
     print("------ Done ------")
 
-def plotSpectralEmbedding(X, y, filenames=None, dim=3, num=3000, savefile='se.npy', logdir='plots'):
+def plotSpectralEmbedding(X, y, filenames=None, dim=3, num=5000, savefile='se.npy', logdir='plots'):
     """ 绘制embedding, tensorboard
     
     Params:
@@ -173,7 +173,7 @@ def plotSpectralEmbedding(X, y, filenames=None, dim=3, num=3000, savefile='se.np
         writer.add_embedding(mat=X, metadata=y, label_img=images)
     print("------ Done ------")
 
-def plotLocallyLinearEmbedding(X, y, filenames=None, dim=3, num=3000, savefile='se.npy', logdir='plots'):
+def plotLocallyLinearEmbedding(X, y, filenames=None, dim=3, num=5000, savefile='se.npy', logdir='plots'):
     """ 绘制embedding, tensorboard
     
     Params:
@@ -235,6 +235,9 @@ if __name__ == "__main__":
     plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
                 savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
                 logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
+    plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
                 
     dim=3
     # plotTsneEmbeddings(X=X, y=y, filenames=filenames, dim=dim, 
@@ -246,6 +249,9 @@ if __name__ == "__main__":
     plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
                 savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
                 logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
+    plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
 
     ## -------------- RGB    tsne(256 -> 3) --------------
     dirname = 'workspace_new/Casia+HyperECUSTRGB_HyperECUSTRGB'
@@ -265,6 +271,9 @@ if __name__ == "__main__":
     plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
                 savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
                 logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
+    plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
                 
     dim=3
     # plotTsneEmbeddings(X=X, y=y, filenames=filenames, dim=dim, 
@@ -274,5 +283,8 @@ if __name__ == "__main__":
     #             savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
     #             logdir='{}/plots/{}_plots_{}d/'.format(featurepath, dirname, dim))
     plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
+    plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
                 savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
                 logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
