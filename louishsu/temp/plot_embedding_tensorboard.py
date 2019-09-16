@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-16 13:49:41
+@LastEditTime: 2019-09-16 14:14:57
 @Update: 
 '''
 import os
@@ -112,7 +112,7 @@ def plotTsneEmbeddings(X, y, filenames=None, dim=3, num=1000, savefile='tsne.npy
         writer.add_embedding(mat=X, metadata=y, label_img=images)
     print("------ Done ------")
     
-def plot3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
+def plotEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
     """ 绘制embedding, tensorboard
     
     Params:
@@ -148,14 +148,17 @@ if __name__ == "__main__":
     filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
     filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
     
-    plot3dEmbeddings(X=X[:, :3], y=y, filenames=filenames, logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
-    plot3dEmbeddings(X=X[:, :3], y=y,                      logdir='{}/plots/{}_plots/'.format(featurepath, dirname))
+    plotEmbeddings(X=X[:, :3], y=y, filenames=filenames, logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+    plotEmbeddings(X=X[:, :3], y=y,                      logdir='{}/plots/{}_plots/'.format(featurepath, dirname))
 
     ## -------------- Multi tsne(256 -> 3) --------------
     dirname = 'workspace_mi/Casia_HyperECUSTMI'
     filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
     filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
     
+    plotEmbeddings(X=X, y=y, filenames=None, num=1000, 
+                logdir='{}/plots/{}_plots_256dim/'.format(featurepath, dirname))
+
     dim=2
     plotTsneEmbeddings(X=X, y=y, filenames=filenames, dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
@@ -177,6 +180,9 @@ if __name__ == "__main__":
     filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
     filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
     
+    plotEmbeddings(X=X, y=y, filenames=None, num=1000, 
+                logdir='{}/plots/{}_plots_256dim/'.format(featurepath, dirname))
+                
     dim=2
     plotTsneEmbeddings(X=X, y=y, filenames=filenames, dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
