@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-16 12:12:07
+@LastEditTime: 2019-09-16 12:13:33
 @Update: 
 '''
 import os
@@ -158,5 +158,5 @@ if __name__ == "__main__":
     filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
     filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
     
-    plot3dEmbeddings(X=X, y=y, filenames=filenames, logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
-    plot3dEmbeddings(X=X, y=y,                      logdir='{}/{}/plots/'.format(featurepath, dirname))
+    plot3dEmbeddings(X=X[:, :3], y=y, filenames=filenames, logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
+    plot3dEmbeddings(X=X[:, :3], y=y,                      logdir='{}/{}/plots/'.format(featurepath, dirname))
