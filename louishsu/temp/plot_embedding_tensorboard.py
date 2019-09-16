@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-16 14:14:57
+@LastEditTime: 2019-09-16 15:17:56
 @Update: 
 '''
 import os
@@ -77,7 +77,7 @@ def fetchEmbeddings(matfile, condition=None):
     
     return filenames, X, y
 
-def plotTsneEmbeddings(X, y, filenames=None, dim=3, num=1000, savefile='tsne.npy', logdir='plots'):
+def plotTsneEmbeddings(X, y, filenames=None, dim=3, num=3000, savefile='tsne.npy', logdir='plots'):
     """ 绘制embedding, tensorboard
     
     Params:
@@ -87,18 +87,21 @@ def plotTsneEmbeddings(X, y, filenames=None, dim=3, num=1000, savefile='tsne.npy
         logdir: {str}
     """
     print("dir: ", logdir)
-    print("TSNE...")
-    
-    if os.path.exists(savefile):
-        X = np.load(savefile)
-    else:
-        X = TSNE(n_components=dim).fit_transform(X)
-        np.save(savefile, X)
+    # print("TSNE...")
+    # if os.path.exists(savefile):
+    #     X = np.load(savefile)
+    # else:
+    #     X = TSNE(n_components=dim).fit_transform(X)
+    #     np.save(savefile, X)
 
     print("Randomly choose...")
-    index = np.random.choice(list(range(X.shape[0])), num, replace=False)
-    filenames = np.array(filenames)[index] if filenames is not None else None
-    X = X[index]; y = y[index]
+    if num != -1:
+        index = np.random.choice(list(range(X.shape[0])), num, replace=False)
+        filenames = np.array(filenames)[index] if filenames is not None else None
+        X = X[index]; y = y[index]
+
+    print("TSNE...")
+    X = TSNE(n_components=dim).fit_transform(X)
 
     if filenames is None:
         images = None
@@ -122,9 +125,10 @@ def plotEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
         logdir: {str}
     """
     print("Randomly choose...")
-    index = np.random.choice(list(range(X.shape[0])), num, replace=False)
-    filenames = np.array(filenames)[index] if filenames is not None else None
-    X = X[index]; y = y[index]
+    if num != -1:
+        index = np.random.choice(list(range(X.shape[0])), num, replace=False)
+        filenames = np.array(filenames)[index] if filenames is not None else None
+        X = X[index]; y = y[index]
 
     if filenames is None:
         images = None
@@ -156,45 +160,45 @@ if __name__ == "__main__":
     filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
     filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
     
-    plotEmbeddings(X=X, y=y, filenames=None, num=1000, 
+    plotEmbeddings(X=X, y=y, filenames=None, num=-1, 
                 logdir='{}/plots/{}_plots_256dim/'.format(featurepath, dirname))
 
     dim=2
     plotTsneEmbeddings(X=X, y=y, filenames=filenames, dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
-                logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+                logdir='{}/plots/{}_plots_with_fig_{}d/'.format(featurepath, dirname, dim))
     plotTsneEmbeddings(X=X, y=y, filenames=None,      dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
-                logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+                logdir='{}/plots/{}_plots_{}d/'.format(featurepath, dirname, dim))
                 
     dim=3
     plotTsneEmbeddings(X=X, y=y, filenames=filenames, dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
-                logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+                logdir='{}/plots/{}_plots_with_fig_{}d/'.format(featurepath, dirname, dim))
     plotTsneEmbeddings(X=X, y=y, filenames=None,      dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
-                logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+                logdir='{}/plots/{}_plots_{}d/'.format(featurepath, dirname, dim))
 
     ## -------------- RGB    tsne(256 -> 3) --------------
     dirname = 'workspace_new/Casia+HyperECUSTRGB_HyperECUSTRGB'
     filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
     filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
     
-    plotEmbeddings(X=X, y=y, filenames=None, num=1000, 
+    plotEmbeddings(X=X, y=y, filenames=None, num=-1, 
                 logdir='{}/plots/{}_plots_256dim/'.format(featurepath, dirname))
-                
+
     dim=2
     plotTsneEmbeddings(X=X, y=y, filenames=filenames, dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
-                logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+                logdir='{}/plots/{}_plots_with_fig_{}d/'.format(featurepath, dirname, dim))
     plotTsneEmbeddings(X=X, y=y, filenames=None,      dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
-                logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+                logdir='{}/plots/{}_plots_{}d/'.format(featurepath, dirname, dim))
                 
     dim=3
     plotTsneEmbeddings(X=X, y=y, filenames=filenames, dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
-                logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+                logdir='{}/plots/{}_plots_with_fig_{}d/'.format(featurepath, dirname, dim))
     plotTsneEmbeddings(X=X, y=y, filenames=None,      dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
-                logdir='{}/plots/{}_plots_with_fig/'.format(featurepath, dirname))
+                logdir='{}/plots/{}_plots_{}d/'.format(featurepath, dirname, dim))
