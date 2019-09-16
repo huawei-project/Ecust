@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-16 12:13:33
+@LastEditTime: 2019-09-16 12:46:28
 @Update: 
 '''
 import os
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
     plotTsne3dEmbeddings(X=X, y=y,                      logdir='{}/{}/plots/'.format(featurepath, dirname))
 
-    ## -------------- Casia_HyperECUSTMI tsne(256 -> 3) --------------
+    ## -------------- Casia+HyperECUST_HyperECUST tsne(256 -> 3) --------------
     dirname = 'workspace_new/Casia+HyperECUST_HyperECUST'
     filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
     filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     plotTsne3dEmbeddings(X=X, y=y, filenames=filenames, logdir='{}/{}/plots_with_fig/'.format(featurepath, dirname))
     plotTsne3dEmbeddings(X=X, y=y,                      logdir='{}/{}/plots/'.format(featurepath, dirname))
 
-    ## -------------- Casia_HyperECUSTMI(3) --------------
+    ## -------------- Casia+HyperECUST_HyperECUST(3) --------------
     dirname = 'workspace_new_3d/Casia+HyperECUST_HyperECUST'
     filenames, X, y = fetchEmbeddings('{}/{}/val_result.mat'.format(featurepath, dirname), None)
     filenames = list(map(lambda x: '{}/{}'.format(datapath, '/'.join(x.split('/')[6:])), filenames))
