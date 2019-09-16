@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-16 11:56:38
+@LastEditTime: 2019-09-16 12:12:07
 @Update: 
 '''
 import os
@@ -85,8 +85,11 @@ def plotTsne3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
         filenames: {ndarray(n_samples), str}
         logdir: {str}
     """
+    print("dir: ", logdir)
+    print("TSNE...")
     X = TSNE(n_components=3).fit_transform(X)
 
+    print("Randomly choose...")
     index = np.random.choice(list(range(X.shape[0])), num, replace=False)
     filenames = np.array(filenames)[index] if filenames is not None else None
     X = X[index]; y = y[index]
@@ -98,9 +101,11 @@ def plotTsne3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
         images = list(map(lambda x: cv2.imread(x, cv2.IMREAD_COLOR), filenames))
         images = torch.ByteTensor(np.array(list(map(lambda x: np.transpose(x, axes=[2, 0, 1]), images))))
 
+    print("Ploting...")
     with SummaryWriter(logdir) as writer:
         writer.add_embedding(mat=X, metadata=y, label_img=images)
-
+    print("------ Done ------")
+    
 def plot3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
     """ 绘制embedding, tensorboard
     
@@ -110,6 +115,7 @@ def plot3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
         filenames: {ndarray(n_samples), str}
         logdir: {str}
     """
+    print("Randomly choose...")
     index = np.random.choice(list(range(X.shape[0])), num, replace=False)
     filenames = np.array(filenames)[index] if filenames is not None else None
     X = X[index]; y = y[index]
@@ -121,8 +127,10 @@ def plot3dEmbeddings(X, y, filenames=None, num=1000, logdir='plots'):
         images = list(map(lambda x: cv2.imread(x, cv2.IMREAD_COLOR), filenames))
         images = torch.ByteTensor(np.array(list(map(lambda x: np.transpose(x, axes=[2, 0, 1]), images))))
 
+    print("Ploting...")
     with SummaryWriter(logdir) as writer:
         writer.add_embedding(mat=X, metadata=y, label_img=images)
+    print("------ Done ------")
 
 if __name__ == "__main__":
     
