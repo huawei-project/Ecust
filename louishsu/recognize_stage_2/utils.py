@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:36:18
-@LastEditTime: 2019-08-16 16:05:04
+@LastEditTime: 2019-09-17 13:52:47
 @Update: 
 '''
 import os
@@ -200,6 +200,22 @@ def is_with_no_glasses(path):
     glasses = int(path.split('.')[0].split('_')[-1])
 
     return glasses == 1
+
+def is_with_no_sunglasses(path):
+    """
+    Params:
+        path:   {str}
+            - 若为多光谱，则路径形如
+                - '1/multi/illum3/Multi_3_W1_1/2'；
+                - '1/multi/illum3/Multi_3_W1_5'；
+            - 若为可见光，则路径形如
+                - '1/rgb/illum3/RGB_3_W1_1/2.jpg'；
+                - '1/rgb/illum3/RGB_3_W1_5.jpg'；
+    """
+    path = path.split('/')[3]
+    glasses = int(path.split('.')[0].split('_')[-1])
+
+    return glasses == 1 or glasses == 5
 
 def accuracy(y_pred_prob, y_true):
     """

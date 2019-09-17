@@ -4,7 +4,7 @@
 @Auther: louishsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-10 10:30:40
-@LastEditTime: 2019-09-17 10:52:10
+@LastEditTime: 2019-09-17 13:53:12
 @Update: 
 '''
 import os
@@ -35,7 +35,7 @@ def get_configer(n_epoch=150, stepsize=120, batchsize=2**5, lrbase=5e-4, gamma=0
                 splitratio=[0.6, 0.2, 0.2], splitcount=1, 
                 modelbase= 'recognize_resnet34', 
                 datapath = '/datasets/Indoordetect', savepath = 'checkpoints', 
-                hist=False, training_no_glass=True):
+                hist=False, training_no_glass=False, training_no_sunglass=True):
     """
     Params:
         n_epoch:        {int}                   总计迭代周期数
@@ -59,7 +59,8 @@ def get_configer(n_epoch=150, stepsize=120, batchsize=2**5, lrbase=5e-4, gamma=0
 
     ## -------------------------------------------------------------
     configer.hist = hist
-    configer.training_no_glass = training_no_glass
+    configer.training_no_glass = training_no_glass          # no sunglasses and glasses
+    configer.training_no_sunglass = training_no_sunglass    # no sunglasses
 
     ## -------------------------- 训练相关 --------------------------
     configer.n_epoch  = n_epoch

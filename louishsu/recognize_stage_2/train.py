@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-16 16:03:14
-@LastEditTime: 2019-08-16 16:10:23
+@LastEditTime: 2019-09-17 13:53:42
 @Update: 
 '''
 import os
@@ -34,6 +34,8 @@ def train(configer):
     condition = None
     if configer.training_no_glass:
         condition = is_with_no_glasses
+    if configer.training_no_sunglass:
+        condition = is_with_no_sunglasses
 
     ## datasets
     trainset = RecognizeDataset(configer.datapath, configer.datatype, 
