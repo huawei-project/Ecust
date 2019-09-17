@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-12 11:54:13
-@LastEditTime: 2019-09-17 11:32:56
+@LastEditTime: 2019-09-17 13:39:15
 @Update: 
 '''
 import os
@@ -106,11 +106,30 @@ def fetchEmbeddings2(matfile, condition=None):
         filenames = filenames[index]
 
     y = np.array(list(map(lambda x: int(x.split('/')[6]), filenames)))
-    print("Data fetched! ", X.shape, y.shape)
 
-    filename, index = np.unique(filenames, return_index=True)
+    # unique
+    filenames, index = np.unique(filenames, return_index=True)
     X = X[index]; y = y[index]
+
+    # channel
+    if filenames[0].split('/')[-5] == 'multi':
+        index = list(map(lambda x: x.split('/')[-1] == '8.jpg', filenames))
+        filenames = filenames[index]; X = X[index]; y = y[index]
     
+    # 1, ~~2, 3, 4~~
+    if filenames[0].split('/')[-5] == 'multi':
+        index = list(map(lambda x: x.split('/')[-2] == '1', filenames))
+        filenames = filenames[index]; X = X[index]; y = y[index]
+    else:
+        index = list(map(lambda x: x.split('/')[-1].split('.')[0] == '1', filenames))
+        filenames = filenames[index]; X = X[index]; y = y[index]
+    
+    # label < 40
+    index = list(map(lambda x: int(x.split('/')[6]) <= 20, filenames))
+    filenames = filenames[index]; X = X[index]; y = y[index]
+
+    
+    print("Data fetched! ", X.shape, y.shape)
     return filenames, X, y
 
 def plotEmbeddings(X, y, filenames=None, num=-1, logdir='plots'):
@@ -122,8 +141,8 @@ def plotEmbeddings(X, y, filenames=None, num=-1, logdir='plots'):
         filenames: {ndarray(n_samples), str}
         logdir: {str}
     """
-    print("Randomly choose...")
     if num != -1:
+        print("Randomly choose...")
         index = np.random.choice(list(range(X.shape[0])), num, replace=False)
         filenames = np.array(filenames)[index] if filenames is not None else None
         X = X[index]; y = y[index]
@@ -159,8 +178,8 @@ def plotTsneEmbeddings(X, y, filenames=None, dim=3, num=-1, savefile='tsne.npy',
     #     X = TSNE(n_components=dim).fit_transform(X)
     #     np.save(savefile, X)
 
-    print("Randomly choose...")
     if num != -1:
+        print("Randomly choose...")
         index = np.random.choice(list(range(X.shape[0])), num, replace=False)
         filenames = np.array(filenames)[index] if filenames is not None else None
         X = X[index]; y = y[index]
@@ -192,8 +211,8 @@ def plotSpectralEmbedding(X, y, filenames=None, dim=3, num=-1, savefile='se.npy'
     """
     print("dir: ", logdir)
 
-    print("Randomly choose...")
     if num != -1:
+        print("Randomly choose...")
         index = np.random.choice(list(range(X.shape[0])), num, replace=False)
         filenames = np.array(filenames)[index] if filenames is not None else None
         X = X[index]; y = y[index]
@@ -225,13 +244,13 @@ def plotLocallyLinearEmbedding(X, y, filenames=None, dim=3, num=-1, savefile='se
     """
     print("dir: ", logdir)
 
-    print("Randomly choose...")
     if num != -1:
+        print("Randomly choose...")
         index = np.random.choice(list(range(X.shape[0])), num, replace=False)
         filenames = np.array(filenames)[index] if filenames is not None else None
         X = X[index]; y = y[index]
 
-    print("SE...")
+    print("LLE...")
     X = LocallyLinearEmbedding(n_neighbors=50, n_components=dim).fit_transform(X)
 
     if filenames is None:
@@ -271,23 +290,23 @@ if __name__ == "__main__":
     plotTsneEmbeddings(X=X, y=y, filenames=None,      dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
                 logdir='{}/plots/{}_plots_tsne_{}d/'.format(featurepath, dirname, dim))
-    # plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
-    #             savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
-    #             logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
-    # plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
-    #             savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
-    #             logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
+    plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
+    plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
                 
     dim=3
     plotTsneEmbeddings(X=X, y=y, filenames=None,      dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
                 logdir='{}/plots/{}_plots_tsne_{}d/'.format(featurepath, dirname, dim))
-    # X, y = plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
-    #             savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
-    #             logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
-    # X, y = plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
-    #             savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
-    #             logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
+    X, y = plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
+    X, y = plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
 
     ## -------------- RGB    tsne(256 -> 3) --------------
     # dirname = 'workspace_new/Casia+HyperECUSTRGB_HyperECUSTRGB'
@@ -299,24 +318,24 @@ if __name__ == "__main__":
     plotTsneEmbeddings(X=X, y=y, filenames=None,      dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
                 logdir='{}/plots/{}_plots_tsne_{}d/'.format(featurepath, dirname, dim))
-    # plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
-    #             savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
-    #             logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
-    # plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
-    #             savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
-    #             logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
+    plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
+    plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
 
-    plt.figure(); plt.scatter(X[:, 0], X[:, 1], c=y); plt.show()
+    # plt.figure(); plt.scatter(X[:, 0], X[:, 1], c=y); plt.show()
                 
     dim=3
     X, y = plotTsneEmbeddings(X=X, y=y, filenames=None,      dim=dim, 
                 savefile='{}/{}/tsne{}d.mat'.format(featurepath, dirname, dim), 
                 logdir='{}/plots/{}_plots_tsne_{}d/'.format(featurepath, dirname, dim))
-    # X, y = plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
-    #             savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
-    #             logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
-    # X, y = plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
-    #             savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
-    #             logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
+    X, y = plotSpectralEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/se{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_se_{}d/'.format(featurepath, dirname, dim))
+    X, y = plotLocallyLinearEmbedding(X, y, filenames=None, dim=dim, 
+                savefile='{}/{}/lle{}d.mat'.format(featurepath, dirname, dim), 
+                logdir='{}/plots/{}_plots_lle_{}d/'.format(featurepath, dirname, dim))
 
-    fig = plt.figure(); ax = Axes3D(fig); ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y); plt.show()
+    # fig = plt.figure(); ax = Axes3D(fig); ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y); plt.show()
