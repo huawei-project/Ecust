@@ -6,13 +6,13 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-09-17 09:32:21
-@LastEditTime: 2019-09-17 10:45:49
+@LastEditTime: 2019-09-17 11:13:12
 @Update: 
 '''
 import os
 import cv2
-import scipy
 import numpy as np
+from scipy import io
 
 import torch
 from torch.utils.data import Dataset
@@ -26,7 +26,7 @@ pklfile  = '{}/Casia+HyperECUST_HyperECUST/MobileFacenet_best.pkl'.format(featur
 splittxt = '{}/Casia+HyperECUST_HyperECUST/face_verification_split_3f/split_1/train_multi_normal.txt'.format(featurepath)
 datapath = '/datasets/Indoordetect'
 prefix = ':/:/:/:/:/:'
-savepath = '{}/Casia+HyperECUST_HyperECUST/training.mat'.format(featurepath)
+savepath = '{}/Casia+HyperECUST_HyperECUST/train_result.mat'.format(featurepath)
 
 states = torch.load(pklfile, map_location='cpu')
 
@@ -50,29 +50,31 @@ class Data(Dataset):
         image = (image - 127.5) / 128.0   
         image = np.transpose(image, [2, 0, 1])
 
-        return image, label, filename
+        return image, int(label), filename
 
     def __len__(self):
 
         return len(self.lines)
 
 dataset = Data()
-dataloader = Dataloader(dataset, 64, shuffle=False)
+dataloader = DataLoader(dataset, 64, shuffle=False)
 
-features = []; filenames = []
+features = None; filenames = []
 with torch.no_grad():
     for i, (X, y, filename) in enumerate(dataloader):
 
-        X = Variable(X.float()).cuda(); y = Variable(y.float()).cuda()
-        feature = net.get_feature(X)
+        print('{}/{}'.format(i, len(dataset) // 64))
 
-        features += [feature.cpu().numpy()]
-        filenames += ['{}/{}'.format(prefix, filename)]
+        X = Variable(X.float()).cuda(); y = Variable(y.float()).cuda()
+        feature = net.get_feature(X).cpu().numpy()
+
+        features = feature if features is None else np.concatenate([features, feature], axis=0)
+        filenames += list(map(lambda x: '{}/{}'.format(prefix, x), filename))
 
 matdict = {
-        'featuresLs': np.array(features),
-        'featuresRs': np.array(features),
+        'featureLs': np.array(features),
+        'featureRs': np.array(features),
         'filenameLs': np.array(filenames),
         'filenameRs': np.array(filenames),
         }
-scipy.io.savemat(savepath, matdict)
+io.savemat(savepath, matdict)
