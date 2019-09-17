@@ -6,7 +6,7 @@
 @Github: https://github.com/isLouisHsu
 @E-mail: is.louishsu@foxmail.com
 @Date: 2019-08-16 16:03:14
-@LastEditTime: 2019-09-17 13:53:42
+@LastEditTime: 2019-09-17 13:57:44
 @Update: 
 '''
 import os
@@ -24,7 +24,7 @@ from tensorboardX import SummaryWriter
 
 from datasets import RecognizeDataset
 from models import modeldict
-from utils import accuracy, getTime, is_with_no_glasses
+from utils import accuracy, getTime, is_with_no_glasses, is_with_no_sunglasses
 
 def train(configer):
     """
