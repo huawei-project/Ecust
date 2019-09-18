@@ -126,7 +126,7 @@ def main_3_1(make_table_figure=False):
             table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
             table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
         
-            with open("images/3_1_<table>_[{}].txt".format(datatype), 'w') as f:
+            with open("images/3_1_<table>_[{}].md".format(datatype), 'w') as f:
                 f.write("\n\nacc\n")
                 f.write(table_acc)
                 f.write("\n\nloss\n")
@@ -221,7 +221,7 @@ def main_3_2(make_table_figure=False):
             table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
             table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
         
-            with open("images/3_2_<table>_[{}].txt".format(datatype), 'w') as f:
+            with open("images/3_2_<table>_[{}].md".format(datatype), 'w') as f:
                 f.write("\n\nacc\n")
                 f.write(table_acc)
                 f.write("\n\nloss\n")
@@ -322,7 +322,7 @@ def main_3_3(make_table_figure=False):
         table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
         table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
     
-        with open("images/3_3_<table>_[Multi].txt", 'w') as f:
+        with open("images/3_3_<table>_[Multi].md", 'w') as f:
             f.write("\n\nacc\n")
             f.write(table_acc)
             f.write("\n\nloss\n")
@@ -405,7 +405,7 @@ def main_3_4(make_table_figure=False):
         table_acc  = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_acc)
         table_loss = gen_markdown_table_2d(head_name, rows_name, cols_name, table_data_loss)
     
-        with open("images/3_4_<table>_[Multi].txt", 'w') as f:
+        with open("images/3_4_<table>_[Multi].md", 'w') as f:
             f.write("\n\nacc\n")
             f.write(table_acc)
             f.write("\n\nloss\n")
@@ -594,7 +594,7 @@ def main_3_5(make_table_figure=False):
             # -----------------------------------------------------------------------------------------------------
             table_acc_positions  = gen_markdown_table_2d(head_name, rows_name, cols_name, data_acc_positions )
             table_loss_positions = gen_markdown_table_2d(head_name, rows_name, cols_name, data_loss_positions)
-            with open("images/3_5_<table>_[{}]_[positions].txt".format(datatype), 'w') as f:
+            with open("images/3_5_<table>_[{}]_[positions].md".format(datatype), 'w') as f:
                 f.write("\n\nacc\n")
                 f.write(table_acc_positions)
                 f.write("\n\nloss\n")
